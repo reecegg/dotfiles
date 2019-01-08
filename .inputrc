@@ -1,0 +1,29 @@
+# GNU Readline configuration file. 
+# GNU Readline is a software libary that provides line-editing and history capabilities for interactive programs with a command-line interface, such as Bash. Python and ruby interactive shells also use GNU readline.
+
+# Brings site-wide realline configuration into the user configuration.
+$include /etc/inputrc
+# Enables Vi bindings in Readline, and therefore bash.
+# See 'http://www.catonmat.net/blog/bash-vi-editing-mode-cheat-sheet/' for complete bash vi binds.
+set editing-mode vi
+set keymap vi-command
+# Show Vi mode in prompt (bash 4.3+, readlilne 6.3+)
+set show-mode-in-prompt on
+# Color files by type.
+set colored-stats On:
+# Append char to indicate type.
+set visible-stats On:
+# Auto completion ignores case.
+set completion-ignore-case On:
+# Color the common prefix
+set colored-completion-prefix On:
+# Color the common prefix in the menu.
+set menu-complete-display-prefix On:
+# Sets the maximum number of character to be the common prefix to display for completions.
+set completion-prefix-display-length 5:
+# Mark symlinked directories.
+set mark-symlinked-directories On:
+# Sets the completions to be listed immediately.
+set show-all-if-ambiguous On:
+# Dont echo control characters.
+set echo-control-characters off:
