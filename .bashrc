@@ -13,9 +13,9 @@ HISTCONTROL=ignoreboth
 # Append to the history file instead of overwriting it.
 shopt -s histappend
 # Set max history lines/commands.
-4000
+HISTSIZE=4000
 # Set max history size.
-8000
+HISTFILESIZE=8000
 
 # Alias used for interacting with the dotfiles git repo.
 alias config='/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME'
