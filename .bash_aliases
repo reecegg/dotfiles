@@ -36,7 +36,7 @@ alias chmod='chmod --preserve-root'
 alias chgrp='chgrp --preserve-root'
 
 # Error Tolerance.
-alias cd='cd..'
+# alias cd..='cd ..'
 
 
 # Program Aliases
