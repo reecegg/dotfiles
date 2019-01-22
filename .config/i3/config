@@ -161,6 +161,26 @@ bar {
         status_command i3status
 }
 
+# Mode to move floating windows
+bindsym $mod+m mode "move" focus floating
+mode "move" {
+    bindsym $mod+Tab focus right
+
+    bindsym Left  move left
+    bindsym Down  move down
+    bindsym Up    move up
+    bindsym Right move right
+
+    bindsym h     move left
+    bindsym j     move down
+    bindsym k     move up
+    bindsym l     move right
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
 # i3-gaps configuration
 
 # Disable windows bars (Window bars are not compatible with i3-gaps
