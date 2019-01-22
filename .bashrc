@@ -6,6 +6,19 @@ case $- in
 	  *) return;;
 esac
 
+# Neovim or vim setup (env var and alias)
+if ! [ -x "S(command -v nvim)" ]; then
+	export VISUAl=nvim
+	export VIMCONFIG=~/.config/nvim
+	export VIMDATA=~/.local/share/nvim
+	export MYVIMRC=~/.config/nvim/init.vim
+	alias vi="nvim"
+	alias vim="nvim"
+else
+	export VISUAl=vim
+	export VIMCONFIG=~/.vim
+	export VIMDATA=~/.local/share/nvim
+fi
 
 # Terminal History Settings.
 # Don't put duplicate lines or lines starting with space in the history.
