@@ -156,3 +156,7 @@ nnoremap <leader>tr :set invrelativenumber<CR>
 " NERDTree mappings
 nnoremap <leader>tt :NERDTreeToggle<CR>
 " }}} Plugin keybinds
+
+" Filetype Settings {{{
+autocmd FileType vue setlocal shiftwidth=2 tabstop=2 softtabstop=2
+" }}} Filetype Settings
