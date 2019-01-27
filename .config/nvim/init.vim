@@ -98,7 +98,7 @@ set autoread                    " Reload file when changed outside vim.
 set backspace=indent,eol,start  " Let backspace go though more characters.
 set timeout
 set ttimeout
-set timeoutlen=300              " Milliseconds to wiat for mapped sequence to complete.
+set timeoutlen=500              " Milliseconds to wiat for mapped sequence to complete.
 set ttimeoutlen=1               " Milliseconds to wiat for key code sequency to complete.
 " }}}
 
