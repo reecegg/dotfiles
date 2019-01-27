@@ -154,7 +154,5 @@ nnoremap <leader>tr :set invrelativenumber<CR>
 " Plugin keybinds {{{
 
 " NERDTree mappings
-map <C-n> :NERDTreeToggle<CR>
-
+nnoremap <leader>tt :NERDTreeToggle<CR>
 " }}} Plugin keybinds
-
