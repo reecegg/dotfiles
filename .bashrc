@@ -44,6 +44,9 @@ export PAth="/HOME/$USER/scripts:$PATH"
 # Disable Ctrl-s and Ctrl-q sending "XOFF" and "XON" signals.
 stty -ixon
 
+# Enable Node Version Manager
+source /usr/share/nvm/init-nvm.sh
+
 # Run '.bash_aliases' if it exists.
 if [ -f ~/.bash_aliases ]; then
 	. ~/.bash_aliases
