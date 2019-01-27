@@ -29,6 +29,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'terryma/vim-multiple-cursors'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'itchyny/lightline.vim'
+    Plug 'posva/vim-vue'
 "    Plug 'vim-airline/vim-airline'
 "    Plug 'tpope/vim-fugitive'
 "    Plug 'airblade/vim-gitgutter'
