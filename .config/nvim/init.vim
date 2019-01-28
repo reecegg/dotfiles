@@ -49,9 +49,10 @@ autocmd VimEnter *
 
 " Colors {{{
 syntax enable                   " Enable syntax highlighting.
-set notermguicolors             " Disable because it causes issues with color in tmux.
-"colorscheme base16-default      " Set color scheme.
-set background=dark             " Set background theme.
+set t_Co=256                    " Enable 8bit color (256 color).
+set termguicolors               " Enable 24bit color (True color).
+set background=dark             " Set background theme (used by some themes).
+colorscheme base16-atelier-dune " Set color scheme.
 " }}} Colors
 
 
