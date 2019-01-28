@@ -37,6 +37,13 @@ call plug#begin('~/.config/nvim/plugged')
 "    Plug 'w0rp/ale'
 "    Plug 'plasticboy/vim-markdown'
 call plug#end()
+
+" Auto-install missing plugins
+autocmd VimEnter *
+  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \|   PlugInstall --sync | q
+  \| endif
+
 " }}} Plugins
 
 
