@@ -33,7 +33,6 @@ call plug#begin('~/.config/nvim/plugged')
 "    Plug 'vim-airline/vim-airline'
 "    Plug 'tpope/vim-fugitive'
 "    Plug 'airblade/vim-gitgutter'
-"    Plug 'altercation/vim-colors-solarized'
 "    Plug 'valloric/youcompleteme'
 "    Plug 'w0rp/ale'
 "    Plug 'plasticboy/vim-markdown'
