@@ -107,7 +107,7 @@ set timeout
 set ttimeout
 set timeoutlen=500              " Milliseconds to wiat for mapped sequence to complete.
 set ttimeoutlen=1               " Milliseconds to wiat for key code sequency to complete.
-set virtualedit=all             " Move cursor to were there is no text.
+set virtualedit=                " Set no vitural edit.
 " }}}
 
 
