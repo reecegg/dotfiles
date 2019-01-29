@@ -1,3 +1,6 @@
+# .dotfiles repo working directory
+.cfg
+
 # Compiled Source
 *.com
 *.class
