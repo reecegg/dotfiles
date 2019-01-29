@@ -1,5 +1,12 @@
 # My Dotesfiles
 
+## Installation
+
+1. `alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'`
+2. `git clone --bare git@github.com:ReeceRGGIL/dotfiles.git $HOME/.cfg`
+3. `config checkout`
+4. `config config --local status.showUntrackedFiles no`
+
 ## Dotfiles
 
 - .bash_aliases: Commands aliases are listed in this file. This file is sourced by .bashrc
@@ -15,7 +22,7 @@
 - .xinitrc: Shell script run by xinit after starting xorg. Used to execute desktop environments or windows managers and other programs when starting x.
 - .Xresources: Configuration for x client applications.
 
-## Requirements Expectations Consequences Side-effects
+## Requirements Expectations Considerations Side-effects
 
 - .bash_aliases: None
 - .bash_logout: None
@@ -44,3 +51,13 @@
 - .xinitrc 
     - Execs `i3`
 - .Xresources: Configuration for x client applications.
+
+## Sources
+
+- [The best way to store your dotfiles: A bare Git repository - Atlassian Developer](https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/)
+- [StreakCobra Comment - Ask HN: What do you use to manage dotfiles? - Hacker News](https://news.ycombinator.com/item?id=11070797)
+
+## Resources
+
+- [Github does dotfiles - dotfiles.github.io](gitfiles.github.io)
+- [Awesome dotfiles - webpro - Github.com](https://github.com/webpro/awesome-dotfiles)
