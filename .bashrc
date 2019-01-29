@@ -42,8 +42,8 @@ alias config='/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME'
 shopt -s checkwinsize
 
 # Setup the following as exec path.
-export PAth="/HOME/$USER/bin:$PATH"
-export PAth="/HOME/$USER/scripts:$PATH"
+export PATH="/HOME/$USER/bin:$PATH"
+export PATH="/HOME/$USER/scripts:$PATH"
 
 # Disable Ctrl-s and Ctrl-q sending "XOFF" and "XON" signals.
 stty -ixon
