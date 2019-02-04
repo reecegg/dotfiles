@@ -51,6 +51,34 @@ stty -ixon
 # Enable Node Version Manager
 source /usr/share/nvm/init-nvm.sh
 
+# Customize prompt
+# \[\e[31m\]
+# (
+# \[\e[m\]
+# \[\e[32m\]
+# \u
+# \[\e[m\]
+# \[\e[31m\]
+# @
+# \[\e[m\]
+# \[\e[33m\]
+# \h
+# \[\e[m\]
+# \[\e[31m\]
+# |
+# \[\e[m\]
+# \[\e[34m\]
+# \W
+# \[\e[m\]
+# \[\e[31m\]
+# )
+# \[\e[m\]
+PS1="\[\e[31m\](\[\e[m\]\[\e[32m\]\u\[\e[m\]\[\e[31m\]@\[\e[m\]\[\e[33m\]\h\[\e[m\]\[\e[31m\]|\[\e[m\]\[\e[34m\]\W\[\e[m\]\[\e[31m\])\[\e[m\] "
+# Make commands and readline mode print on a new line.
+PS1="$PS1\n"
+# Print a new line before prompt
+PS1="\n$PS1"
+
 # Run '.bash_aliases' if it exists.
 if [ -f ~/.bash_aliases ]; then
 	. ~/.bash_aliases
