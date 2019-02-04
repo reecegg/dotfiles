@@ -68,12 +68,12 @@ source /usr/share/nvm/init-nvm.sh
 # |
 # \[\e[m\]
 # \[\e[34m\]
-# \W
+# \$(dirs +0)
 # \[\e[m\]
 # \[\e[31m\]
 # )
 # \[\e[m\]
-PS1="\[\e[31m\](\[\e[m\]\[\e[32m\]\u\[\e[m\]\[\e[31m\]@\[\e[m\]\[\e[33m\]\h\[\e[m\]\[\e[31m\]|\[\e[m\]\[\e[34m\]\W\[\e[m\]\[\e[31m\])\[\e[m\] "
+PS1="\[\e[31m\](\[\e[m\]\[\e[32m\]\u\[\e[m\]\[\e[31m\]@\[\e[m\]\[\e[33m\]\h\[\e[m\]\[\e[31m\]|\[\e[m\]\[\e[34m\]\$(dirs +0)\[\e[m\]\[\e[31m\])\[\e[m\] "
 # Make commands and readline mode print on a new line.
 PS1="$PS1\n"
 
