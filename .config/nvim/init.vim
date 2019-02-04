@@ -115,6 +115,7 @@ set virtualedit=                " Set no vitural edit.
 let mapleader=" "               " Make <space> the leader key.
 
 " Better esc with 'jj'
+inoremap jk <esc>
 inoremap jj <esc>
 
 " Better write/quit/Exit
