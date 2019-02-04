@@ -159,6 +159,7 @@ bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchp
 # finds out, if available)
 bar {
         status_command i3status
+        tray_output primary
 }
 
 # Mode to move floating windows
@@ -226,3 +227,6 @@ mode "$mode_gaps_outer" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
+
+# Autostart
+exec --no-startup-id nextcloud
