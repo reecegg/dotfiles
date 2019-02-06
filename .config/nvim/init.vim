@@ -106,13 +106,15 @@ set smartcase                   " Ignore case if search pattern is lowercase, ot
 
 " Functionality {{{
 set nojoinspaces                " Prevents inserting two spaces after punctuation on a join.
-set autoread                    " Reload file when changed outside vim.
 set backspace=indent,eol,start  " Let backspace go though more characters.
 set timeout
 set ttimeout
 set timeoutlen=500              " Milliseconds to wiat for mapped sequence to complete.
 set ttimeoutlen=1               " Milliseconds to wiat for key code sequency to complete.
 set virtualedit=                " Set no vitural edit.
+set autoread                    " Reload file when changed outside vim.
+au CursorHold,CursorHoldI * checktime " Check for autoread changes to a file when the cursor stops moving.
+au FocusGained,BufEnter * :checktime  " Check for autoread changes to a file on buffer change or terminal focus.
 " }}}
 
 
