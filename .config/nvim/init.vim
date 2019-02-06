@@ -119,7 +119,9 @@ let mapleader=" "               " Make <space> the leader key.
 
 " Better esc with 'jj'
 inoremap jk <esc>
+inoremap kj <esc>
 inoremap jj <esc>
+inoremap kk <esc>
 
 " Better write/quit/Exit
 cmap w!! w !sudo tee > /dev/null %
