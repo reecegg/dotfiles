@@ -124,15 +124,13 @@ inoremap jj <esc>
 inoremap kk <esc>
 
 " Better write/quit/Exit
-cmap w!! w !sudo tee > /dev/null %
 nmap <leader>q :q<CR>
+nmap <leader>qq :q<CR>
 nmap <leader>qa :qa<CR>
-nmap <leader>qa! :qa!<CR>
-nmap <leader>q! :q!<CR>
 nmap <leader>x :x<CR>
 nmap <leader>w :w<CR>
+nmap <leader>ww :w<CR>
 nmap <leader>wq :wq<CR>
-nmap <leader>wsu :w!!<CR>
 
 " Move up/down viusal lines by default
 nnoremap j gj
