@@ -33,6 +33,8 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'jwalton512/vim-blade'
     Plug 'jiangmiao/auto-pairs'
     Plug 'chaoren/vim-wordmotion'
+    Plug 'tmux-plugins/vim-tmux-focus-events'
+    Plug 'tmux-plugins/vim-tmux'
 "    Plug 'vim-airline/vim-airline'
 "    Plug 'tpope/vim-fugitive'
 "    Plug 'airblade/vim-gitgutter'
