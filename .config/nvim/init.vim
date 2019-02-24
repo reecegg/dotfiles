@@ -175,6 +175,20 @@ nnoremap <leader>tr :set invrelativenumber<CR>
 nnoremap <leader>tt :NERDTreeToggle<CR>
 " }}} Plugin keybinds
 
+" Plugin Settings {{{
+
+" vim-gitgutter settings
+" permanent sign column
+if exists('&signcolumn')  " Vim 7.4.2201
+  set signcolumn=yes
+else
+  let g:gitgutter_sign_column_always = 1
+endif
+
+
+
+" }}} Plugin Settings
+
 " Filetype Settings {{{
 autocmd FileType vue setlocal shiftwidth=2 tabstop=2 softtabstop=2
 " }}} Filetype Settings
