@@ -117,6 +117,7 @@ set virtualedit=                " Set no vitural edit.
 set autoread                    " Reload file when changed outside vim.
 au CursorHold,CursorHoldI * checktime " Check for autoread changes to a file when the cursor stops moving.
 au FocusGained,BufEnter * :checktime  " Check for autoread changes to a file on buffer change or terminal focus.
+set updatetime=100              " Delay before CursorHold triggers.
 " }}}
 
 
