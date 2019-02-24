@@ -54,6 +54,8 @@ autocmd VimEnter *
 
 " Colors {{{
 syntax enable                   " Enable syntax highlighting.
+syntax sync minlines=10000      " Sets lines to highlight (Unknown performance)
+set redrawtime=10000            " Sets maximum time spent trying to highlight
 set t_Co=256                    " Enable 8bit color (256 color).
 set termguicolors               " Enable 24bit color (True color).
 set background=dark             " Set background theme (used by some themes).
