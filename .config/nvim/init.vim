@@ -125,7 +125,7 @@ let mapleader=" "               " Make <space> the leader key.
 
 " Better esc with 'jj'
 inoremap jk <esc>
-inoremap kj <esc>
+"inoremap kj <esc>              " Disabled because k is commonly cut of the end of words.
 inoremap jj <esc>
 inoremap kk <esc>
 
