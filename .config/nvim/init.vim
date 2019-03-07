@@ -28,7 +28,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'guns/vim-sexp'                               " TODO
     Plug 'itchyny/lightline.vim'                       " Lightweight status line (status line).
     Plug 'junegunn/fzf'                                " Fuzzy file
-    Plug 'kana/vim-textobj-entire'                     " Text object for entire file, ae and ie.
     Plug 'mattn/emmet-vim'                             " HTML, CSS, JS snippets.
     Plug 'neomake/neomake'                             " Asynchronous lint and make (lint ,make)
     Plug 'scrooloose/nerdtree'                         " Project Draw (project draw)
@@ -224,6 +223,8 @@ autocmd FileType vue setlocal shiftwidth=2 tabstop=2 softtabstop=2
 " Noted Plugins
     " Plug 'jiangmiao/auto-pairs'      " Alternative (pair completion).
     " Plug 'jwalton512/vim-blade'      " Replaced (vim-polygot).
+    " Plug 'kana/vim-textobj-user'     " Unneeded functionality.
+    " Plug 'kana/vim-textobj-entire'   " Requires dependency.
     " Plug 'natebosch/vim-lsc'         " Alternative (language client).
     " Plug 'posva/vim-vue'             " Repalced (vim-polygot).
     " Plug 'powerline/powerline'       " Alternative (status line).
