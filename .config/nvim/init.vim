@@ -148,9 +148,6 @@ nnoremap <tab> :bn<CR>
 nnoremap <s-tab> :bp<CR>
 nnoremap <leader>bd :bd<CR>
 
-" Edit/reload config
-nmap <leader>ev :e $VIMCONFIG/init.vim<CR>
-nmap <leader>sv :so $VIMCONFIG/init.vim<CR>
 
 " Move though grep results
 nnoremap <leader> <right> :cnext<CR>
@@ -166,6 +163,11 @@ nnoremap <c-h> <c-w><c-h>
 nnoremap <leader>t<space> :set invlist<CR>
 nnoremap <leader>tn :set invnumber<CR>
 nnoremap <leader>tr :set invrelativenumber<CR>
+
+" Meta
+nnoremap <leader>mms :syntax sync fromstart<CR>
+nmap <leader>mme :e $VIMCONFIG/init.vim<CR>
+nmap <leader>mmr :so $VIMCONFIG/init.vim<CR>
 
 " }}} Keybinds 
 
