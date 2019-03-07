@@ -185,7 +185,7 @@ mode "move" {
 # i3-gaps configuration
 
 # Disable windows bars (Window bars are not compatible with i3-gaps
-for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] border pixel 3
 
 # Set i3 gaps spacing
 gaps inner 10
