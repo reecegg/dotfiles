@@ -119,6 +119,7 @@ set sidescroll=1                " Scroll sideways one character at a time.
 set nostartofline               " Don't jump to the first character with page commands.
 set ruler                       " Enable line/col number on the status bar.
 set colorcolumn=                " Set no color columns.
+set noshowmode                  " Dont show -- insert -- etc. text.
 " }}} User Interface
 
 
