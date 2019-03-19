@@ -24,6 +24,9 @@ else
 	export VIMDATA=~/.local/share/nvim
 fi
 
+# Setup FZF
+export FZF_DEFAULT_COMMAND='rg --files --ignore-case --color auto --hidden --follow --glob "!.git/*"'
+
 # Terminal History Settings.
 # Don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
