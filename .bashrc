@@ -35,7 +35,7 @@ HISTSIZE=4000
 HISTFILESIZE=8000
 
 # Alias used for interacting with the dotfiles git repo.
-alias config='/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME'
+alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 
 # Update the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
