@@ -38,7 +38,7 @@ HISTSIZE=4000
 HISTFILESIZE=8000
 
 # Alias used for interacting with the dotfiles git repo.
-alias config='/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME'
+alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 
 # Update the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -51,8 +51,11 @@ export PATH="/home/$USER/scripts:$PATH"
 # Disable Ctrl-s and Ctrl-q sending "XOFF" and "XON" signals.
 stty -ixon
 
-# Enable Node Version Manager
-source /usr/share/nvm/init-nvm.sh
+# Enable Node Version Manager is it exists on system.
+NVM=/usr/share/nvm/init-nvm.sh
+if [ -e $NVM ]; then
+	source /usr/share/nvm/init-nvm.sh
+fi
 
 # Customize prompt
 # \[\e[31m\]
