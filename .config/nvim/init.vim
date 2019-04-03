@@ -246,6 +246,7 @@ endif
 " Vimwiki Settings
 let g:vimwiki_list = [{'path': '~/git/markup-wiki',
                      \ 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_table_mappings = 0 " Disable vimwiki table mappings to use vim-table-mode instead.
 
 " markdown-preview.nvimj
 let g:mkdp_auto_start = 1      " Automatically open preview for markdown files.
