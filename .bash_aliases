@@ -1,3 +1,5 @@
+# Run '\command' to run the command that it shadowed by an alias.
+
 # Single letter aliases.
 #alias a='TODO'
 alias b='cd ..'
