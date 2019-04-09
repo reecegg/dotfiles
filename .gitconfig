@@ -56,8 +56,15 @@
     versiontag = v
 
 [alias]
-    #a = add --all
-    #ai = add -i
+    al    = config --get-regexp ^alias\\.               # ALias.
+    alias = config --get-regexp ^alias\\.               # ALIAS.
+    aliases = !git config -l | grep alias | cut -c 7-   # ALIASES.
+    ##############
+    a  = add        # Add.
+    ai = add -i     # Add Interactive.
+    aa = add --all  # Add All.
+    ae = add .      # Add Exists.
+    au = add -u     # Add Ulready.
     ##############
     #ap = apply
     #as = apply --stat
@@ -67,43 +74,43 @@
     #amr = am --resolved
     #ams = am --skip
     ##############
-    #b = branch
-    #ba = branch -a
-    #bd = branch -d
-    #bdd = branch -D
-    #br = branch -r
+    b   = branch        # Branch.
+    ba  = branch -a     # Branch All.
+    bd  = branch -d     # Branch Delete.
+    bdd = branch -D     # Branch Delete Delete.
+    br  = branch -r     # Branch Remote.
     #bc = rev-parse --abbrev-ref HEAD
     #bu = !git rev-parse --abbrev-ref --symbolic-full-name "@{u}"
     ##############
-    #c = commit
-    #ca = commit -a
-    #cm = commit -m
-    #cam = commit -am
-    #cem = commit --allow-empty -m
-    #cd = commit --amend
-    #cad = commit -a --amend
-    #ced = commit --allow-empty --amend
+    c   = commit                            # Commit.
+    ca  = commit -a                         # Commit All.
+    cm  = commit -m                         # Commit Message.
+    cam = commit -am                        # Commit All Message.
+    cem = commit --allow-empty -m           # Commit Empty Message.
+    cd  = commit --amend                    # Commit ammenD.
+    cad = commit -a --amend                 # Commit All ammenD.
+    ced = commit --allow-empty --amend      # Commit Empty ammenD.
     ##############
-    #cl = clone
-    #cld = clone --depth 1
-    #clg = !sh -c 'git clone git://github.com/$1 $(basename $1)' -
-    #clgp = !sh -c 'git clone git@github.com:$(git config --get user.username)/$1 $1' -
+    cl   = clone                                                                            # CLone.
+    cld  = clone --depth 1                                                                  # CLone Depth.
+    clg  = !sh -c 'git clone git://github.com/$1 $(basename $1)' -                          # CLone Get.
+    clgp = !sh -c 'git clone git@github.com:$(git config --get user.username)/$1 $1' -      # CLone Get Personal.
     ##############
     #cp = cherry-pick
     #cpa = cherry-pick --abort
     #cpc = cherry-pick --continue
     ##############
-    #d = diff
-    #dp = diff --patience
-    #dc = diff --cached
-    #dk = diff --check
-    #dck = diff --cached --check
-    #dt = difftool
-    #dct = difftool --cached
+    d   = diff                      # Diff.
+    dp  = diff --patience           # Diff Patience.
+    dc  = diff --cached             # Diff Cached.
+    dk  = diff --check              # Diff checK.
+    dck = diff --cached --check     # Diff Cached checK.
+    dt  = difftool                  # Diff Tool.
+    dct = difftool --cached         # Diff Tool Cached.
     ##############
-    #f = fetch
-    #fo = fetch origin
-    #fu = fetch upstream
+    f  = fetch              # Fetch.
+    fo = fetch origin       # Fetch Origin.
+    fu = fetch upstream     # Fetch Upstream.
     ##############
     #fp = format-patch
     ##############
@@ -111,8 +118,9 @@
     ##############
     #g = grep -p
     ##############
-    #l = log --oneline
-    #lg = log --oneline --graph --decorate
+    l  = log --oneline                          # Log.
+    ll = log                                    # Log Long.
+    lg = log --oneline --graph --decorate       # Log Graph.
     ##############
     #ls = ls-files
     #lsf = !git ls-files | grep -i
@@ -122,33 +130,33 @@
     #mc = merge --continue
     #ms = merge --skip
     ##############
-    #o = checkout
-    #ob = checkout -b
+    o = checkout
+    ob = checkout -b
     ##############
     #pr = prune -v
     ##############
-    #ps = push
-    #psf = push -f
-    #psu = push -u
+    ps  = push             # PuSh.
+    psf = push -f          # PuSh Force.
+    psu = push -u          # PuSh Upstream.
     #pst = push --tags
     ##############
-    #pso = push origin
-    #psao = push --all origin
-    #psfo = push -f origin
-    #psuo = push -u origin
+    pso  = push origin          # PuSh Origin.
+    psao = push --all origin    # PuSh All Origin.
+    psfo = push -f origin       # PuSh Force Origin.
+    psuo = push -u origin       # PuSh Upstream Origin.
     ##############
-    #psom = push origin master
-    #psaom = push --all origin master
-    #psfom = push -f origin master
-    #psuom = push -u origin master
+    psom  = push origin master          # PuSh Origin Master.
+    psaom = push --all origin master    # PuSh All Origin Master.
+    psfom = push -f origin master       # PuSh Force Origin Master.
+    psuom = push -u origin master       # PuSh Upstream Origin Master.
     #psoc = !git push origin $(git bc)
     #psaoc = !git push --all origin $(git bc)
     #psfoc = !git push -f origin $(git bc)
     #psuoc = !git push -u origin $(git bc)
     #psdc = !git push origin :$(git bc)
     ##############
-    #pl = pull
-    #pb = pull --rebase
+    pl = pull               # PuLl.
+    pb = pull --rebase      # PuLl reBase.
     ##############
     #plo = pull origin
     #pbo = pull --rebase origin
@@ -169,9 +177,9 @@
     #rbi = rebase --interactive
     #rbs = rebase --skip
     ##############
-    #re = reset
-    #rh = reset HEAD
-    #reh = reset --hard
+    re = reset                  # REset.
+    rh = reset HEAD             # Reset Head.
+    reh = reset --hard          # REset Hard.
     #rem = reset --mixed
     #res = reset --soft
     #rehh = reset --hard HEAD
@@ -181,7 +189,7 @@
     #r = remote
     #ra = remote add
     #rr = remote rm
-    #rv = remote -v
+    rv = remote -v                  # Remote V.
     #rn = remote rename
     #rp = remote prune
     #rs = remote show
@@ -197,8 +205,8 @@
     #rmf = rm -f
     #rmrf = rm -r -f
     ##############
-    #s = status
-    #sb = status -s -b
+    s = status              # Status
+    sb = status -s -b       # Status Branch.
     ##############
     #sa = stash apply
     #sc = stash clear
@@ -235,7 +243,6 @@
     #release = !sh -c 'git tag v$1 && git pst' -
     #unrelease = !sh -c 'git tag -d v$1 && git pso :v$1' -
     #merged = !sh -c 'git o master && git plom && git bd $1 && git rpo' -
-    #aliases = !git config -l | grep alias | cut -c 7-
     #snap = !git stash save 'snapshot: $(date)' && git stash apply 'stash@{0}'
     #bare = !sh -c 'git symbolic-ref HEAD refs/heads/$1 && git rm --cached -r . && git clean -xfd' -
     #whois = !sh -c 'git log -i -1 --author=\"$1\" --pretty=\"format:%an <%ae>\"' -
