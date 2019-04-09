@@ -1,0 +1,7 @@
+!swap keys {Menu, Control_R}
+! keycode 135 = Menu NoSymbol Menu
+! keycode 105 = Control_R NoSymbol Control_R
+remove Control = Control_R
+keycode 135 = Control_R NoSymbol Control_R
+keycode 105 = Menu NoSymbol Menu
+add control = Control_R Control_L
