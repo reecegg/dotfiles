@@ -40,7 +40,9 @@ windows:
       - shell_command:
         - sleep 5
         - firefox -new-tab "localhost:81"
-      - null
+      - shell_command:
+        - sleep 5
+        - firefox -new-tab "www.github.com/ReeceRGGIL/site-haystrawco-orders"
       - null
       - null
       - null
