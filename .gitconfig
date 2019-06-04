@@ -9,6 +9,9 @@
     excludesfile = ~/.gitignore
     pager = less -+$LESS -R
 
+[pager]
+    branch = false
+
 [web]
     browser = firefox
 
