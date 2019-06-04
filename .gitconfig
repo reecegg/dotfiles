@@ -49,14 +49,19 @@
 
 [github]
     user = ReeceRGGIL
-    #token = token
-
+[gitflow]
+    origin = origin
+[gitflow "branch"]
+    master = master
+    develop = develop
 [gitflow "prefix"]
     feature = feature
     release = release
     hotfix = hotfix
     support = support
     versiontag = v
+[gitflow "feature.start"]
+    fetch = false
 
 [alias]
     al    = config --get-regexp ^alias\\.               # ALias.
