@@ -59,7 +59,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-tbone'                                                    " Tmux functionality for vim.
     Plug 'tpope/vim-unimpaired'                                               " Useful backet mappings.
     Plug 'tpope/vim-vinegar'                                                  " Fast file access with improved netrw.
-    Plug 'vimwiki/vimwiki'                                                    " VimWiki.
 " Order Important Plugins {{{
     Plug 'sheerun/vim-polyglot'                                               " Support for many languages.
     Plug 'tpope/vim-sleuth'                                                   " Set indentation based off simular files.
@@ -144,11 +143,6 @@ au CursorHold,CursorHoldI * checktime " Check for autoread changes to a file whe
 au FocusGained,BufEnter * :checktime  " Check for autoread changes to a file on buffer change or terminal focus.
 set updatetime=100              " Delay before CursorHold triggers.
 " }}}
-
-
-" Path {{{
-set path+=~/git/markup-wiki/**
-" }}} Path
 
 
 " keybinds {{{
@@ -243,11 +237,6 @@ if exists('*neomake#configure#automake')
   call neomake#configure#automake('nrwi', 500)
 endif
 
-" Vimwiki Settings
-let g:vimwiki_list = [{'path': '~/git/markup-wiki',
-                     \ 'syntax': 'markdown', 'ext': '.md'}]
-let g:vimwiki_table_mappings = 0 " Disable vimwiki table mappings to use vim-table-mode instead.
-
 " markdown-preview.nvimj
 let g:mkdp_auto_start = 1      " Automatically open preview for markdown files.
 let g:mkdp_auto_close = 1      " Automatically close preview when moving away from buffer.
@@ -300,4 +289,5 @@ autocmd FileType vue setlocal shiftwidth=2 tabstop=2 softtabstop=2
     " Plug 'tpope/vim-scriptease'            " Unneeded functionality.
     " Plug 'tpope/vim-vividchalk'            " Alternative (colorscheme).
     " Plug 'vim-airline/vim-airline'         " Alternative (status line).
+    " Plug 'vimwiki/vimwiki'                 " Unneeded functionality.
     " Plug 'w0rp/ale'                        " Alternative (completion, diagnostic).
