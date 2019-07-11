@@ -109,6 +109,7 @@
     #cpc = cherry-pick --continue
     ##############
     d   = diff                      # Diff.
+    ds  = diff --staged             # Diff Staged.
     dp  = diff --patience           # Diff Patience.
     dc  = diff --cached             # Diff Cached.
     dk  = diff --check              # Diff checK.
@@ -133,13 +134,14 @@
     #ls = ls-files
     #lsf = !git ls-files | grep -i
     ##############
-    #m = merge
+    m = merge               # Merge.
+    mnff = merge --no-ff    # Merge NoFF.
     #ma = merge --abort
     #mc = merge --continue
     #ms = merge --skip
     ##############
-    o = checkout
-    ob = checkout -b
+    o = checkout        # checkOut.
+    ob = checkout -b    # checkOut Branch.
     ##############
     #pr = prune -v
     ##############
