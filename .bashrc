@@ -6,10 +6,6 @@ case $- in
 	  *) return;;
 esac
 
-# Set environmental variables.
-export TERMINAL=xst
-export BROWSER=firefox
-
 # Neovim or vim setup (env var and alias)
 if ! [ -x "S(command -v nvim)" ]; then
 	export VISUAl=nvim
