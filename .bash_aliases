@@ -58,15 +58,6 @@ alias egrep='egrep --color=auto'
 alias grephist='history | grep'	# Requires argument. Search history.
 alias greppros='ps -Af | grep'  # Requires argument. Search process list.
 
-# Git Aliases.
-alias gits='git status'
-alias gitl='git log'
-alias gitll='git log --pretty=oneline'
-alias gitc='git commit'
-alias gitcm='git commit -m'
-alias gitp='git pull'
-alias gitpp='git push'
-
 # ls Aliases.
 alias ls='ls -hF --color=auto'	# Follow symlink, dont sort.
 alias la='ls -A'		# All.
