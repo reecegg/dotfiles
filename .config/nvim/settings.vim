@@ -61,7 +61,12 @@ set ttimeout
 set timeoutlen=500              " Milliseconds to wiat for mapped sequence to complete.
 set ttimeoutlen=1               " Milliseconds to wiat for key code sequency to complete.
 set virtualedit=                " Set no vitural edit.
-set autoread                    " Reload file when changed outside vim.
-au CursorHold,CursorHoldI * checktime " Check for autoread changes to a file when the cursor stops moving.
-au FocusGained,BufEnter * :checktime  " Check for autoread changes to a file on buffer change or terminal focus.
 set updatetime=100              " Delay before CursorHold triggers.
+
+" Autoread
+set autoread                    " Reload file when changed outside vim.
+" Check for autoread changes on terminal focus, buffer change, and cursor stop.
+augroup auto_read
+    autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
+        \ if mode() == 'n' && getcmdwintype() == '' | checktime | endif
+augroup END
