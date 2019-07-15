@@ -15,7 +15,7 @@
 " iamcco/markdown-preview.nvim
 " ==============================================================================
 
-let g:mkdp_auto_start = 0      " Automatically open preview for markdown files.
+let g:mkdp_auto_start = 1      " Automatically open preview for markdown files.
 let g:mkdp_auto_close = 1      " Automatically close preview when moving away from buffer.
 let g:mkdp_refresh_slow = 0    " Refresh on all changes.
 let g:mkdp_browser = 'firefox' " Use firefox for preview.
