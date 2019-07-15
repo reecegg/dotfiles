@@ -1,5 +1,7 @@
 " Set the current script encoding.
 scriptencoding utf-8            
+" Clear autocmd.
+autocmd!
 
 " Load plugins.
 source plugins.vim
