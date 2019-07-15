@@ -7,6 +7,7 @@ if !filereadable(plugpath)
     if executable('curl')
         let plugurl = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
         call system('curl -fLo ' . shellescape(plugpath) . ' --create-dirs ' . plugurl)
+        autocmd VimEnter * PlugInstall --sync
         if v:shell_error
             echom "Error downloading vim-plug. Please install it manually.\n"
             exit
