@@ -4,14 +4,14 @@ scriptencoding utf-8
 autocmd!
 
 " Load plugins.
-source plugins.vim
-" Load keybinds.
-source keybinds.vim
-" Load plugin keybinds.
-source plugin-keybinds.vim
+source ~/.config/nvim/plugins.vim
 " Load (neo)vim settings.
-source settings.vim
+source ~/.config/nvim/settings.vim
 " Load plugin settings.
-source plugin-settings.vim
+source ~/.config/nvim/plugin-settings.vim
 " Load filetype settings.
-source filetype-settings.vim
+source ~/.config/nvim/filetype-settings.vim
+" Load keybinds.
+source ~/.config/nvim/keybinds.vim
+" Load plugin keybinds.
+source ~/.config/nvim/plugin-keybinds.vim
