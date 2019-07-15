@@ -44,7 +44,7 @@ alias cd..='cd ..'
 # Program Aliases
 
 # cd Aliases.
-alias ..='..'
+alias ..='cd ..'
 alias ..1='cd ..'
 alias ..2='cd ../..'
 alias ..3='cd ../../..'
