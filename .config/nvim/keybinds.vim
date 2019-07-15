@@ -43,8 +43,8 @@ nnoremap <leader>tn :set invnumber<CR>
 nnoremap <leader>tr :set invrelativenumber<CR>
 
 " Config
-nmap <leader>mme :e $VIMCONFIG/init.vim<CR>
-nmap <leader>mmr :so $VIMCONFIG/init.vim<CR>
+nmap <leader>mme :e ~/.config/nvim/init.vim<CR>
+nmap <leader>mmr :so ~/.config/nvim/init.vim<CR>
 
 " Syntax
 nnoremap <leader>mms :syntax sync fromstart<CR>
