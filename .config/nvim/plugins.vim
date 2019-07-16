@@ -31,11 +31,11 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } " Live markdown preview.
     Plug 'itchyny/lightline.vim'                                              " Lightweight status line (status line).
     Plug 'mattn/emmet-vim'                                                    " HTML, CSS, JS snippets.
-    Plug 'mhinz/vim-startify'                                                    " HTML, CSS, JS snippets.
+    Plug 'mhinz/vim-startify'                                                 " Editor start page.
     Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install() }}   " Intellisense engine for vim. (language client, completion, diagnostic).
 "    Plug 'neomake/neomake'                                                    " Asynchronous lint and make (lint ,make)
     Plug 'scrooloose/nerdtree'                                                " Project Draw (project draw)
-    Plug 'shougo/denite.nvim'                                                      " TODO
+    Plug 'shougo/denite.nvim'                                                 " More generic fuzzy finder.
 "    Plug 'terryma/vim-multiple-cursors'                                       " Multiple cursors
     Plug 'tmux-plugins/vim-tmux-focus-events'                                 " Make vim and tmux work well together, effects 'FocusGained' and 'FocusLost' events.
     Plug 'tommcdo/vim-exchange'                                               " Swap text regions with 'cx'.
