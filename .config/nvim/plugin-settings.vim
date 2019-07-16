@@ -30,6 +30,51 @@ let g:mkdp_browser = 'firefox' " Use firefox for preview.
 " Close preview window when completion is done.
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
+" ==============================================================================
+" neomake/neomake
+" ==============================================================================
+
+"if exists('*neomake#configure#automake')
+"  call neomake#configure#automake('nrwi', 500)
+"endif
+
+
+" ==============================================================================
+" mhinz/vim-startify
+" ==============================================================================
+
+" Define bookmarks.
+let g:startify_bookmarks = [
+  \ {'c': '~/.config/nvim/init.vim'},
+  \ '~/.config/nvim/settings.vim',
+  \ '~/.config/nvim/plugin-settings.vim',
+  \ '~/.config/nvim/filtype-settings.vim',
+  \ '~/.config/nvim/keybinds.vim',
+  \ '~/.config/nvim/plugin-keybinds.vim'
+  \ ]
+
+" Update startify on-the-fly instead of on close.
+let g:startify_update_oldfiles = 1
+
+" Use unicode characters for the fortune header.
+let g:startify_fortune_use_unicode = 1
+
+" Show special binds.
+let g:startify_enable_special = 1
+
+" Customer header.
+let g:startify_custom_header = [
+  \ '                                                       ',
+  \ '   ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗  ',
+  \ '   ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║  ',
+  \ '   ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║  ',
+  \ '   ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║  ',
+  \ '   ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║  ',
+  \ '   ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝  ',
+  \ '                                                       ',
+  \ ]
+
+
 
 " ==============================================================================
 " shougo.denite
