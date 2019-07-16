@@ -1,5 +1,5 @@
 " Set the current script encoding.
-scriptencoding utf-8            
+scriptencoding utf-8
 
 " keybinds {{{
 let mapleader=" "               " Make <space> the leader key.

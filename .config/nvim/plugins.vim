@@ -1,5 +1,5 @@
 " Set the current script encoding.
-scriptencoding utf-8            
+scriptencoding utf-8
 
 " Auto-install vim-plug (for neovim).
 let plugpath = expand('<sfile>:p:h'). '/autoload/plug.vim'
