@@ -1,15 +1,17 @@
-" vim-gitgutter settings
-" permanent sign column
-"if exists('&signcolumn')  " Vim 7.4.2201
-"  set signcolumn=yes
-"else
-"  let g:gitgutter_sign_column_always = 1
-"endif
+" Set the current script encoding.
+scriptencoding utf-8
 
-" Neomake Settings
-"if exists('*neomake#configure#automake')
-"  call neomake#configure#automake('nrwi', 500)
-"endif
+" ==============================================================================
+" airblade/vim-gitgutter
+" ==============================================================================
+
+" Permanent sign column.
+if exists('&signcolumn')
+  set signcolumn=yes
+else
+  let g:gitgutter_sign_column_always = 1
+endif
+
 
 " ==============================================================================
 " iamcco/markdown-preview.nvim

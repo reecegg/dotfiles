@@ -1,9 +1,11 @@
-" Compatibilty and functionality
-"set nocompatible                " Enable features that require 'nocompatible'.
-"filetype plugin indent on       " Enable filetype detection ,plugins and indent.
-"set encoding=utf-8              " Set output encoding for terminal.
-"set fileencoding=utf-8          " Set output encoding for writing files.
+" Set the current script encoding.
+scriptencoding utf-8
 
+" Compatibilty and functionality
+set nocompatible                " Enable features that require 'nocompatible'.
+filetype plugin indent on       " Enable filetype detection ,plugins and indent.
+set encoding=utf-8              " Set output encoding for terminal.
+set fileencoding=utf-8          " Set output encoding for writing files.
 
 " Colors
 syntax enable                   " Enable syntax highlighting.
