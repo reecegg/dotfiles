@@ -22,7 +22,7 @@ nmap <leader>mt <Plug>MarkdownPreviewToggle
 " shougo/denite
 " ==============================================================================
 
-" Browse files in current directory.
+" Fuzzy search files in current directory.
 nnoremap <silent> <C-p> :<C-u>Denite file/rec -winrow=1 -start-filter<CR>
 " Browse open buffers.
 nnoremap <silent> <leader>s :Denite buffer -winrow=1 <CR>
@@ -30,13 +30,13 @@ nnoremap <silent> <leader>s :Denite buffer -winrow=1 <CR>
 nnoremap <silent> <leader>8 :<C-u>DeniteCursorWord grep:. -winrow=1<CR>
 " Search current directory for term and close window if no results.
 nnoremap <silent> <leader>g :<C-u>Denite grep:.<CR>
-" TODO
+" Search current directory for pattern.
 nnoremap <silent> <leader><Space>/ :<C-u>DeniteBufferDir grep:.<CR>
-" TODO
+" Fuzzy search open buffers.
 nnoremap <silent> <leader>d :<C-u>DeniteBufferDir file/rec -start-filter<CR>
-" TODO
+" Reopen window with cursor at next position.
 nnoremap <silent> <leader>r :<C-u>Denite -resume -cursor-pos=+1<CR>
-" TODO
+" Browse register content
 nnoremap <silent> <leader><C-r> :<C-u>Denite register:.<CR>
 " References source from LanguageClient.
 nnoremap <silent> <leader>lr :<C-u>Denite references<CR>
