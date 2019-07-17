@@ -71,14 +71,20 @@ function! s:denite_my_settings() abort
   " open in horizontal split.
   nnoremap <silent><buffer><expr> h
   \ denite#do_map('do_action', 'split')
+  " Dont jump via jumplist.
+  nnoremap <silent><buffer><expr> <C-o>
+  \ denite#do_map('nop')
 endfunction
 
 " Denite filter window keybinds.
 autocmd FileType denite-filter call s:denite_filter_my_settings()
 function! s:denite_filter_my_settings() abort
   " Close filter from insert mode.
-  imap <silent><buffer> <C-c>
-  \ <Plug>(denite_filter_quit)
+  imap <silent><buffer> <C-o>
+  \ <Plug>(denite_filter_update)
+  " Close denite from insert mode.
+  inoremap <silent><buffer><expr> <C-c>
+  \ denite#do_map('quit')
   " Open selected on confirm filter.
   inoremap <silent><buffer><expr> <CR>
   \ denite#do_map('do_action')
@@ -100,6 +106,18 @@ function! s:denite_filter_my_settings() abort
   " open in horizontal split.
   nnoremap <silent><buffer><expr> h
   \ denite#do_map('do_action', 'split')
+  " Move to next line.
+  inoremap <silent><buffer> <C-j>
+  \ <Esc><C-w>p:call cursor(line('.')+1,0)<CR><C-w>pA
+  " Move to prev line.
+  inoremap <silent><buffer> <C-k>
+  \ <Esc><C-w>p:call cursor(line('.')-1,0)<CR><C-w>pA
+  " Move to next line.
+  inoremap <silent><buffer> <C-n>
+  \ <Esc><C-w>p:call cursor(line('.')+1,0)<CR><C-w>pA
+  " Move to prev line.
+  inoremap <silent><buffer> <C-p>
+  \ <Esc><C-w>p:call cursor(line('.')-1,0)<CR><C-w>pA
 endfunction
 
 
