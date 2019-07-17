@@ -28,6 +28,8 @@ export FZF_DEFAULT_COMMAND='rg --files --ignore-case --color auto --hidden --fol
 HISTCONTROL=ignoreboth
 # Append to the history file instead of overwriting it.
 shopt -s histappend
+# After each history command, save and reload history.
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 # Set max history lines/commands.
 HISTSIZE=4000
 # Set max history size.
