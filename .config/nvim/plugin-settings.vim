@@ -74,6 +74,12 @@ let g:startify_custom_header = [
   \ '                                                       ',
   \ ]
 
+" Dont change the working directory to the directory of the opened file.
+let g:startify_change_to_dir = 0
+
+" Change the working directory to the root of version control system open
+" opening file.
+let g:startify_change_to_vcs_root = 1
 
 
 " ==============================================================================
