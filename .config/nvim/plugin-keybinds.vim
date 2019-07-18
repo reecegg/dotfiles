@@ -22,123 +22,121 @@ nmap <leader>mt <Plug>MarkdownPreviewToggle
 " shougo/denite
 " ==============================================================================
 
-" Fuzzy search files in current directory.
-nnoremap <silent> <C-p> :<C-u>Denite file/rec -winrow=1 -start-filter<CR>
-" Browse open buffers.
-nnoremap <silent> <leader>s :Denite buffer -winrow=1 <CR>
+" Denite command keybinds.
+" Search current directory files.
+nnoremap <silent>       <C-p>               :<C-u>Denite file/rec -start-filter<CR>
+" Browse buffers.
+nnoremap <silent>       <leader>db          :<C-u>Denite buffer<CR>
 " Search current directory for word under cursor.
-nnoremap <silent> <leader>8 :<C-u>DeniteCursorWord grep:. -winrow=1<CR>
-" Search current directory for term and close window if no results.
-nnoremap <silent> <leader>g :<C-u>Denite grep:.<CR>
-" Search current directory for pattern.
-nnoremap <silent> <leader><Space>/ :<C-u>DeniteBufferDir grep:.<CR>
-" Fuzzy search open buffers.
-nnoremap <silent> <leader>d :<C-u>DeniteBufferDir file/rec -start-filter<CR>
-" Reopen window with cursor at next position.
-nnoremap <silent> <leader>r :<C-u>Denite -resume -cursor-pos=+1<CR>
+nnoremap <silent>       <leader>d8          :<C-u>DeniteCursorWord grep:.<CR>
+" Search current directory for line pattern.
+nnoremap <silent>       <leader>dg          :<C-u>Denite grep:.<CR>
+" Search buffer directory for line pattern.
+nnoremap <silent>       <leader>d/          :<C-u>DeniteBufferDir grep:.<CR>
+" Search buffer directory for files.
+nnoremap <silent>       <leader>dd          :<C-u>DeniteBufferDir file/rec -start-filter<CR>
 " Browse register content
-nnoremap <silent> <leader><C-r> :<C-u>Denite register:.<CR>
-" References source from LanguageClient.
-nnoremap <silent> <leader>lr :<C-u>Denite references<CR>
+nnoremap <silent>       <leader>d"          :<C-u>Denite register<CR>
+" Browse :changes
+nnoremap <silent>       <leader>d;          :<C-u>Denite change<CR>
+" Browse commands
+nnoremap <silent>       <leader>dc          :<C-u>Denite commands<CR>
+" Browse command history
+nnoremap <silent>       <leader>d:          :<C-u>Denite command_history<CR>
+" Browse help
+nnoremap <silent>       <leader>dh          :<C-u>Denite help<CR>
+" Browse lines
+nnoremap <silent>       <leader>dl          :<C-u>Denite line<CR>
+" Browse :marks
+nnoremap <silent>       <leader>dm          :<C-u>Denite mark<CR>
+" Browse custom menus
+nnoremap <silent>       <leader>du          :<C-u>Denite menu<CR>
+" Browse sources
+nnoremap <silent>       <leader>ds          :<C-u>Denite source<CR>
+"" Browse :jump
+"nnoremap <silent>       <leader>dj          :<C-u>Denite jump<CR>
+"" Reopen window with cursor at next position.
+"nnoremap <silent>       <leader>dr          :<C-u>Denite -resume -cursor-pos=+1<CR>
+"" References source from LanguageClient.
+"nnoremap <silent>       <leader>lr          :<C-u>Denite references<CR>
 
 " Denite window keybinds
 autocmd FileType denite call s:denite_my_settings()
 function! s:denite_my_settings() abort
-  " Open.
-  nnoremap <silent><buffer><expr> <CR>
-  \ denite#do_map('do_action')
-  " Delete Buffer.
-  nnoremap <silent><buffer><expr> d
-  \ denite#do_map('do_action', 'delete')
-  " Preview.
-  nnoremap <silent><buffer><expr> p
-  \ denite#do_map('do_action', 'preview')
-  " Quit.
-  nnoremap <silent><buffer><expr> q
-  \ denite#do_map('quit')
-  " Filter.
-  nnoremap <silent><buffer><expr> i
-  \ denite#do_map('open_filter_buffer')
-  " Select.
-  nnoremap <silent><buffer><expr> <Space>
-  \ denite#do_map('toggle_select').'j'
-  " Open in new tab.
-  nnoremap <silent><buffer><expr> t
-  \ denite#do_map('do_action', 'tabopen')
-  " Open in vertical split.
-  nnoremap <silent><buffer><expr> v
-  \ denite#do_map('do_action', 'vsplit')
-  " open in horizontal split.
-  nnoremap <silent><buffer><expr> h
-  \ denite#do_map('do_action', 'split')
-  " Dont jump via jumplist.
-  nnoremap <silent><buffer><expr> <C-o>
-  \ denite#do_map('nop')
+    " Open.
+    nnoremap <silent><buffer><expr>     <CR>        denite#do_map('do_action')
+    " Delete Buffer.
+    nnoremap <silent><buffer><expr>     d           denite#do_map('do_action', 'delete')
+    " Preview.
+    nnoremap <silent><buffer><expr>     p           denite#do_map('do_action', 'preview')
+    " Quit.
+    nnoremap <silent><buffer><expr>     q           denite#do_map('quit')
+    " Filter.
+    nnoremap <silent><buffer><expr>     i           denite#do_map('open_filter_buffer')
+    " Select.
+    nnoremap <silent><buffer><expr>     <Space>     denite#do_map('toggle_select').'j'
+    " Open in new tab.
+    nnoremap <silent><buffer><expr>     t           denite#do_map('do_action', 'tabopen')
+    " Open in vertical split.
+    nnoremap <silent><buffer><expr>     v           denite#do_map('do_action', 'vsplit')
+    " open in horizontal split.
+    nnoremap <silent><buffer><expr>     h           denite#do_map('do_action', 'split')
+    " Dont jump via jumplist.
+    nnoremap <silent><buffer><expr>     <C-o>       denite#do_map('nop')
 endfunction
 
 " Denite filter window keybinds.
 autocmd FileType denite-filter call s:denite_filter_my_settings()
 function! s:denite_filter_my_settings() abort
-  " Close filter from insert mode.
-  imap <silent><buffer> <C-o>
-  \ <Plug>(denite_filter_update)
-  " Close denite from insert mode.
-  inoremap <silent><buffer><expr> <C-c>
-  \ denite#do_map('quit')
-  " Open selected on confirm filter.
-  inoremap <silent><buffer><expr> <CR>
-  \ denite#do_map('do_action')
-  " Open in new tab.
-  inoremap <silent><buffer><expr> <C-t>
-  \ denite#do_map('do_action', 'tabopen')
-  " Open in vertical split.
-  inoremap <silent><buffer><expr> <C-v>
-  \ denite#do_map('do_action', 'vsplit')
-  " open in horizontal split.
-  inoremap <silent><buffer><expr> <C-h>
-  \ denite#do_map('do_action', 'split')
-  " Open in new tab.
-  nnoremap <silent><buffer><expr> t
-  \ denite#do_map('do_action', 'tabopen')
-  " Open in vertical split.
-  nnoremap <silent><buffer><expr> v
-  \ denite#do_map('do_action', 'vsplit')
-  " open in horizontal split.
-  nnoremap <silent><buffer><expr> h
-  \ denite#do_map('do_action', 'split')
-  " Move to next line.
-  inoremap <silent><buffer> <C-j>
-  \ <Esc><C-w>p:call cursor(line('.')+1,0)<CR><C-w>pA
-  " Move to prev line.
-  inoremap <silent><buffer> <C-k>
-  \ <Esc><C-w>p:call cursor(line('.')-1,0)<CR><C-w>pA
-  " Move to next line.
-  inoremap <silent><buffer> <C-n>
-  \ <Esc><C-w>p:call cursor(line('.')+1,0)<CR><C-w>pA
-  " Move to prev line.
-  inoremap <silent><buffer> <C-p>
-  \ <Esc><C-w>p:call cursor(line('.')-1,0)<CR><C-w>pA
+
+    """ Filter Insert mode.
+    " Close filter.
+    imap <silent><buffer>               <C-o>       <Plug>(denite_filter_update)
+    " Close denite.
+    inoremap <silent><buffer><expr>     <C-c>       denite#do_map('quit')
+    " Open.
+    inoremap <silent><buffer><expr>     <CR>        denite#do_map('do_action')
+    " Open in new tab.
+    inoremap <silent><buffer><expr>     <C-t>       denite#do_map('do_action', 'tabopen')
+    " Open in vertical split.
+    inoremap <silent><buffer><expr>     <C-v>       denite#do_map('do_action', 'vsplit')
+    " Open in horizontal split.
+    inoremap <silent><buffer><expr>     <C-h>       denite#do_map('do_action', 'split')
+    " Move to next line.
+    inoremap <silent><buffer>           <C-j>       <Esc><C-w>p:call cursor(line('.')+1,0)<CR><C-w>pA
+    inoremap <silent><buffer>           <C-n>       <Esc><C-w>p:call cursor(line('.')+1,0)<CR><C-w>pA
+    " Move to prev line.
+    inoremap <silent><buffer>           <C-k>       <Esc><C-w>p:call cursor(line('.')-1,0)<CR><C-w>pA
+    inoremap <silent><buffer>           <C-p>       <Esc><C-w>p:call cursor(line('.')-1,0)<CR><C-w>pA
+
+    """ Filter normal mode.
+    " Open in new tab.
+    nnoremap <silent><buffer><expr>     t           denite#do_map('do_action', 'tabopen')
+    " Open in vertical split.
+    nnoremap <silent><buffer><expr>     v           denite#do_map('do_action', 'vsplit')
+    " open in horizontal split.
+    nnoremap <silent><buffer><expr>     h           denite#do_map('do_action', 'split')
 endfunction
 
 
 " ==============================================================================
 " neoclide/coc.nvim
 " ==============================================================================
-nmap <silent> <leader>dd <Plug>(coc-definition)
-nmap <silent> <leader>dr <Plug>(coc-references)
-nmap <silent> <leader>dj <Plug>(coc-implementation)
+nmap <silent>       <leader>cd      <Plug>(coc-definition)
+nmap <silent>       <leader>cr      <Plug>(coc-references)
+nmap <silent>       <leader>cj      <Plug>(coc-implementation)
 
 " Use <TAB> to trigger completion and move to next complete item.
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+inoremap <silent><expr>     <TAB>
+            \ pumvisible() ? "\<C-n>" :
+            \ <SID>check_back_space() ? "\<TAB>" :
+            \ coc#refresh()
 " Use <S-TAB> to trigger completion and move to prev complete item.
-inoremap <silent><expr> <S-TAB>
-      \ pumvisible() ? "\<C-p>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+inoremap <silent><expr>     <S-TAB>
+            \ pumvisible() ? "\<C-p>" :
+            \ <SID>check_back_space() ? "\<TAB>" :
+            \ coc#refresh()
