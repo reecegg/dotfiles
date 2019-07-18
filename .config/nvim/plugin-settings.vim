@@ -90,7 +90,7 @@ try
 " By default, ripgrep will respect rules in .gitignore
 " --files: Print each file that would be searched (but don't search)
 " --glob:  Include or exclues files for searching that match the given glob
-call denite#custom#var('file/rec', 'command', ['rg', '--files', '--glob', '!.git'])
+call denite#custom#var('file/rec', 'command', ['rg', '--ignore-case', '--files', '--glob', '!.git'])
 
 " Use ripgrep in place of "grep"
 call denite#custom#var('grep', 'command', ['rg'])
