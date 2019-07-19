@@ -83,8 +83,9 @@ let g:startify_change_to_vcs_root = 1
 
 
 " ==============================================================================
-" shougo.denite
+" shougo/denite
 " ==============================================================================
+
 try
 " Use ripgrep for searching current directory for files
 " By default, ripgrep will respect rules in .gitignore

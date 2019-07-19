@@ -53,10 +53,14 @@ nnoremap <silent>       <leader>dm          :<C-u>Denite mark<CR>
 nnoremap <silent>       <leader>du          :<C-u>Denite menu<CR>
 " Browse sources
 nnoremap <silent>       <leader>ds          :<C-u>Denite source<CR>
+" Resume.
+nnoremap <silent>       <leader>dr          :<C-u>Denite -resume<CR> 
+" Open next position.
+nnoremap <silent>       <leader>dn          :<C-u>Denite -resume -cursor-pos=+1 -immediately<CR>
+" Open prev position.
+nnoremap <silent>       <leader>dp          :<C-u>Denite -resume -cursor-pos=-1 -immediately<CR>
 "" Browse :jump
 "nnoremap <silent>       <leader>dj          :<C-u>Denite jump<CR>
-"" Reopen window with cursor at next position.
-"nnoremap <silent>       <leader>dr          :<C-u>Denite -resume -cursor-pos=+1<CR>
 "" References source from LanguageClient.
 "nnoremap <silent>       <leader>lr          :<C-u>Denite references<CR>
 
