@@ -29,7 +29,7 @@ set copyindent                  " Indentation copied from previos line.
 set hidden                      " Files are hidden instead of closed when opening another.
 set nonumber                    " Dont show line number.
 set noshowcmd                   " Dont show command in bottom bar.
-set nocursorline                " Dont highlight the current line.
+set cursorline                  " Dont highlight the current line.
 set nocursorcolumn              " Dont highlight current column.
 set wildmenu                    " Enable visual autocomplete for command menu.
 set wildmode=list:longest,full  " Mode info and space used by wildmenu.
