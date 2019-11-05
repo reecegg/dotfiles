@@ -64,6 +64,12 @@ nnoremap <silent>       <leader>dp          :<C-u>Denite -resume -cursor-pos=-1 
 "" References source from LanguageClient.
 "nnoremap <silent>       <leader>lr          :<C-u>Denite references<CR>
 
+" Search for line patterns without respecting .gitignore
+nnoremap <silent>       <leader>dx          :<C-u>DeniteProjectDir grep/noignore:.<CR>
+
+" Search for file without respecting .gitignore
+nnoremap <silent>       <leader>di          :<C-u>Denite file_rec/noignore -start-filter<CR>
+
 " Denite window keybinds
 autocmd FileType denite call s:denite_my_settings()
 function! s:denite_my_settings() abort
