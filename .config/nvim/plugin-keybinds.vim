@@ -40,7 +40,7 @@ nnoremap <silent>       <leader>d"          :<C-u>Denite register<CR>
 " Browse :changes
 nnoremap <silent>       <leader>d;          :<C-u>Denite change<CR>
 " Browse commands
-nnoremap <silent>       <leader>dc          :<C-u>Denite commands<CR>
+nnoremap <silent>       <leader>dc          :<C-u>Denite command<CR>
 " Browse command history
 nnoremap <silent>       <leader>d:          :<C-u>Denite command_history<CR>
 " Browse help
