@@ -60,8 +60,8 @@ set nojoinspaces                " Prevents inserting two spaces after punctuatio
 set backspace=indent,eol,start  " Let backspace go though more characters.
 set timeout
 set ttimeout
-set timeoutlen=500              " Milliseconds to wiat for mapped sequence to complete.
-set ttimeoutlen=1               " Milliseconds to wiat for key code sequency to complete.
+set timeoutlen=500              " Milliseconds to wait for mapped sequence to complete.
+set ttimeoutlen=1               " Milliseconds to wait for key code sequency to complete.
 set virtualedit=                " Set no vitural edit.
 set updatetime=100              " Delay before CursorHold triggers.
 
