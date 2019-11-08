@@ -68,11 +68,12 @@
     alias = config --get-regexp ^alias\\.               # ALIAS.
     aliases = !git config -l | grep alias | cut -c 7-   # ALIASES.
     ##############
-    a  = add        # Add.
-    ai = add -i     # Add Interactive.
-    aa = add --all  # Add All.
-    ae = add .      # Add Exists.
-    au = add -u     # Add Ulready.
+    a   = add         # Add.
+    ai  = add -i      # Add Interactive.
+    aa  = add --all   # Add All.
+    ae  = add .       # Add Exists.
+    au  = add -u      # Add Ulready.
+    aph = add --patch # Add PAtch
     ##############
     #ap = apply
     #as = apply --stat
