@@ -147,6 +147,7 @@
     #pr = prune -v
     ##############
     ps  = push             # PuSh.
+    psa = push --all       # PuSh All.
     psf = push -f          # PuSh Force.
     psu = push -u          # PuSh Upstream.
     #pst = push --tags
