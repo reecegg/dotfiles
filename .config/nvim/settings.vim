@@ -29,7 +29,7 @@ set copyindent                  " Indentation copied from previos line.
 set hidden                      " Files are hidden instead of closed when opening another.
 set nonumber                    " Dont show line number.
 set noshowcmd                   " Dont show command in bottom bar.
-set nocursorline                " Dont highlight the current line.
+set cursorline                  " Dont highlight the current line.
 set nocursorcolumn              " Dont highlight current column.
 set wildmenu                    " Enable visual autocomplete for command menu.
 set wildmode=list:longest,full  " Mode info and space used by wildmenu.
@@ -60,8 +60,8 @@ set nojoinspaces                " Prevents inserting two spaces after punctuatio
 set backspace=indent,eol,start  " Let backspace go though more characters.
 set timeout
 set ttimeout
-set timeoutlen=500              " Milliseconds to wiat for mapped sequence to complete.
-set ttimeoutlen=1               " Milliseconds to wiat for key code sequency to complete.
+set timeoutlen=500              " Milliseconds to wait for mapped sequence to complete.
+set ttimeoutlen=1               " Milliseconds to wait for key code sequency to complete.
 set virtualedit=                " Set no vitural edit.
 set updatetime=100              " Delay before CursorHold triggers.
 

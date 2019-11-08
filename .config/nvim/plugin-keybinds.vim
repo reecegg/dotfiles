@@ -40,7 +40,7 @@ nnoremap <silent>       <leader>d"          :<C-u>Denite register<CR>
 " Browse :changes
 nnoremap <silent>       <leader>d;          :<C-u>Denite change<CR>
 " Browse commands
-nnoremap <silent>       <leader>dc          :<C-u>Denite commands<CR>
+nnoremap <silent>       <leader>dc          :<C-u>Denite command<CR>
 " Browse command history
 nnoremap <silent>       <leader>d:          :<C-u>Denite command_history<CR>
 " Browse help
@@ -63,6 +63,12 @@ nnoremap <silent>       <leader>dp          :<C-u>Denite -resume -cursor-pos=-1 
 "nnoremap <silent>       <leader>dj          :<C-u>Denite jump<CR>
 "" References source from LanguageClient.
 "nnoremap <silent>       <leader>lr          :<C-u>Denite references<CR>
+
+" Search for line patterns without respecting .gitignore
+nnoremap <silent>       <leader>dx          :<C-u>DeniteProjectDir grep/noignore:.<CR>
+
+" Search for file without respecting .gitignore
+nnoremap <silent>       <leader>di          :<C-u>Denite file_rec/noignore -start-filter<CR>
 
 " Denite window keybinds
 autocmd FileType denite call s:denite_my_settings()

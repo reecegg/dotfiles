@@ -6,7 +6,7 @@ let mapleader=" "               " Make <space> the leader key.
 
 " Better esc with 'jj'
 inoremap jk <esc>
-"inoremap kj <esc>              " Disabled because k is commonly cut of the end of words.
+"inoremap kj <esc>              " Disabled because k is commonly cut off the end of words when leaving insert mode.
 inoremap jj <esc>
 inoremap kk <esc>
 
@@ -31,7 +31,7 @@ nnoremap k gk
 nnoremap <leader> <right> :cnext<CR>
 nnoremap <leader> <left> :cprev<CR>
 
-" Split navigation
+" Split navigation using single key combination.
 nnoremap <c-j> <c-w><c-j>
 nnoremap <c-k> <c-w><c-k>
 nnoremap <c-l> <c-w><c-l>

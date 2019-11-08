@@ -64,5 +64,5 @@ call plug#begin('~/.config/nvim/plugged')
 "Order Important Plugins
     Plug 'sheerun/vim-polyglot'                                               " Support for many languages.
     Plug 'tpope/vim-sleuth'                                                   " Set indentation based off simular files.
-    Plug 'editorconfig/editorconfig-vim'                                      " Set s                                                                              ettings based off editor config project file.
+    Plug 'editorconfig/editorconfig-vim'                                      " Set settings based off editor config project file.
 call plug#end()

@@ -104,7 +104,7 @@ call denite#custom#var('grep', 'command', ['rg'])
 "   --S:        Search case insensitively if the pattern is all lowercase
 call denite#custom#var('grep', 'default_opts', ['--hidden', '--vimgrep', '--heading', '-S'])
 
-" Recommended defaults for ripgrep via Denite docs
+" Recommended defaults for ripgrep setup via Denite docs
 call denite#custom#var('grep', 'recursive_opts', [])
 call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
 call denite#custom#var('grep', 'separator', ['--'])
@@ -112,6 +112,19 @@ call denite#custom#var('grep', 'final_opts', [])
 
 " Remove date from buffer list
 call denite#custom#var('buffer', 'date_format', '')
+
+" Custom file/rec source that doesn't respect .gitignore.
+call denite#custom#alias('source', 'file_rec/noignore', 'file/rec')
+call denite#custom#var('file/rec/noignore', 'command', ['rg', '--no-ignore', '--ignore-case', '--files', '--glob', '!.git'])
+
+" Custom grep source that doesn't respect .gitignore.
+call denite#custom#alias('source', 'grep/noignore', 'grep')
+call denite#custom#var('grep/noignore', 'command', ['rg', '--no-ignore', '--ignore-case', '--glob', '!.git'])
+call denite#custom#var('grep/noignore', 'default_opts', ['--hidden', '--vimgrep', '--heading', '-S'])
+call denite#custom#var('grep/noignore', 'recursive_opts', [])
+call denite#custom#var('grep/noignore', 'pattern_opt', ['--regexp'])
+call denite#custom#var('grep/noignore', 'separator', ['--'])
+call denite#custom#var('grep/noignore', 'final_opts', [])
 
 " Custom options for Denite
 "   auto_resize             - Auto resize the Denite window height automatically.
@@ -134,7 +147,7 @@ let s:denite_options = {'default' : {
 \ }}
 
 
-" Loop through denite options and enable them
+" Loop through above denite options and activate/enable them.
 function! s:profile(opts) abort
   for l:fname in keys(a:opts)
     for l:dopt in keys(a:opts[l:fname])
