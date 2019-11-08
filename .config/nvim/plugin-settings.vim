@@ -50,7 +50,8 @@ let g:startify_bookmarks = [
   \ '~/.config/nvim/plugin-settings.vim',
   \ '~/.config/nvim/filtype-settings.vim',
   \ '~/.config/nvim/keybinds.vim',
-  \ '~/.config/nvim/plugin-keybinds.vim'
+  \ '~/.config/nvim/plugin-keybinds.vim',
+  \ {'n': '~/Nextcloud/notes/'}
   \ ]
 
 " Update startify on-the-fly instead of on close.
