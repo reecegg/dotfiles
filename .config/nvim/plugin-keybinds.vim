@@ -55,6 +55,8 @@ nnoremap <silent>       <leader>du          :<C-u>Denite menu<CR>
 nnoremap <silent>       <leader>ds          :<C-u>Denite source<CR>
 " Resume.
 nnoremap <silent>       <leader>dr          :<C-u>Denite -resume<CR> 
+" Resume and refresh.
+nnoremap <silent>       <leader>dt          :<C-u>Denite -resume -refresh<CR> 
 " Open next position.
 nnoremap <silent>       <leader>dn          :<C-u>Denite -resume -cursor-pos=+1 -immediately<CR>
 " Open prev position.
@@ -150,3 +152,20 @@ inoremap <silent><expr>     <S-TAB>
             \ pumvisible() ? "\<C-p>" :
             \ <SID>check_back_space() ? "\<TAB>" :
             \ coc#refresh()
+
+
+" ==============================================================================
+" mattn/emmet.vim
+" ==============================================================================
+
+let g:user_emmet_leader_key = '<C-e>'
+imap <C-e>e <plug>(emmet-expand-abbr)
+imap <C-e><C-e> <plug>(emmet-expand-abbr)
+imap <C-e>l <plug>(emmet-expand-abbr)
+
+
+" ==============================================================================
+" junegunn/rainbow_parentheses.vim
+" ==============================================================================
+
+nnoremap <leader>tp :RainbowParentheses!!<CR>
