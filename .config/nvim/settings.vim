@@ -58,7 +58,7 @@ set shortmess+=c                " Dont show completion messages like 'match 1 of
 
 " Functionality
 set nojoinspaces                " Prevents inserting two spaces after punctuation on a join.
-set backspace=indent,eol,start  " Let backspace go though more characters.
+set backspace=indent,eol,start  " Let backspace go indention, line breaks, and though text from before the current insert.
 set timeout
 set ttimeout
 set timeoutlen=500              " Milliseconds to wait for mapped sequence to complete.
