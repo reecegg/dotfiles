@@ -17,6 +17,7 @@ nmap <leader>qa :qa<CR>
 nmap <leader>x :x<CR>
 nmap <leader>ww :w<CR>
 nmap <leader>wq :wq<CR>
+nmap <leader>wa :wal<CR>
 
 " Move up/down viusal lines by default
 nnoremap j gj
