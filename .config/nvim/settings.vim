@@ -47,6 +47,7 @@ set nostartofline               " Don't jump to the first character with page co
 set ruler                       " Enable line/col number on the status bar.
 set colorcolumn=                " Set no color columns.
 set noshowmode                  " Dont show -- insert -- etc. text.
+set showtabline=2               " Always show tabline even when there is only one.
 
 " Search
 set incsearch                   " Search as characters are entered.
