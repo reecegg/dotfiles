@@ -49,3 +49,9 @@ nmap <leader>mmr :so ~/.config/nvim/init.vim<CR>
 
 " Syntax
 nnoremap <leader>mms :syntax sync fromstart<CR>
+
+" Working Directory
+nmap <silent> <leader>cwd :cd %:p:h <bar> :echo "Changed global working directory"<CR>
+nmap <silent> <leader>cwdt :tcd %:p:h <bar> :echo "Changed tab working directory"<CR>
+nmap <silent> <leader>cwdw :lcd %:p:h <bar> :echo "Changed window working directory"<CR>
+nmap <silent> <leader>cwdp :pwd<CR>
