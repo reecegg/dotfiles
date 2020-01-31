@@ -51,7 +51,8 @@ let g:startify_bookmarks = [
   \ '~/.config/nvim/filtype-settings.vim',
   \ '~/.config/nvim/keybinds.vim',
   \ '~/.config/nvim/plugin-keybinds.vim',
-  \ {'n': '~/Nextcloud/notes/'}
+  \ {'n': '~/Nextcloud/'},
+  \ {'N': '~/Nextcloud/notes/'}
   \ ]
 
 " Update startify on-the-fly instead of on close.
@@ -160,3 +161,11 @@ call s:profile(s:denite_options)
 catch
   echo 'Error with Denite settings. Try :PlugInstall'
 endtry
+
+
+" ==============================================================================
+" junegunn/rainbow_parentheses.vim
+" ==============================================================================
+
+let g:rainbow#max_level = 16
+let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}'], ['<', '>']]

@@ -30,6 +30,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'guns/vim-sexp'                                                      " S-expression support.
     Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } " Live markdown preview.
     Plug 'itchyny/lightline.vim'                                              " Lightweight status line (status line).
+    Plug 'junegunn/rainbow_parentheses.vim'                                   " Rainbow matching bracket highlighting.
     Plug 'mattn/emmet-vim'                                                    " HTML, CSS, JS snippets.
     Plug 'mhinz/vim-startify'                                                 " Editor start page.
     Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install() }}   " Intellisense engine for vim. (language client, completion, diagnostic).
