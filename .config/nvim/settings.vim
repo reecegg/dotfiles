@@ -23,7 +23,7 @@ set shiftwidth=4                " Number of space used for autoindent.
 set expandtab                   " Tabs are expanded to spaces.
 set smarttab                    " Enable backspacing though spaces like they were tabs.
 set autoindent                  " Automatic indentation.
-set copyindent                  " Indentation copied from previos line.
+set copyindent                  " Indentation copied from previous line.
 
 " User Interface
 set hidden                      " Files are hidden instead of closed when opening another.
