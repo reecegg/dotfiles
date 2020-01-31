@@ -55,3 +55,6 @@ nmap <silent> <leader>cwd :cd %:p:h <bar> :echo "Changed global working director
 nmap <silent> <leader>cwdt :tcd %:p:h <bar> :echo "Changed tab working directory"<CR>
 nmap <silent> <leader>cwdw :lcd %:p:h <bar> :echo "Changed window working directory"<CR>
 nmap <silent> <leader>cwdp :pwd<CR>
+
+" Makes <C-BS> delete word
+:imap <C-BS> <C-W>
