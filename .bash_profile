@@ -5,7 +5,8 @@
 # Run .bashrc if it exists.
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
-# Startx if running in a graphical environment.
-if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+# Startx if not already when running in a graphical environment.
+X=$( pidof Xorg )
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 && ${#X} -gt 0 ]]; then
   exec startx
 fi
