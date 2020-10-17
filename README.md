@@ -31,7 +31,7 @@
 - .bashrc
     - Exports `xst` as `TERMINAL`
     - Exports `firefox` as `BROWSER`
-    - Replaces `vim` with `nvim` when the `nvim` command is accessible.
+    - Replaces `vim` with `nvim` when the `nvim` command is accessible. Call `\vim` to run unshadowed vim.
     - Sources `nvm` at `/usr/share/nvm/init-nvm.sh`
 - .config/nvim/init.vim
     - Uses `curl` to download `plug`
