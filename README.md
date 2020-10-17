@@ -32,7 +32,7 @@
     - Exports `xst` as `TERMINAL`
     - Exports `firefox` as `BROWSER`
     - Replaces `vim` with `nvim` when the `nvim` command is accessible. Call `\vim` to run unshadowed vim.
-    - Sources `nvm` at `/usr/share/nvm/init-nvm.sh`
+    - Sources node version manager `init-nvm.sh` at `/usr/share/nvm/init-nvm.sh` if readable.
 - .config/nvim/init.vim
     - Uses `curl` to download `plug`
     - Setup for 24-bit color support from the terminal. Colors will be wrong and/or broken without that support

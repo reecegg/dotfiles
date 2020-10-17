@@ -45,7 +45,7 @@ export PATH="/home/$USER/scripts:$PATH"
 # Disable Ctrl-s and Ctrl-q sending "XOFF" and "XON" signals.
 stty -ixon
 
-# Enable Node Version Manager is it exists on system.
+# Source node version manager init script if readable.
 NVM=/usr/share/nvm/init-nvm.sh
 if [ -e $NVM ]; then
 	source /usr/share/nvm/init-nvm.sh
