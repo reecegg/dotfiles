@@ -110,6 +110,9 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 # Exit i3 instantly 
 # bindsym $mod+Shift+alt+e exec i3-msg exit
+# Lock screen
+bindsym $mod+Shift+b exec "light-locker-command -l"
+
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
@@ -234,3 +237,4 @@ exec --no-startup-id dunst
 exec --no-startup-id nm-applet
 exec --no-startup-id pasystray
 exec --no-startup-id nextcloud
+exec --no-startup-id light-locker
