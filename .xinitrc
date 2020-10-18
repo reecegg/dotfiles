@@ -36,6 +36,3 @@ fi
 if [ -f $HOME/.profile ]; then
   source $HOME/.profile
 fi
-
-# Launch i3 window manager
-i3

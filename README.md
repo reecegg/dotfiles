@@ -48,8 +48,7 @@
 - .gitignore: None
 - .inputrc: None
 - .tmux.conf: None
-- .xinitrc 
-    - Execs `i3`
+- .xinitrc: None
 - .Xresources: Configuration for x client applications.
 
 ## Sources
