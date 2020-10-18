@@ -114,6 +114,7 @@
     dp  = diff --patience           # Diff Patience.
     dc  = diff --cached             # Diff Cached.
     dk  = diff --check              # Diff checK.
+    dh  = diff HEAD^ HEAD           # Diff Head
     dck = diff --cached --check     # Diff Cached checK.
     dt  = difftool                  # Diff Tool.
     dct = difftool --cached         # Diff Tool Cached.
