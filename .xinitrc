@@ -36,3 +36,6 @@ fi
 if [ -f $HOME/.profile ]; then
   source $HOME/.profile
 fi
+
+# Start i3wm
+#i3
