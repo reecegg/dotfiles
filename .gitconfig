@@ -102,8 +102,8 @@
     ##############
     cl   = clone                                                                            # CLone.
     cld  = clone --depth 1                                                                  # CLone Depth.
-    clg  = !sh -c 'git clone git://github.com/$1 $(basename $1)' -                          # CLone Get.
-    clgp = !sh -c 'git clone git@github.com:$(git config --get user.username)/$1 $1' -      # CLone Get Personal.
+    clg  = !sh -c 'git clone git://github.com/$1 $(basename $1)' -                          # CLone Github. 
+    clgp = !sh -c 'git clone git@github.com:$(git config --get user.username)/$1 $1' -      # CLone Githu Personal.
     ##############
     #cp = cherry-pick
     #cpa = cherry-pick --abort
