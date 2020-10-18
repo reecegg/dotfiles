@@ -27,7 +27,6 @@
 - .bash_aliases: None
 - .bash_logout: None
 - .bash_profile
-    - Execs `startx` automatically in graphic environments (if not already running)
 - .bashrc
     - Exports `xst` as `TERMINAL`
     - Exports `firefox` as `BROWSER`
