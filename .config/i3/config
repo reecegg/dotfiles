@@ -111,8 +111,10 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # Exit i3 instantly 
 # bindsym $mod+Shift+alt+e exec i3-msg exit
 # Lock screen
-bindsym $mod+Shift+b exec "light-locker-command -l"
+bindsym $mod+Shift+b exec "i3lock -c 000000"
 
+# Lauch nvim in tmux
+bindsym $mod+n exec "xst -e 'tmux new nvim' && exit"
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
@@ -157,6 +159,13 @@ bindsym XF86AudioPrev exec playerctl previous
 
 # Touchpad controls
 bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchpad
+
+# Screenshot
+bindsym $mod+Shift+s exec "maim -s -u | xclip -selection clipboard -t image/png -i"
+bindsym $mod+Shift+f exec "maim -u | xclip -selection clipboard -t image/png -i"
+
+# 
+bindsym $mod+i exec "clipmenu"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -231,10 +240,13 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
+# Shortcuts
+
 # Autostart
-exec --no-startup-id compton
+exec autocutsel -fork
+#exec autocutsel -selection PRIMARY -fork
+exec --no-startup-id clipmenud
 exec --no-startup-id dunst
 exec --no-startup-id nm-applet
 exec --no-startup-id pasystray
 exec --no-startup-id nextcloud
-exec --no-startup-id light-locker

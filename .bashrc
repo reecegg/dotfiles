@@ -27,9 +27,9 @@ export FZF_DEFAULT_COMMAND='rg --files --ignore-case --color auto --hidden --fol
 # Don't put duplicate lines or lines starting with space in the history.
 export HISTCONTROL=ignoreboth
 # Set max history lines/commands.
-HISTSIZE=4000
+HISTSIZE=1000000
 # Set max history size.
-HISTFILESIZE=8000
+HISTFILESIZE=1000000
 
 # Alias used for interacting with the dotfiles git repo.
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
@@ -37,10 +37,12 @@ alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 # Update the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+shopt -s histappend
 
 # Setup the following as exec path.
 export PATH="/home/$USER/bin:$PATH"
 export PATH="/home/$USER/scripts:$PATH"
+export PATH="/home/$USER/.config/composer/vendor/bin:$PATH"
 
 # Disable Ctrl-s and Ctrl-q sending "XOFF" and "XON" signals.
 stty -ixon

@@ -33,7 +33,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'junegunn/rainbow_parentheses.vim'                                   " Rainbow matching bracket highlighting.
     Plug 'mattn/emmet-vim'                                                    " HTML, CSS, JS snippets.
     Plug 'mhinz/vim-startify'                                                 " Editor start page.
-    Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install() }}   " Intellisense engine for vim. (language client, completion, diagnostic).
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}                           " Intellisense engine for vim. (language client, completion, diagnostic).
 "    Plug 'neomake/neomake'                                                    " Asynchronous lint and make (lint ,make)
     Plug 'scrooloose/nerdtree'                                                " Project Draw (project draw)
     Plug 'shougo/denite.nvim'                                                 " More generic fuzzy finder.

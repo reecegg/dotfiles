@@ -8,6 +8,8 @@
     #whitespace = fix, -indent-with-non-tab,trailing-space,cr-at-eol
     excludesfile = ~/.gitignore
     pager = less -+$LESS -R
+	autocrlf = input
+	eol = lf
 
 [pager]
     branch = false

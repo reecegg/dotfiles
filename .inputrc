@@ -26,6 +26,8 @@ set completion-prefix-display-length 5:
 set mark-symlinked-directories On:
 # Sets the completions to be listed immediately.
 set show-all-if-ambiguous On:
+# Disable bell.
+set bell-style none
 # Dont echo control characters.
 set echo-control-characters off:
 # Set vi ins mode prompt string
