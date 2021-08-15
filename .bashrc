@@ -41,6 +41,7 @@ shopt -s histappend
 
 # Setup the following as exec path.
 export PATH="/home/$USER/bin:$PATH"
+export PATH="/home/$USER/.local/bin:$PATH"
 export PATH="/home/$USER/scripts:$PATH"
 export PATH="/home/$USER/.config/composer/vendor/bin:$PATH"
 

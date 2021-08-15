@@ -164,7 +164,7 @@ bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchp
 bindsym $mod+Shift+s exec "maim -s -u | xclip -selection clipboard -t image/png -i"
 bindsym $mod+Shift+f exec "maim -u | xclip -selection clipboard -t image/png -i"
 
-# 
+# Clipboard History and selection
 bindsym $mod+i exec "clipmenu"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
@@ -200,7 +200,9 @@ mode "move" {
 for_window [class="^.*"] border pixel 3
 
 # Set i3 gaps spacing
-gaps inner 10
+# gaps inner 10
+gaps inner 0
+gaps outer 0
 
 # i3-gaps manual control
 set $mode_gaps Gaps: (o) outer, (i) inner
@@ -239,6 +241,23 @@ mode "$mode_gaps_outer" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
+
+# move focused workspace between monitors
+bindsym $mod+Ctrl+greater move workspace to output right
+bindsym $mod+Ctrl+less move workspace to output left
+
+# Colors
+# class                 border  backgr. text    indicator child_border
+client.focused_inactive #0d1010 #212121 #d9d9d9 #0d1010 #063340                                                                            
+client.unfocused        #0d1010 #212121 #d9d9d9 #424242 #063340                                                                            
+client.focused          #d9d9d9 #cecece #000000 #d9d9d9 #d9d9d9   
+
+## Border on floating window
+#for_window [floating] border normal
+
+## Center floating window
+#for_window [class=".*"] [floating] move absolute position center
+
 
 # Shortcuts
 

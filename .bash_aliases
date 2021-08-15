@@ -120,11 +120,11 @@ then
 fi
 
 # ------------------------------------------------------------------------------
-# Ping Aliases.
+# Ping Aliases (:ping)
 alias ping='ping -c 5'
 
 # ------------------------------------------------------------------------------
-# Composer Aliases.
+# Composer 1 Aliases
 alias composer1="php ~/bin/composer1.phar"
 alias composerone="php ~/bin/composer1.phar"
 alias ci="composer install"
@@ -132,22 +132,23 @@ alias cmi="php -d memory_limit=-1 ~/bin/composer1.phar install"
 alias cmu="php -d memory_limit=-1 ~/bin/composer1.phar update"
 alias cmr="php -d memory_limit=-1 ~/bin/composer1.phar require"
 
-# Composer 2 Aliases.
+# ------------------------------------------------------------------------------
+# Composer 2 Aliases (:c2)
 alias c2mi="php -d memory_limit=-1 ~/bin/composer.phar install"
 alias c2mu="php -d memory_limit=-1 ~/bin/composer.phar update"
 alias c2mr="php -d memory_limit=-1 ~/bin/composer.phar require"
 
 # ------------------------------------------------------------------------------
-# Ngrok Aliases.
+# Ngrok Aliases (:ngr)
 alias ngr="ngrok http localhost:8000"
 
 # ------------------------------------------------------------------------------
-# NPM Aliases.
+# NPM Aliases (:npm)
 alias npmi="npm install"
 alias npmrw="npm run watch"
 
 # ------------------------------------------------------------------------------
-# PHP Artisan Aliases.
+# PHP Artisan Aliases (:pa)
 alias pac="php artisan cache:clear; php artisan route:clear; php artisan view:clear; php artisan config:clear"
 alias pacs="pac; php artisan serve"
 alias pacac="php artisan cache:clear"
@@ -172,12 +173,18 @@ alias sch15="watch -n 15 php artisan schedule:run"
 alias sch30="watch -n 30 php artisan schedule:run"
 
 # ------------------------------------------------------------------------------
-# Tmux Aliases.
+# Tmux Aliases (:t)
 
 alias ta="t attach"
+alias tks="t kill-session -t "
 
+# ------------------------------------------------------------------------------
+# Vagrant Aliases (:vg)
 
-
+alias vg="vagrant"
+alias vgssh="vagrant ssh"
+alias vgup="vagrant up"
+alias vghalt="vagrant halt"
 
 # ==============================================================================
 # Run '.bash_aliases_local' if it exists.
