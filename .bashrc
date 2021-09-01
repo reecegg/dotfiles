@@ -84,3 +84,8 @@ PS1="$PS1\n"
 if [ -f ~/.bash_aliases ]; then
 	. ~/.bash_aliases
 fi
+
+# Run '.bash_completion' if it exists.
+if [ -f ~/.bash_completion ]; then
+	. ~/.bash_completion
+fi
