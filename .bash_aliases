@@ -58,11 +58,20 @@ alias cd..='cd ..'
 # ==============================================================================
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
-alias uuid="cat /proc/sys/kernel/random/uuid"
+alias uuid="cat /proc/sys/kernel/random/uuid | tr -d '\n' | tee >(xclip); echo \n"
 alias hs="history -r"
 alias hst="history -r"
 alias fix="reset && stty sane && tput rs1"
 alias lh="grep -P \"^Host ([^*]+)$\" $HOME/.ssh/config | sed 's/Host //'"
+alias epoch="date +%s"
+alias phpdoc="phpDocumentor.phar"
+alias phpdocs="phpDocumentor.phar"
+alias password="tr -dc a-z2-9 </dev/urandom | head -c 16 ; echo ''"
+alias password1="tr -dc a-zA-Z1-9 </dev/urandom | head -c 32 ; echo ''"
+alias password2="tr -dc 'A-Za-z0-9!#$%&()*+,-./:;<=>?@[\]^_{|}~' </dev/urandom | head -c 64  ; echo ''"
+alias pw="password"
+alias pw1="password1"
+alias pw2="password2"
 
 # ==============================================================================
 # Program Aliases
