@@ -1,0 +1,16 @@
+let mapleader = " "
+
+" Comment out command, gcc (Emulates https://github.com/tpope/vim-commentary)
+set commentary
+" Surround motions (Emulates https://github.com/tpope/vim-surround)
+set surround
+" Replace without replacing your register contents (Emulates https://github.com/vim-scripts/ReplaceWithRegister)
+set ReplaceWithRegister
+
+set easymotion
+set exchange
+set argtextobj
+set textobj-entire
+set highlightedyank
+let g:highlightedyank_highlight_duration = "-1"
+set sneak

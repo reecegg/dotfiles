@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+echo "Waiting for input to run $*"
+read -n 1
+echo -e '\e[1A\e[K'
+exec $*
+
+# TODO
+# Close on no input.
+# Clear screen/line.
+# Animated waiting dots.
+# Unquoted input.
