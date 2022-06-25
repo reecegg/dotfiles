@@ -74,6 +74,15 @@ alias pw1="password1"
 alias pw2="password2"
 
 # ==============================================================================
+# Script Aliases
+# ==============================================================================
+
+alias dsl="~/.screenlayout/displaylink.sh"
+alias dsd="~/.screenlayout/default.sh"
+alias dsh="~/.screenlayout/home.sh"
+alias dsw="~/.screenlayout/work.sh"
+
+# ==============================================================================
 # Program Aliases
 # ==============================================================================
 
