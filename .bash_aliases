@@ -11,7 +11,7 @@ alias ls='lsd'
 #alias a='TODO'
 alias b='cd ..'
 alias c='clear'
-#alias d=''
+alias d='docker'
 alias e='sudoedit'
 alias f='fg'
 alias g='git'
@@ -27,7 +27,7 @@ alias o='_o'
 function _o() { eval nohup xdg-open $@ >/dev/null 2>&1 & disown; }
 alias p='ping -c 10'
 #alias q='TODO'
-alias r='sudo !!'
+alias r='ranger'
 alias s='sudo'
 alias t='tmux'
 alias u='sudo -i'
@@ -76,7 +76,6 @@ alias pw2="password2"
 # ==============================================================================
 # Script Aliases
 # ==============================================================================
-
 alias dsl="~/.screenlayout/displaylink.sh"
 alias dsd="~/.screenlayout/default.sh"
 alias dsh="~/.screenlayout/home.sh"
@@ -192,17 +191,32 @@ alias sch30="watch -n 30 php artisan schedule:run"
 
 # ------------------------------------------------------------------------------
 # Tmux Aliases (:t)
-
 alias ta="t attach"
 alias tks="t kill-session -t "
 
 # ------------------------------------------------------------------------------
 # Vagrant Aliases (:vg)
-
 alias vg="vagrant"
 alias vgssh="vagrant ssh"
 alias vgup="vagrant up"
 alias vghalt="vagrant halt"
+
+# ------------------------------------------------------------------------------
+# Docker Aliases
+#alias d="docker"
+
+# ------------------------------------------------------------------------------
+# Docker Compose Aliases
+alias dc="docker-compose"
+
+# ------------------------------------------------------------------------------
+# Ranger Aliases
+alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+
+# ==============================================================================
+# Shadowed Command Aliases
+# ==============================================================================
+alias dcl="\dc"
 
 # ==============================================================================
 # Run '.bash_aliases_local' if it exists.
