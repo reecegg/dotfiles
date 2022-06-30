@@ -211,7 +211,9 @@ alias dc="docker-compose"
 
 # ------------------------------------------------------------------------------
 # Ranger Aliases
-alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+alias ranger='ranger --choosedir=$HOME/.rangerdir; RANGERLASTDIR=`cat $HOME/.rangerdir`; cd "$RANGERLASTDIR"'
+alias rr='\ranger --choosedir=$HOME/.rangerdir; RANGERLASTDIR=`cat $HOME/.rangerdir`'
+alias rcd='cd "$RANGERLASTDIR"'
 
 # ==============================================================================
 # Shadowed Command Aliases
