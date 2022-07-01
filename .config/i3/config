@@ -1,5 +1,10 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference.
 
+focus_follows_mouse yes
+popup_during_fullscreen leave_fullscreen
+floating_minimum_size 320 x 180
+floating_maximum_size 1440 x 810
+
 # Use Super/OS/Win as modifier key instead of alt.
 set $mod Mod4
 
