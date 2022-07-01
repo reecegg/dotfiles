@@ -58,7 +58,7 @@ alias cd..='cd ..'
 # ==============================================================================
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
-alias uuid="cat /proc/sys/kernel/random/uuid | tr -d '\n' | tee >(xclip); echo \n"
+alias uuid="cat /proc/sys/kernel/random/uuid | tr -d '\n' | tee >(xclip); echo ''"
 alias hs="history -r"
 alias hst="history -r"
 alias fix="reset && stty sane && tput rs1"
@@ -72,6 +72,9 @@ alias password2="tr -dc 'A-Za-z0-9!#$%&()*+,-./:;<=>?@[\]^_{|}~' </dev/urandom |
 alias pw="password"
 alias pw1="password1"
 alias pw2="password2"
+alias py="python"
+alias pyy="python2"
+alias pyyy="python3"
 
 # ==============================================================================
 # Script Aliases
