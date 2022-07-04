@@ -18,13 +18,18 @@ floating_modifier $mod
 # Start a terminal.
 bindsym $mod+Return exec i3-sensible-terminal
 
+# Rofi
+bindsym $mod+d exec --no-startup-id "rofi -show drun"
+bindsym $mod+Shift+d exec --no-startup-id "rofi -show combi"
+bindsym $mod+c exec --no-startup-id "rofi -show calc -modi calc -no-show-match -no-sort -no-persist-history > xclip"
+bindsym $mod+w exec --no-startup-id "rofi -show window"
+bindsym $mod+Shift+w exec --no-startup-id "rofi -show windowcd"
+
+# Clipboard History and selection
+bindsym $mod+i exec "CM_LAUNCHER=rofi clipmenu"
+
 # Kill focused window.
 bindsym $mod+Shift+q kill
-
-# Start default dmenu.
-bindsym $mod+shift+d exec dmenu_run
-# Start i3-dmenu-desktop, which only display applications shipping a .desktop file. Requires dmenu.
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # Change focus.
 bindsym $mod+h focus left
@@ -61,8 +66,8 @@ bindsym $mod+f fullscreen toggle
 
 # Change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+bindsym $mod+t layout toggle split
+bindsym $mod+Shift+t layout tabbed
 
 # Toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -118,9 +123,6 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # Lock screen
 bindsym $mod+Shift+b exec "i3lock -c 000000"
 
-# Lauch nvim in tmux
-bindsym $mod+n exec "xst -e 'tmux new nvim' && exit"
-
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
 
@@ -169,16 +171,6 @@ bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchp
 bindsym $mod+Shift+s exec "maim -s -u | xclip -selection clipboard -t image/png -i"
 bindsym $mod+Shift+f exec "maim -u | xclip -selection clipboard -t image/png -i"
 
-# Clipboard History and selection
-bindsym $mod+i exec "clipmenu"
-
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-bar {
-        status_command i3status
-        tray_output primary
-}
-
 # Mode to move floating windows
 bindsym $mod+m mode "move" focus floating
 mode "move" {
@@ -202,12 +194,11 @@ mode "move" {
 # i3-gaps configuration
 
 # Disable windows bars (Window bars are not compatible with i3-gaps
-for_window [class="^.*"] border pixel 3
+for_window [class="^.*"] border pixel 2
 
 # Set i3 gaps spacing
-# gaps inner 10
-gaps inner 0
-gaps outer 0
+gaps inner 6
+gaps outer 0 
 
 # i3-gaps manual control
 set $mode_gaps Gaps: (o) outer, (i) inner
@@ -251,20 +242,45 @@ mode "$mode_gaps_outer" {
 bindsym $mod+Ctrl+greater move workspace to output right
 bindsym $mod+Ctrl+less move workspace to output left
 
+
+
 # Colors
-# class                 border  backgr. text    indicator child_border
-client.focused_inactive #0d1010 #212121 #d9d9d9 #0d1010 #063340                                                                            
-client.unfocused        #0d1010 #212121 #d9d9d9 #424242 #063340                                                                            
-client.focused          #d9d9d9 #cecece #000000 #d9d9d9 #d9d9d9   
+set $text-color                  #000000
+set $background-color            #e6e6e6 
+set $border-color                #e6e6e6
+set $child-border-color          #cccccc
+
+set $inactive-text-color         #000000
+set $inactive-background-color   #cccccc
+set $inactive-border-color       #cccccc
+set $inactive-child-border-color #262626
+
+#                       border                 backgrground               text                 indicator                    child_border
+client.focused          $border-color          $background-color          $text-color          $child-border-color          $child-border-color
+client.unfocused        $inactive-border-color $inactive-background-color $inactive-text-color $inactive-child-border-color $inactive-child-border-color
+client.focused_inactive $inactive-border-color $inactive-background-color $inactive-text-color $inactive-child-border-color $inactive-child-border-color
+
+# Bar
+bar {
+        status_command i3status
+        tray_output primary
+
+        colors {
+                background #1a1a1a
+
+                #                  border        background    text
+                focused_workspace  #1a1a1a       #1a1a1a       #ffffff
+                active_workspace   #1a1a1a       #1a1a1a       #b3b3b3
+                inactive_workspace #1a1a1a       #1a1a1a       #666666
+                urgent_workspace   #1a1a1a       #1a1a1a       #d9d9d9
+        }
+}
 
 ## Border on floating window
 #for_window [floating] border normal
 
 ## Center floating window
 #for_window [class=".*"] [floating] move absolute position center
-
-
-# Shortcuts
 
 # Autostart
 exec autocutsel -fork
