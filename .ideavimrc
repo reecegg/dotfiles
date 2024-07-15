@@ -1,16 +1,58 @@
+" TODO: https://towardsdatascience.com/the-essential-ideavim-remaps-291d4cd3971b
+
 let mapleader = " "
 
-" Comment out command, gcc (Emulates https://github.com/tpope/vim-commentary)
-set commentary
-" Surround motions (Emulates https://github.com/tpope/vim-surround)
-set surround
-" Replace without replacing your register contents (Emulates https://github.com/vim-scripts/ReplaceWithRegister)
-set ReplaceWithRegister
-
-set easymotion
+" Enable Plugins
+set commentary " Comment out command, gcc (Emulates https://github.com/tpope/vim-commentary)
+set surround " Surround motions (Emulates https://github.com/tpope/vim-surround)
+set ReplaceWithRegister " Replace without replacing your register contents (Emulates https://github.com/vim-scripts/ReplaceWithRegister)
 set exchange
 set argtextobj
 set textobj-entire
 set highlightedyank
 let g:highlightedyank_highlight_duration = "-1"
+
+set quickscope
 set sneak
+set acejump
+set easymotion
+
+" Set clipboard to system clipboard
+set clipboard+=unnamed
+set clipboard+=ideaput
+
+" \ e to edit config file
+nnoremap \e :e ~/.ideavimrc<CR>
+" \ r to reload config file
+nnoremap \r :action IdeaVim.ReloadVimRc.reload<CR>
+
+" Easy exit from insert mode
+inoremap jk <Esc>
+inoremap kj <Esc>
+
+nnoremap <leader>z :action ToggleDistractionFreeMode<CR>
+nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
+nnoremap <leader>to :action Terminal.OpenInTerminal<CR>
+
+nnoremap [[ :action MethodUp<CR>
+nnoremap ]] :action MethodDown<CR>
+
+" add go to implementation/file/etc keybind
+nmap gi :action GotoImplementation<CR>
+nmap gf :action GoToFile<CR>
+
+" dont treat _ as part of a word
+set iskeyword-=_
+
+" Easymotion Binds
+" Jump to a word starting with two specific characters
+nmap <Leader>f <Plug>(easymotion-bd-f2)
+" Jump to a line starting with two specific characters
+nmap <Leader>l <Plug>(easymotion-bd-jk2)
+" Jump to two characters
+nmap <Leader>c <Plug>(easymotion-s2)
+" Jump to a word using two characters
+nmap <Leader>w <Plug>(easymotion-w2)
+
+" Fuzzier Binds
+nmap <Leader>; <action>(com.mituuz.fuzzier.Fuzzier)
