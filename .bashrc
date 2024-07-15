@@ -95,3 +95,6 @@ fi
 if [ -f ~/.bash_completion ]; then
 	. ~/.bash_completion
 fi
+
+# rbenv init
+eval "$(rbenv init -)"
