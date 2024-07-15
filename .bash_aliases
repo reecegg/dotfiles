@@ -222,7 +222,7 @@ alias vghalt="vagrant halt"
 
 # ------------------------------------------------------------------------------
 # Docker Compose Aliases
-alias dc="docker-compose"
+alias dc="docker compose"
 
 # ------------------------------------------------------------------------------
 # Ranger Aliases
