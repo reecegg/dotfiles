@@ -230,6 +230,15 @@ alias ranger='ranger --choosedir=$HOME/.rangerdir; RANGERLASTDIR=`cat $HOME/.ran
 alias rr='\ranger --choosedir=$HOME/.rangerdir; RANGERLASTDIR=`cat $HOME/.rangerdir`'
 alias rcd='cd "$RANGERLASTDIR"'
 
+# ------------------------------------------------------------------------------
+# ShellGPT Aliases
+alias sg="sgpt"
+alias sgs="sgpt --shell"
+alias sgc="sgpt --code"
+alias sgch="sgpt --code"
+alias sgr="sgpt --repl"
+alias sgl="sgpt --list-chats"
+
 # ==============================================================================
 # Shadowed Command Aliases
 # ==============================================================================
