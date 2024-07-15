@@ -199,6 +199,17 @@ alias ta="t attach"
 alias tks="t kill-session -t "
 
 # ------------------------------------------------------------------------------
+# OpenTofu / Terraform Aliases
+alias terraform="tofu"
+alias tf="tofu"
+alias tfp="tofu plan"
+alias tfa="tofu apply"
+alias tfaaa="tofu apply -auto-approve"
+alias tfi="tofu init"
+alias tfv="tofu validate"
+alias tfv="tofu refresh"
+
+# ------------------------------------------------------------------------------
 # Vagrant Aliases (:vg)
 alias vg="vagrant"
 alias vgssh="vagrant ssh"
