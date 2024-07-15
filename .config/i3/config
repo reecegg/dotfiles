@@ -18,12 +18,20 @@ floating_modifier $mod
 # Start a terminal.
 bindsym $mod+Return exec i3-sensible-terminal
 
-# Rofi
+# Launcher (rofi)
 bindsym $mod+d exec --no-startup-id "rofi -show drun"
 bindsym $mod+Shift+d exec --no-startup-id "rofi -show combi"
 bindsym $mod+c exec --no-startup-id "rofi -show calc -modi calc -no-show-match -no-sort -no-persist-history > xclip"
 bindsym $mod+w exec --no-startup-id "rofi -show window"
 bindsym $mod+Shift+w exec --no-startup-id "rofi -show windowcd"
+bindsym $mod+Shift+e exec --no-startup-id "rofi -show p -modi p:rofi-power-menu"
+bindsym $mod+p exec --no-startup-id "rofi -modi 1pass:rofi-1pass -show 1pass"
+bindsym $mod+o exec --no-startup-id "firefox --new-tab chat.openai.com"
+bindsym $mod+Shift+o exec --no-startup-id "~/.scripts/choose_screenlayout.sh"
+
+
+# Exit i3 (logs you out of your X session)
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # Clipboard History and selection
 bindsym $mod+i exec "CM_LAUNCHER=rofi clipmenu"
@@ -116,8 +124,6 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 # Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-# Exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 # Exit i3 instantly 
 # bindsym $mod+Shift+alt+e exec i3-msg exit
 # Lock screen
@@ -149,27 +155,37 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-# Pulse audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5% # Increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5% # Decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 1 toggle # Mute sound
-
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # Increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # Decrease screen brightness
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20 >> /tmp/i3_brightness_control.log 2>&1 # Increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20 >> /tmp/i3_brightness_control.log 2>&1 # Decrease screen brightness
+
+# Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% >> /tmp/i3_audio_control.log 2>&1 # Increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% >> /tmp/i3_audio_control.log 2>&1 # Decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle >> /tmp/i3_audio_control.log 2>&1 # Mute sound
 
 # Media player controls
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+# bindsym XF86AudioPlay exec playerctl play
+# bindsym XF86AudioPause exec playerctl pause
+# bindsym XF86AudioStop exec playerctl stop
+bindsym XF86AudioPlay exec --no-startup-id ~/.scripts/media_control.sh play-pause >> /tmp/i3_media_control.log 2>&1
+bindsym XF86AudioPause exec --no-startup-id ~/.scripts/media_control.sh pause >> /tmp/i3_media_control.log 2>&1
+bindsym XF86AudioStop exec --no-startup-id ~/.scripts/media_control.sh stop >> /tmp/i3_media_control.log 2>&1
+bindsym XF86AudioNext exec playerctl next >> /tmp/i3_media_control.log 2>&1
+bindsym XF86AudioPrev exec playerctl previous >> /tmp/i3_media_control.log 2>&1
 
 # Touchpad controls
 bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchpad
+h
 
-# Screenshot
+# TODO: full XF86 Bind implementation
+
+# Screenshot (Maim)
 bindsym $mod+Shift+s exec "maim -s -u | xclip -selection clipboard -t image/png -i"
 bindsym $mod+Shift+f exec "maim -u | xclip -selection clipboard -t image/png -i"
+
+# OCR Screenshot (Normshot)
+bindsym $mod+Ctrl+Shift+s exec "normcap"
 
 # Mode to move floating windows
 bindsym $mod+m mode "move" focus floating
