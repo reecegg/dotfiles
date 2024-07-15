@@ -6,6 +6,12 @@ case $- in
 	  *) return;;
 esac
 
+# Environemnt setup
+export TERMINAL=xst
+export DATAGRIP_JDK=/usr/lib/jvm/default
+export JDK_HOME=/usr/lib/jvm/default
+export JAVA_HOME=/usr/lib/jvm/default
+
 # Neovim or vim setup (env var and alias)
 if ! [ -x "S(command -v nvim)" ]; then
 	export VISUAl=nvim
