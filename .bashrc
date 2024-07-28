@@ -98,3 +98,6 @@ fi
 
 # rbenv init
 eval "$(rbenv init -)"
+
+# Added by rustup
+. "$HOME/.cargo/env"
