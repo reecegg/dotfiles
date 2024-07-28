@@ -176,7 +176,6 @@ bindsym XF86AudioPrev exec playerctl previous >> /tmp/i3_media_control.log 2>&1
 
 # Touchpad controls
 bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchpad
-h
 
 # TODO: full XF86 Bind implementation
 
