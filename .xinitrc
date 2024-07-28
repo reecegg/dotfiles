@@ -37,5 +37,17 @@ if [ -f $HOME/.profile ]; then
   source $HOME/.profile
 fi
 
+
+# Esc binds
+# Clear existing Caps Lock options
+setxkbmap -option
+# Remap Caps Lock to Escape
+setxkbmap -option caps:escape
+# Remap Escape to Caps Lock using xmodmap
+xmodmap -e "keycode 9 = Caps_Lock"
+
+# right alt to esc
+xmodmap -e "keycode 108 = Escape"
+
 # Start i3wm
 #i3
