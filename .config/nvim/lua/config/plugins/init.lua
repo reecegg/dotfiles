@@ -1,8 +1,7 @@
 return {
-    "christoomey/vim-tmux-navigator",
-    "tpope/vim-fugitive",
-    "williamboman/mason.nvim",
-    "dhruvasagar/vim-table-mode",
-    "godlygeek/tabular",
-    "HiPhish/rainbow-delimiters.nvim",
+  "christoomey/vim-tmux-navigator",
+  "tpope/vim-fugitive",
+  "dhruvasagar/vim-table-mode",
+  "godlygeek/tabular",
+  "HiPhish/rainbow-delimiters.nvim",
 }

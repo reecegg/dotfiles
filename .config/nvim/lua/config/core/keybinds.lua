@@ -23,8 +23,66 @@ local function toggle_virtual_edit()
     end
 end
 
--- Netrw
+--- Yank the selected text or entire file with markdown quotes
+--- If in normal mode, yanks the entire file content with markdown quotes
+--- If in visual mode, yanks the selected text with markdown quotes
+--- Includes the file path and line range before the markdown block
+--- @param mode string 'n' for normal mode, 'v' for visual mode
+function YankWithMarkdownQuotes(mode)
+    -- Get the current file path
+    local file_path = vim.fn.expand('%:p')
+    -- Get the filename
+    local file_name = vim.fn.expand('%:t')
+    -- Get the current file type
+    local file_type = vim.bo.filetype
+    local file_type_indicator = file_type ~= "" and file_type or ""
+
+    -- Determine the file info to use based on the file type
+    local file_info = file_type == "markdown" and file_name or file_path
+
+    if mode == 'n' then
+        -- Yank the entire file content with markdown quotes
+        vim.cmd.slient('normal! ggVGy')
+        local content = vim.fn.getreg('"')
+        local line_count = vim.api.nvim_buf_line_count(0)
+        file_info = file_info .. ":1:" .. line_count
+        local quoted_content = "\n" .. file_info .. "\n```" .. file_type_indicator .. "\n" .. content .. "\n```\n"
+        vim.fn.setreg('+', quoted_content)
+        print("Yanked entire file content with markdown quotes to system clipboard")
+    elseif mode == 'v' then
+        -- Get the start and end positions of the visual selection
+        local start_pos = vim.api.nvim_buf_get_mark(0, '<')
+        local end_pos = vim.api.nvim_buf_get_mark(0, '>')
+
+        -- Get the content of the visual selection
+        local content = vim.api.nvim_buf_get_lines(0, start_pos[1] - 1, end_pos[1], false)
+
+        -- Join the content with newlines and add markdown quotes
+        file_info = file_info .. ":" .. start_pos[1] .. ":" .. end_pos[1]
+        local quoted_content = "\n" .. file_info .. "\n```" .. file_type_indicator .. "\n" .. table.concat(content, "\n") .. "\n```\n"
+
+        -- Yank the quoted content to the system clipboard
+        vim.fn.setreg('+', quoted_content)
+        print("Yanked selection with markdown quotes to system clipboard")
+    else
+        print("Unsupported mode: " .. mode)
+    end
+end
+
+-- Netrw (overriden)
 vim.keymap.set("n", "<leader>-", vim.cmd.Ex)
+
+-- Better system copy and paste using <leader>p and <leader>y in all modes
+-- Normal Mode
+vim.api.nvim_set_keymap('n', '<leader>p', '"+p', { noremap = true, desc = "Paste after (Sys)" })
+vim.api.nvim_set_keymap('n', '<leader>P', '"+P', { noremap = true, desc = "Paste before (Sys)" })
+vim.api.nvim_set_keymap('n', '<leader>Y', '"+y$', { noremap = true, desc = "Yank Line (Sys)" })
+vim.api.nvim_set_keymap('n', '<leader>y', '"+y', { noremap = true, desc = "Yank (Sys)" })
+-- Visual Mode
+vim.api.nvim_set_keymap('v', '<leader>p', '"+p', { noremap = true, desc = "Paste after (Sys)" })
+vim.api.nvim_set_keymap('v', '<leader>P', '"+P', { noremap = true, desc = "Paste before (Sys)" })
+vim.api.nvim_set_keymap('v', '<leader>Y', '"+y', { noremap = true, desc = "Yank (Sys)" })
+vim.api.nvim_set_keymap('v', '<leader>y', '"+y', { noremap = true, desc = "Yank (Sys)" })
 
 -- Better escape with 'jk', 'jj', and 'kk'
 vim.api.nvim_set_keymap('i', 'jk', '<Esc>', { noremap = true, desc = "Escape insert mode" })
@@ -129,3 +187,11 @@ vim.api.nvim_set_keymap('n', '<leader>cwdp', ':pwd<CR>',
 
 -- Make <C-BS> delete word in insert mode
 vim.api.nvim_set_keymap('i', '<C-BS>', '<C-W>', { noremap = true, desc = "Delete word" })
+
+-- Quoted yank
+-- Keybinding for normal mode (yank entire file)
+vim.api.nvim_set_keymap('n', '<leader>dy', ":lua YankWithMarkdownQuotes('n')<CR>",
+    { noremap = true, silent = true, desc = "Yank entire file with markdown quotes" })
+-- Keybinding for visual mode (yank selection)
+vim.api.nvim_set_keymap('v', '<leader>dy', ":<C-U>lua YankWithMarkdownQuotes('v')<CR>",
+    { noremap = true, silent = true, desc = "Yank selection with markdown quotes" })

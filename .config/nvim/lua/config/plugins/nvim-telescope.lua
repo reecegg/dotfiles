@@ -1,35 +1,47 @@
+-- :checkhealth telescope
+-- :help telescope.setup()
+-- :help telescope.builtin()
+
 return {
-   'nvim-telescope/telescope.nvim',
-   tag = '0.1.8',
-   dependencies = {
-      'nvim-lua/plenary.nvim',
-      'folke/which-key.nvim'
-   },
-   config = function()
-      local builtin = require('telescope.builtin')
-      -- core
-      vim.keymap.set('n', '<leader>f<leader>', builtin.resume, { desc = "Resume Finder" })
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Find Files" })
-      vim.keymap.set('n', '<leader>fp', builtin.pickers, { desc = "Find Pickers"})
-      vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = "Live Grep" })
-      vim.keymap.set('n', '<leader>ft', builtin.git_files, { desc = "Git Files" })
+  'nvim-telescope/telescope.nvim',
+  branch = '0.1.x',
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    'nvim-telescope/telescope-ui-select.nvim'
+  },
+  config = function()
+    -- Setup Telescope
+    require("telescope").setup {
+      extensions = {
+        ["ui-select"] = {}
+      }
+    }
 
-      -- project
-      vim.keymap.set('n', '<leader>fs', function()
-         builtin.grep_string({ search = vim.fn.input("Grep > ") });
-      end, { desc = "Grep String" })
-      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Buffers" })
-      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help Tags" })
+    -- Load the extensions
+    require("telescope").load_extension("ui-select")
 
-      -- text
+    -- Add Keymaps
+    local builtin = require("telescope.builtin")
 
-      -- Ensure which-key is installed and set up
-      require("which-key").setup {}
+    -- interop:
+    -- interop: vscode
+    -- interop: vscode: ctrl-p to open the 'command palette' for finding files
+    vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = "Find Files" })
+    -- interop: vscode: ctrl-P to open the 'command palette' for finding commands
+    vim.keymap.set('n', '<C-P>', builtin.commands, { desc = "Commands" })
 
-      -- Register keymaps with which-key using the new spec
-      local wk = require("which-key")
-      wk.add({
-         { "<leader>f", group = "Finder" },
-      })
-   end,
+    -- core
+    vim.keymap.set('n', '<leader>f<leader>', builtin.resume, { desc = "Resume Finder" })
+    vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Find Files" })
+    vim.keymap.set('n', '<leader>fp', builtin.pickers, { desc = "Find Pickers" })
+    vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = "Live Grep" })
+    vim.keymap.set('n', '<leader>ft', builtin.git_files, { desc = "Git Files" })
+
+    -- project
+    vim.keymap.set('n', '<leader>fs', function()
+      builtin.grep_string({ search = vim.fn.input("Grep > ") });
+    end, { desc = "Grep String" })
+    vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Buffers" })
+    vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help Tags" })
+  end,
 }
