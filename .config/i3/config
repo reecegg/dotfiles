@@ -212,7 +212,7 @@ mode "move" {
 for_window [class="^.*"] border pixel 2
 
 # Set i3 gaps spacing
-gaps inner 6
+gaps inner 0
 gaps outer 0 
 
 # i3-gaps manual control
