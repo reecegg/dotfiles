@@ -3,7 +3,7 @@
 focus_follows_mouse yes
 popup_during_fullscreen leave_fullscreen
 floating_minimum_size 320 x 180
-floating_maximum_size 1440 x 810
+floating_maximum_size 1920 x 1080
 
 # Use Super/OS/Win as modifier key instead of alt.
 set $mod Mod4
