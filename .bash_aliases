@@ -8,6 +8,11 @@ alias ls='lsd'
 # ==============================================================================
 # Single letter aliases.
 # ==============================================================================
+function _o() {
+  local target="${1:-.}"
+  eval nohup xdg-open "$target" >/dev/null 2>&1 & disown
+}
+
 #alias a='TODO'
 alias b='cd ..'
 alias c='clear'
@@ -23,18 +28,16 @@ alias l='ls -alF'
 alias m='man'
 #alias n='TODO'
 alias o='_o'
-#alias o="function _o() { eval nodup xdg-open $@ & disown; }"
-function _o() { eval nohup xdg-open $@ >/dev/null 2>&1 & disown; }
 alias p='ping -c 10'
 #alias q='TODO'
-alias r='ranger'
+alias r='src' # reload
 alias s='sudo'
 alias t='tmux'
 alias u='sudo -i'
 alias v='vim'
 #alias w='TODO'
 alias x='exit'
-#alias y='TODO'
+alias y='yazi'
 #alias z='TODO'
 
 # ==============================================================================
@@ -64,6 +67,7 @@ alias hst="history -r"
 alias fix="reset && stty sane && tput rs1"
 alias lh="grep -P \"^Host ([^*]+)$\" $HOME/.ssh/config | sed 's/Host //'"
 alias lg="lazygit"
+alias lgc='GIT_DIR=$HOME/.cfg GIT_WORK_TREE=$HOME lazygit'
 alias epoch="date +%s"
 alias phpdoc="phpDocumentor.phar"
 alias phpdocs="phpDocumentor.phar"
@@ -76,6 +80,8 @@ alias pw2="password2"
 alias py="python"
 alias pyy="python2"
 alias pyyy="python3"
+alias nlogtail="tail -f /tmp/neovim.log"
+alias nloglcear="echo '' > /tmp/neovim.log"
 
 # ==============================================================================
 # Script Aliases
@@ -108,6 +114,15 @@ alias cdt='cd ~/tmp/'
 alias cdc='cd ~/.config/'
 alias cdd='cd ~/Downloads/'
 alias cdbak='cd ~/bak/'
+
+# Alias to allow cding to a files parent 
+cdp() {
+  if [ -f "$1" ]; then
+    cd "$(dirname "$1")"
+  else
+    cd "$1"
+  fi
+}
 
 # ------------------------------------------------------------------------------
 # grep Aliases
