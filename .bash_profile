@@ -10,3 +10,6 @@
 #if [[ ! $DISPLAY && $XDG_VTNR -eq 1 && ${#X} -gt 0 ]]; then
 #  exec startx
 #fi
+
+# Added by rustup
+. "$HOME/.cargo/env"
