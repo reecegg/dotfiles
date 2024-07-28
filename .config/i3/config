@@ -295,7 +295,7 @@ bar {
 #for_window [floating] border normal
 
 ## Center floating window
-#for_window [class=".*"] [floating] move absolute position center
+for_window [class=".*"] [floating] move absolute position center
 
 # Autostart
 exec autocutsel -fork
