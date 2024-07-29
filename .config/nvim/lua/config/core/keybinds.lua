@@ -42,7 +42,7 @@ function YankWithMarkdownQuotes(mode)
 
     if mode == 'n' then
         -- Yank the entire file content with markdown quotes
-        vim.cmd.slient('normal! ggVGy')
+        vim.cmd('normal! ggVGy')
         local content = vim.fn.getreg('"')
         local line_count = vim.api.nvim_buf_line_count(0)
         file_info = file_info .. ":1:" .. line_count
