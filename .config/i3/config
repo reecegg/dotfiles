@@ -90,7 +90,7 @@ bindsym $mod+a focus parent
 bindsym $mod+z focus child
 
 # move the currently focused window to the scratchpad
-bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+Shift+minus floating enable, resize set width 1600 height 900, move position center, move scratchpad
 
 # Show the next scratchpad window or hide the focused scratchpad window.
 # If there are multiple scratchpad windows, this command cycles through them.
@@ -278,6 +278,7 @@ client.focused_inactive $inactive-border-color $inactive-background-color $inact
 # Bar
 bar {
         status_command i3status
+        # status_command i3blocks
         tray_output primary
 
         colors {
