@@ -3,6 +3,7 @@ if _G.nlog then
     print("Warning: 'nlog' is already defined in the global scope. Overwriting it.")
 end
 _G.nlog = require("nlog")
+nlog.log("Starting Neovim...")
 
 -- Fundamental mapping required before loading plugins
 vim.g.mapleader = " "
@@ -56,6 +57,17 @@ require("lspconfig").rust_analyzer.setup {}
 
 -- Format keybind
 vim.api.nvim_set_keymap('n', '<leader>df', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>', { noremap = true, silent = true })
+
+-- -- If already at definition when jumping to definition, "jump back" (open references)
+-- function Jump_to_definition()
+--   local current_line = vim.api.nvim_win_get_cursor(0)[1]
+--   nlog.log('current_line: ' .. current_line)
+--   vim.api.nvim_command('normal! gd')
+--   if current_line == vim.api.nvim_win_get_cursor(0)[1] then
+--     vim.api.nvim_command('normal! gr')
+--   end
+-- end
+-- vim.api.nvim_set_keymap('n', 'gd', '<cmd>lua Jump_to_definition()<CR>', { noremap = true, silent = true })
 
 -- Enter key to confirm completions
 local cmp = require('cmp')

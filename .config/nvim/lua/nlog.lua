@@ -46,11 +46,19 @@ end
 
 -- Log a line to the log file
 function M.log(line)
-    table.insert(write_queue, line)
+    local formatted_line = M.format_message(line)
+    table.insert(write_queue, formatted_line)
     if not writing then
         writing = true
         write_next()
     end
+end
+
+--- Format the message
+--- Includes a UTC timestamp at the start of the message
+function M.format_message(message)
+    local timestamp = os.date("[%Y-%m-%dT%H:%M:%S]", os.time())
+    return string.format("%s %s", timestamp, message)
 end
 
 -- Log the call stack to the log file

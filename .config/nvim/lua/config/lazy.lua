@@ -20,6 +20,11 @@ require("lazy").setup({
   spec = {
     { import = "config.plugins" },
   },
+  dev = {
+    path = '~/.config/nvim/lua/local-plugins',
+    -- List of local plugin directories
+    patterns = { 'thingllm', 'llm' },
+  },
   install = {
     colorscheme = { "tokyonight" }
   },
