@@ -6,24 +6,18 @@ case $- in
 	  *) return;;
 esac
 
-# Environemnt setup
-export TERMINAL=xst
-export DATAGRIP_JDK=/usr/lib/jvm/default
-export JDK_HOME=/usr/lib/jvm/default
-export JAVA_HOME=/usr/lib/jvm/default
-
 # Neovim or vim setup (env var and alias)
-if ! [ -x "S(command -v nvim)" ]; then
-	export VISUAl=nvim
-	export VIMCONFIG=~/.config/nvim
-	export VIMDATA=~/.local/share/nvim
-	export MYVIMRC=~/.config/nvim/init.vim
-	alias vi="nvim"
-	alias vim="nvim"
+export VISUAL=nvim
+export VIMCONFIG=~/.config/nvim
+export VIMDATA=~/.local/share/nvim
+export MYVIMRC=~/.config/nvim/init.vim
+alias vi="nvim"
+alias vim="nvim"
+
+if [ -n "$TMUX" ]; then
+    export TERM=tmux-256color
 else
-	export VISUAl=vim
-	export VIMCONFIG=~/.vim
-	export VIMDATA=~/.local/share/nvim
+    export TERM=xterm-256color
 fi
 
 # Setup FZF
@@ -47,19 +41,19 @@ shopt -s checkwinsize
 shopt -s histappend
 
 # Setup the following as exec path.
+# User
 export PATH="/home/$USER/bin:$PATH"
 export PATH="/home/$USER/.local/bin:$PATH"
 export PATH="/home/$USER/scripts:$PATH"
+# PHP: Composer
 export PATH="/home/$USER/.config/composer/vendor/bin:$PATH"
+# Go: GOPATH
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 
 # Disable Ctrl-s and Ctrl-q sending "XOFF" and "XON" signals.
 stty -ixon
 
-# Source node version manager init script if readable.
-NVM=/usr/share/nvm/init-nvm.sh
-if [ -e $NVM ]; then
-	source /usr/share/nvm/init-nvm.sh
-fi
 
 # Customize prompt
 # \[\e[31m\]
@@ -97,8 +91,14 @@ if [ -f ~/.bash_completion ]; then
 	. ~/.bash_completion
 fi
 
-# rbenv init
+# Boostrap nvm
+NVM=/usr/share/nvm/init-nvm.sh
+if [ -e $NVM ]; then
+	source /usr/share/nvm/init-nvm.sh
+fi
+
+# Boostrap rbenv
 eval "$(rbenv init -)"
 
-# Added by rustup
+# Boostrap rust
 . "$HOME/.cargo/env"
