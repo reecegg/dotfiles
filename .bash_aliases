@@ -37,7 +37,7 @@ alias u='sudo -i'
 alias v='vim'
 #alias w='TODO'
 alias x='exit'
-alias y='yazi'
+alias y='yz'
 #alias z='TODO'
 
 # ==============================================================================
@@ -240,10 +240,10 @@ alias vghalt="vagrant halt"
 alias dc="docker compose"
 
 # ------------------------------------------------------------------------------
-# Ranger Aliases
-alias ranger='ranger --choosedir=$HOME/.rangerdir; RANGERLASTDIR=`cat $HOME/.rangerdir`; cd "$RANGERLASTDIR"'
-alias rr='\ranger --choosedir=$HOME/.rangerdir; RANGERLASTDIR=`cat $HOME/.rangerdir`'
-alias rcd='cd "$RANGERLASTDIR"'
+# Yazi Aliases
+alias yz='yazi --cwd-file=$HOME/.yazidir; YAZILASTDIR=$(cat $HOME/.yazidir); cd "$YAZILASTDIR"'
+alias yy='yazi --cwd-file=$HOME/.yazidir; YAZILASTDIR=$(cat $HOME/.yazidir)'
+alias ycd='YAZILASTDIR=$(cat $HOME/.yazidir); cd "$YAZILASTDIR"'
 
 # ------------------------------------------------------------------------------
 # ShellGPT Aliases
