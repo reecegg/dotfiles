@@ -254,6 +254,10 @@ alias sgch="sgpt --code"
 alias sgr="sgpt --repl"
 alias sgl="sgpt --list-chats"
 
+# ------------------------------------------------------------------------------
+# Aider
+alias aider="aider --no-attribute-author --no-attribute-committer"
+
 # ==============================================================================
 # Shadowed Command Aliases
 # ==============================================================================
