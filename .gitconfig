@@ -1,18 +1,35 @@
 [user]
     name = Reece Gilbert
-    email = reecerggil@gmail.com
-    username = ReeceRGGIL
+	email = reece@luminate.one
+    username = reecegg
 
 [core]
     editor = nvim
     #whitespace = fix, -indent-with-non-tab,trailing-space,cr-at-eol
     excludesfile = ~/.gitignore
-    pager = less -+$LESS -R
+    ; pager = less -+$LESS -R
+    pager = delta
 	autocrlf = input
 	eol = lf
 
-[pager]
-    branch = false
+[interactive]
+    diffFilter = delta --color-only
+
+; [pager]
+;     branch = false
+
+[delta]
+    navigate = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+    tool = vimdiff
+
+[difftool]
+    prompt = false
 
 [web]
     browser = firefox
@@ -21,7 +38,7 @@
     #httpd = apache2 -f
 
 [rerere]
-    enabled = 1
+	enabled = true
     autoupdate = 1
 
 [push]
@@ -44,10 +61,6 @@
     changed = yellow bold
     untracked = red bold
 
-[diff]
-    tool = vimdiff
-[difftool]
-    prompt = false
 
 [github]
     user = ReeceRGGIL
