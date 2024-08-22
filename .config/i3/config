@@ -28,6 +28,7 @@ bindsym $mod+Shift+e exec --no-startup-id "rofi -show p -modi p:rofi-power-menu"
 bindsym $mod+p exec --no-startup-id "rofi -modi 1pass:rofi-1pass -show 1pass"
 bindsym $mod+o exec --no-startup-id "firefox --new-tab chat.openai.com"
 bindsym $mod+Shift+o exec --no-startup-id "~/.scripts/choose_screenlayout.sh"
+bindsym $mod+period exec --no-startup-id "rofi -modi emoji -show emoji -emoji-format '{emoji} {name}'"
 
 
 # Exit i3 (logs you out of your X session)
