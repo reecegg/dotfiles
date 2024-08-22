@@ -39,6 +39,7 @@ HISTFILESIZE=1000000
 
 # Alias used for interacting with the dotfiles git repo.
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
+alias configlg='lazygit --git-dir=$HOME/.cfg --work-tree=$HOME'
 
 # Update the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
