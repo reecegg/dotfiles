@@ -41,18 +41,41 @@ nnoremap ]] :action MethodDown<CR>
 nmap gi :action GotoImplementation<CR>
 nmap gf :action GoToFile<CR>
 
+" Better system copy and paste using <leader>p and <leader>y in all modes
+" Normal Mode
+mapleader = ","
+nmap <leader>p "+p
+nmap <leader>P "+P
+nmap <leader>Y "+y$
+nmap <leader>y "+y
+
+" Visual Mode
+vmap <leader>p "+p
+vmap <leader>P "+P
+vmap <leader>Y "+y
+vmap <leader>y "+y
+
+" Better write/quit/exit
+nmap <leader>q :q<CR>
+nmap <leader>qq :q<CR>
+nmap <leader>qa :qa<CR>
+nmap <leader>x :x<CR>
+nmap <leader>ww :w<CR>
+nmap <leader>wq :wq<CR>
+nmap <leader>wa :wa<CR>
+
 " dont treat _ as part of a word
 set iskeyword-=_
 
 " Easymotion Binds
 " Jump to a word starting with two specific characters
-nmap <Leader>f <Plug>(easymotion-bd-f2)
-" Jump to a line starting with two specific characters
-nmap <Leader>l <Plug>(easymotion-bd-jk2)
-" Jump to two characters
-nmap <Leader>c <Plug>(easymotion-s2)
-" Jump to a word using two characters
-nmap <Leader>w <Plug>(easymotion-w2)
+"nmap <Leader>f <Plug>(easymotion-bd-f2)
+"" Jump to a line starting with two specific characters
+"nmap <Leader>l <Plug>(easymotion-bd-jk2)
+"" Jump to two characters
+"nmap <Leader>c <Plug>(easymotion-s2)
+"" Jump to a word using two characters
+"nmap <Leader>w <Plug>(easymotion-w2)
 
 " Fuzzier Binds
 nmap <Leader>; <action>(com.mituuz.fuzzier.Fuzzier)
