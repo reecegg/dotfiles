@@ -91,11 +91,15 @@ bindsym $mod+a focus parent
 bindsym $mod+z focus child
 
 # move the currently focused window to the scratchpad
+# Note: Use 'toggle floating' to break it out of the scratchpad
 bindsym $mod+Shift+minus floating enable, resize set width 1600 height 900, move position center, move scratchpad
+
+# Center the currently focused window
+bindsym $mod+Shift+plus move position center
 
 # Show the next scratchpad window or hide the focused scratchpad window.
 # If there are multiple scratchpad windows, this command cycles through them.
-bindsym $mod+minus scratchpad show
+bindsym $mod+minus scratchpad show, move position center
 
 # Switch to workspace
 bindsym $mod+1 workspace 1
@@ -257,8 +261,6 @@ mode "$mode_gaps_outer" {
 # move focused workspace between monitors
 bindsym $mod+Ctrl+greater move workspace to output right
 bindsym $mod+Ctrl+less move workspace to output left
-
-
 
 # Colors
 set $text-color                  #000000
