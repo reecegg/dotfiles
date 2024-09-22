@@ -47,9 +47,10 @@ vim.opt.sidescrolloff = 10             -- Always show next 10 characters.
 vim.opt.sidescroll = 1                 -- Scroll sideways one character at a time.
 vim.opt.startofline = false            -- Don't jump to the first character with page commands.
 vim.opt.ruler = true                   -- Enable line/col number on the status bar.
-vim.opt.colorcolumn = "119"               -- Set no color columns.
+vim.opt.colorcolumn = "120"               -- Set no color columns.
 vim.opt.showmode = false               -- Don't show -- insert -- etc. text.
 vim.opt.showtabline = 2                -- Always show tabline even when there is only one.
+vim.opt.signcolumn = 'yes'             -- Always show sign column.
 
 -- Search
 vim.opt.incsearch = true               -- Search as characters are entered.

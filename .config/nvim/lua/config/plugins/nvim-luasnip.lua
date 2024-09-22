@@ -13,6 +13,7 @@ return {
 			end
 		end, {silent = true})
 
+		-- Load snippets we have in our runtimepath
 		require("luasnip.loaders.from_vscode").lazy_load()
 	end,
 }

@@ -1,6 +1,8 @@
--- In lua/nlog.lua
-local M = {}
+-- # nlog
+-- Util for writing log messages to a log file in /tmp/neovim.log
+-- Async and queue-based writing to the log file
 
+local M = {}
 local log_file_path = "/tmp/neovim.log"
 local write_queue = {}
 local writing = false

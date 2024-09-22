@@ -23,8 +23,13 @@ local active_job = nil
 --- Get the API from the environment variables.
 -- @param name The name of the environment variable to retrieve.
 -- @return The value of the specified environment variable.
+-- @error If the environment variable is not found or is empty.
 local function get_api_key(name)
-  return os.getenv(name)
+  local api_key = os.getenv(name)
+  if not api_key or api_key == "" then
+    error("API key not found or is empty for: " .. name)
+  end
+  return api_key
 end
 
 ---
@@ -200,8 +205,17 @@ local function write_string_at_cursor(str)
     -- Split the input string by newline characters
     local lines = vim.split(str, '\n')
 
-    -- Join the undo history before inserting new lines
-    vim.cmd("undojoin")
+    -- Check if we can use undojoin
+    local undojoin_allowed = true
+    local success, result = pcall(vim.fn.eval, 'undojoin')
+    if not success or result ~= 0 then
+      undojoin_allowed = false
+    end
+
+    -- Join the undo history before inserting new lines if allowed
+    if undojoin_allowed then
+      vim.cmd("undojoin")
+    end
 
     -- Insert the lines at the current cursor position
     vim.api.nvim_put(lines, 'c', true, true)
@@ -220,7 +234,7 @@ end
 -- If there is no visual selection, it gets the lines from the start to the cursor position.
 -- @param opts table: Options containing the 'replace' flag.
 -- @return string: The generated prompt.
-local function get_prompt(opts)
+function M.get_prompt(opts)
   -- Retrieve the replace option and the visual selection of lines
   local replace = opts.replace
   local visual_lines = M.get_visual_selection()
@@ -316,7 +330,7 @@ function M.invoke_llm_and_stream_into_editor(opts, make_curl_args_fn, handle_dat
   vim.api.nvim_clear_autocmds { group = group }
 
   -- Retrieve the prompt based on the provided options
-  local prompt = get_prompt(opts)
+  local prompt = opts.prompt or M.get_prompt(opts)
 
   -- Ensure the system prompt is provided
   if not opts.system_prompt or opts.system_prompt == "" then

@@ -84,10 +84,9 @@ vim.api.nvim_set_keymap('v', '<leader>P', '"+P', { noremap = true, desc = "Paste
 vim.api.nvim_set_keymap('v', '<leader>Y', '"+y', { noremap = true, desc = "Yank (Sys)" })
 vim.api.nvim_set_keymap('v', '<leader>y', '"+y', { noremap = true, desc = "Yank (Sys)" })
 
--- Better escape with 'jk', 'jj', and 'kk'
+-- Better escape
 vim.api.nvim_set_keymap('i', 'jk', '<Esc>', { noremap = true, desc = "Escape insert mode" })
-vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true, desc = "Escape insert mode" })
-vim.api.nvim_set_keymap('i', 'kk', '<Esc>', { noremap = true, desc = "Escape insert mode" })
+vim.api.nvim_set_keymap('i', 'kj', '<Esc>', { noremap = true, desc = "Escape insert mode" })
 
 -- Better write/quit/exit
 vim.api.nvim_set_keymap('n', '<leader>q', ':q<CR>', { noremap = true, desc = "Quit" })
@@ -195,3 +194,6 @@ vim.api.nvim_set_keymap('n', '<leader>dy', ":lua YankWithMarkdownQuotes('n')<CR>
 -- Keybinding for visual mode (yank selection)
 vim.api.nvim_set_keymap('v', '<leader>dy', ":<C-U>lua YankWithMarkdownQuotes('v')<CR>",
     { noremap = true, silent = true, desc = "Yank selection with markdown quotes" })
+
+--- LSP
+--

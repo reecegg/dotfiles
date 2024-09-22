@@ -47,6 +47,18 @@ return {
         disable = {},
       },
 
+      -- Treesitter Incremental Selection
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          -- set to `false` to disable one of the mappings
+          init_selection = "<leader>ss",
+          node_incremental = "<leader>si",
+          scope_incremental = "<leader>sc",
+          node_decremental = "<leader>sd",
+        },
+      },
+
       -- Treesitter textobjects
       textobjects = {
         select = {
@@ -84,6 +96,7 @@ return {
     }
 
     -- Extra Keybinds for treesitter
-    -- bind
+    vim.api.nvim_set_keymap('n', '<leader>tti', ':InspectTree<CR>', { noremap = true, silent = true })
+
   end,
 }

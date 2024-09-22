@@ -47,6 +47,12 @@ return {
             action = 'Telescope find_files',
             key = 'f',
           },
+          {
+            desc = ' Quit',
+            group = '@property',
+            action = 'q',
+            key = 'q'
+          },
         },
       },
     })

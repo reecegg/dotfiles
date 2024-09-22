@@ -66,7 +66,7 @@ alias hs="history -r"
 alias hst="history -r"
 alias fix="reset && stty sane && tput rs1"
 alias lh="grep -P \"^Host ([^*]+)$\" $HOME/.ssh/config | sed 's/Host //'"
-alias lg="lazygit"
+alias lg='while true; do lazygit; done'
 alias lgc='GIT_DIR=$HOME/.cfg GIT_WORK_TREE=$HOME lazygit'
 alias epoch="date +%s"
 alias phpdoc="phpDocumentor.phar"
@@ -77,16 +77,26 @@ alias password2="tr -dc 'A-Za-z0-9!#$%&()*+,-./:;<=>?@[\]^_{|}~' </dev/urandom |
 alias pw="password"
 alias pw1="password1"
 alias pw2="password2"
-alias py="python"
-alias pyy="python2"
-alias pyyy="python3"
 alias nlogtail="tail -f /tmp/neovim.log"
 alias nloglcear="echo '' > /tmp/neovim.log"
 
+# Python
+alias py="python"
+alias pyy="python2"
+alias pyyy="python3"
+alias venv='function _venv_activate() { \
+  local target="${1:-.}/venv"; \
+  if [ -d "$target" ]; then \
+    source "$target/bin/activate"; \
+  else \
+    echo "No virtual environment found at $target"; \
+  fi; \
+}; _venv_activate'
+
 # ------------------------------------------------------------------------------
-# TrueColor
+# Tests
 # source: https://github.com/termstandard/colors
-alias truecolortest='awk '"'"'BEGIN{
+alias testtruecolor='awk '"'"'BEGIN{
     s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
     for (colnum = 0; colnum<77; colnum++) {
         r = 255-(colnum*255/76);
@@ -99,6 +109,9 @@ alias truecolortest='awk '"'"'BEGIN{
     }
     printf "\n";
 }'"'"''
+
+alias testlig='echo "-> <- ==> === != !== && || ::"'
+
 
 # ==============================================================================
 # Script Aliases
@@ -255,6 +268,8 @@ alias vghalt="vagrant halt"
 # ------------------------------------------------------------------------------
 # Docker Compose Aliases
 alias dc="docker compose"
+alias dcu="docker compose up -d && docker compose logs -f"
+alias dcd="docker compose down"
 
 # ------------------------------------------------------------------------------
 # Yazi Aliases
@@ -273,7 +288,18 @@ alias sgl="sgpt --list-chats"
 
 # ------------------------------------------------------------------------------
 # Aider
-alias aider="aider --no-attribute-author --no-attribute-committer"
+## Default
+alias aider="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --no-suggest-shell-commands --vim"
+## OpenAI
+alias aidero="source ~/git/aider/venv/bin/activate; aider --4o --no-attribute-author --no-attribute-committer --no-gitignore --no-suggest-shell-commands --vim"
+## Limited to subtree
+alias aiderl="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --no-suggest-shell-commands --subtree-only --vim"
+## With Shell
+alias aiders="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --vim"
+## GUI
+alias aider-gui="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --gui"
+## Map
+alias aider-map="source ~/git/aider/venv/bin/activate; aider --show-repo-map"
 
 # ==============================================================================
 # Shadowed Command Aliases

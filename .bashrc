@@ -1,5 +1,8 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
+# Java AWT fix for GUI applications (IntelliJ) in some window managers (i3).
+export _JAVA_AWT_WM_STATIC_GRAVITY=1
+
 # If not running interactively, don't do anything.
 case $- in
 	*i*) ;;
@@ -102,3 +105,8 @@ eval "$(rbenv init -)"
 
 # Boostrap rust
 . "$HOME/.cargo/env"
+
+# Load API keys
+if [ -f ~/.secrets/api_keys.sh ]; then
+    source ~/.secrets/api_keys.sh
+fi

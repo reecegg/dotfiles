@@ -23,7 +23,6 @@ local function copilot_tab()
 end
 
 -- Copilot configuration
---
 
 -- Define the configuration options
 local copilot_opts = {
@@ -32,10 +31,10 @@ local copilot_opts = {
     auto_refresh = true,
     keymap = {
       accept = "<CR>",
-      jump_prev = "[[",
-      jump_next = "]]",
-      refresh = "gr",
-      open = "<M-Tab>",
+      jump_prev = "k",
+      jump_next = "j",
+      refresh = "r",
+      open = "<M-CR>",
     },
     layout = {
       position = "right", -- | top | left | right
@@ -48,27 +47,33 @@ local copilot_opts = {
     hide_during_completion = false,
     debounce = 75,
     keymap = {
-      accept = "<M-l>", -- Custom handling
+      accept = "<M-l>", -- Backup of custom tab handling as well
       accept_word = false,
       accept_line = false,
       next = "<M-]>",
       prev = "<M-[>",
       dismiss = "<C-]>",
-      toggle_auto_trigger = "<leader>tag",
+      toggle_auto_trigger = "<leader>tasg",
       trigger_suggestion = "<C-Tab>",
     },
   },
   filetypes = {
+    -- Explictly Enable
     yaml = true,
     markdown = true,
+
+    -- Explictly Disable
     help = false,
     gitcommit = false,
     gitrebase = false,
     hgcommit = false,
     svn = false,
     cvs = false,
+
+    -- Implicitly Enable
     ["."] = true,
-    -- disable for .env files
+
+    -- disable for .env files to protect secrets
     sh = function()
       if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), '^%.env.*') then
         return false
@@ -100,7 +105,11 @@ return {
     require("copilot").setup(opts)
 
     -- Keybinds
+    -- Accept suggestion with Tab or indent with Tab
     vim.api.nvim_set_keymap("i", "<Tab>", '', { callback = copilot_tab, expr = true, noremap = true, silent = true })
+    -- Unindent with Shift-Tab
     vim.api.nvim_set_keymap("i", "<S-Tab>", '', { callback = function() vim.api.nvim_input("<C-d>") end, expr = true, noremap = true, silent = true })
+    -- Reauthenticate
+    vim.api.nvim_set_keymap("n", "<leader>masa", ":Copilot auth<CR>", { noremap = true, silent = true })
   end,
 }

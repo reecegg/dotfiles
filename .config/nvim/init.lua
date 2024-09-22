@@ -1,3 +1,8 @@
+-- TODO:
+-- nvim-dap and nvim-dap
+-- Trouble.nvim
+-- efmls and efmls-configs-nvim, or none-ls, or nvim-lint and conform
+
 -- Globally load the nlog module
 if _G.nlog then
     print("Warning: 'nlog' is already defined in the global scope. Overwriting it.")
@@ -14,65 +19,3 @@ require("config.core")
 
 -- Load plugins
 require("config.lazy")
-
-
--- TODO: move
--- Load LSP
-local lsp_zero = require('lsp-zero')
-lsp_zero.on_attach(function(_, bufnr)
-  -- see :help lsp-zero-keybindings to see the available actions
-  lsp_zero.default_keymaps({
-    buffer = bufnr,
-    preserve_mappings = false,
-  })
-
-  vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', {buffer = bufnr})
-end)
-
--- setup the language servers
-require('mason').setup()
-require('mason-lspconfig').setup({
-  ensure_installed = {
-    -- Markdown Setup
-
-    -- Lua Setup
-    'lua_ls',
-
-    -- Rust Setup
-    'rust_analyzer',
-  },
-})
-
-require('lspconfig').lua_ls.setup {
-  settings = {
-    Lua = {
-      format = {
-        enable = true,
-      },
-    },
-  },
-}
-
-require("lspconfig").rust_analyzer.setup {}
-
--- Format keybind
-vim.api.nvim_set_keymap('n', '<leader>df', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>', { noremap = true, silent = true })
-
--- -- If already at definition when jumping to definition, "jump back" (open references)
--- function Jump_to_definition()
---   local current_line = vim.api.nvim_win_get_cursor(0)[1]
---   nlog.log('current_line: ' .. current_line)
---   vim.api.nvim_command('normal! gd')
---   if current_line == vim.api.nvim_win_get_cursor(0)[1] then
---     vim.api.nvim_command('normal! gr')
---   end
--- end
--- vim.api.nvim_set_keymap('n', 'gd', '<cmd>lua Jump_to_definition()<CR>', { noremap = true, silent = true })
-
--- Enter key to confirm completions
-local cmp = require('cmp')
-cmp.setup({
-  mapping = cmp.mapping.preset.insert({
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-  }),
-})

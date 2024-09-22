@@ -31,6 +31,7 @@ return {
     vim.keymap.set('n', '<C-P>', builtin.commands, { desc = "Commands" })
 
     -- core
+    vim.keymap.set('n', '<leader><leader>', builtin.resume, { desc = "Find Files" })
     vim.keymap.set('n', '<leader>f<leader>', builtin.resume, { desc = "Resume Finder" })
     vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Find Files" })
     vim.keymap.set('n', '<leader>fp', builtin.pickers, { desc = "Find Pickers" })
@@ -43,5 +44,8 @@ return {
     end, { desc = "Grep String" })
     vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Buffers" })
     vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help Tags" })
+
+    -- LSP
+    vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', {buffer = bufnr})
   end,
 }
