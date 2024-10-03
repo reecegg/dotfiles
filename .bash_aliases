@@ -4,6 +4,9 @@
 # Default Replacements
 # ==============================================================================
 alias ls='lsd'
+alias vim='nvim'
+alias lvim='nvim -u NONE --noplugin -n'
+alias lv='lvim'
 
 # ==============================================================================
 # Single letter aliases.
@@ -79,6 +82,8 @@ alias pw1="password1"
 alias pw2="password2"
 alias nlogtail="tail -f /tmp/neovim.log"
 alias nloglcear="echo '' > /tmp/neovim.log"
+alias sshconfig="vim ~/.ssh/config"
+alias setscreen="export TERM=screen-256color"
 
 # Python
 alias py="python"
@@ -300,6 +305,10 @@ alias aiders="source ~/git/aider/venv/bin/activate; aider --no-attribute-author 
 alias aider-gui="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --gui"
 ## Map
 alias aider-map="source ~/git/aider/venv/bin/activate; aider --show-repo-map"
+
+# ------------------------------------------------------------------------------
+# Laravel Sail
+alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 
 # ==============================================================================
 # Shadowed Command Aliases
