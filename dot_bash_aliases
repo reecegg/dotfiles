@@ -1,3 +1,5 @@
+# vim: filetype=bash
+
 # Note: Run '\command' to run the command that it shadowed by an alias.
 
 # ==============================================================================
@@ -318,6 +320,18 @@ alias aider-map="source ~/git/aider/venv/bin/activate; aider --show-repo-map"
 # ------------------------------------------------------------------------------
 # Laravel Sail
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
+
+# ------------------------------------------------------------------------------
+# Chezmoi
+czlg() {
+  cd "$(cz source-path)" && lazygit
+}
+czwlg() {
+  cd "$(czw source-path)" && lazygit
+}
+czplg() {
+  cd "$(csp source-path)" && lazygit
+}
 
 # ==============================================================================
 # Shadowed Command Aliases
