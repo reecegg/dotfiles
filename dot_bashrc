@@ -34,9 +34,10 @@ HISTSIZE=1000000
 # Set max history size.
 HISTFILESIZE=1000000
 
-# Alias used for interacting with the dotfiles git repo.
-alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
-alias configlg='lazygit --git-dir=$HOME/.cfg --work-tree=$HOME'
+# Alias used for interacting with the dotfiles
+alias cz='chezmoi --source ~/.local/share/chezmoi'
+alias czw='chezmoi --source ~/.local/share/chezmoi-work'
+alias czp='chezmoi --source ~/.local/share/chezmoi-private'
 
 # Update the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.

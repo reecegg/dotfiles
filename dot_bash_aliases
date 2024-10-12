@@ -1,4 +1,11 @@
-# Run '\command' to run the command that it shadowed by an alias.
+# Note: Run '\command' to run the command that it shadowed by an alias.
+
+# ==============================================================================
+# Reserved (configured elsewhere)
+# ==============================================================================
+# cz (.bashrc)
+# czw (.bashrc)
+# czp (.bashrc)
 
 # ==============================================================================
 # Default Replacements
