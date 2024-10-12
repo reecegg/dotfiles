@@ -269,7 +269,8 @@ bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchp
 
 # Screenshot (Maim)
 bindsym $mod+Shift+s exec "maim -s -u | xclip -selection clipboard -t image/png -i"
-bindsym $mod+Shift+f exec "maim -u | xclip -selection clipboard -t image/png -i"
+bindsym $mod+Shift+x exec maim -g $(slop -f \"%wx%h+%x+%y\") -d 2 | xclip -selection clipboard -t image/png -i && notify-send 'Screenshot' 'Screenshot captured and copied to clipboard!'"
+bindsym $mod+x exec "maim -u | xclip -selection clipboard -t image/png -i"
 
 # OCR Screenshot (Normshot)
 bindsym $mod+Ctrl+Shift+s exec "normcap"

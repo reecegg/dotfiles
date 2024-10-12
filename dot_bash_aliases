@@ -251,6 +251,8 @@ alias tks="t kill-session -t "
 # ------------------------------------------------------------------------------
 # OpenTofu / Terraform Aliases
 alias terraform="tofu"
+alias tfi="tofu init"
+alias tfiu="tofu init -upgrade"
 alias tf="tofu"
 alias tfp="tofu plan"
 alias tfa="tofu apply"
