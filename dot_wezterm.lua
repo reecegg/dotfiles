@@ -5,7 +5,7 @@ local config = wezterm.config_builder()
 config.color_scheme = 'Default Dark (base16)'
 
 -- Font Setup
-config.font = wezterm.font_with_fallback({ "Hack", "DejaVu Sans Mono", "JetBrains Mono" })
+config.font = wezterm.font_with_fallback({ "Hack Nerd Font", "DejaVu Sans Mono", "JetBrains Mono" })
 config.font_size = 10.0
 config.window_background_opacity = 1.0
 
