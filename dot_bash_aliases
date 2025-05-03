@@ -101,6 +101,55 @@ alias nlogtail="tail -f /tmp/neovim.log"
 alias nloglcear="echo '' > /tmp/neovim.log"
 alias sshconfig="vim ~/.ssh/config"
 alias setscreen="export TERM=screen-256color"
+alias today='
+day=$(date +%-d)
+
+# Handle special cases 11, 12, and 13
+if [[ $day -eq 11 || $day -eq 12 || $day -eq 13 ]]; then
+  suffix="th"
+else
+  # Determine suffix by the last digit
+  case $((day % 10)) in
+    1) suffix="st" ;;
+    2) suffix="nd" ;;
+    3) suffix="rd" ;;
+    *) suffix="th" ;;
+  esac
+fi
+
+formatted_date="$(date +"%A $day$suffix %B %Y")"
+
+# Print to terminal (with a newline)
+echo "$formatted_date"
+
+# Copy to clipboard without the trailing newline
+echo -n "$formatted_date" | xclip -selection clipboard
+'
+
+alias tomorrow='
+day=$(date -d "tomorrow" +%-d)
+
+# Handle special cases 11, 12, and 13
+if [[ $day -eq 11 || $day -eq 12 || $day -eq 13 ]]; then
+  suffix="th"
+else
+  # Determine suffix by the last digit
+  case $((day % 10)) in
+    1) suffix="st" ;;
+    2) suffix="nd" ;;
+    3) suffix="rd" ;;
+    *) suffix="th" ;;
+  esac
+fi
+
+formatted_date="$(date -d "tomorrow" +"%A $day$suffix %B %Y")"
+
+# Print to terminal (with a newline)
+echo "$formatted_date"
+
+# Copy to clipboard without the trailing newline
+echo -n "$formatted_date" | xclip -selection clipboard
+'
 
 # Python
 alias py="python"
