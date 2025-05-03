@@ -370,16 +370,19 @@ alias sgl="sgpt --list-chats"
 
 # ------------------------------------------------------------------------------
 # Aider
+
+# Eval
+# alias o3mini="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model o3-mini"
+# alias o3mini-low="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model o3-mini --reasoning-effort=low"
+# alias o3mini-high="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model o3-mini --reasoning-effort=high"
+
+alias openai="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model gpt-4o"
+alias openai-mini="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model gpt-4o-mini"
+
 ## Default
-alias aider="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --no-suggest-shell-commands --vim"
-## OpenAI
-alias aidero="source ~/git/aider/venv/bin/activate; aider --4o --no-attribute-author --no-attribute-committer --no-gitignore --no-suggest-shell-commands --vim"
-## Limited to subtree
-alias aiderl="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --no-suggest-shell-commands --subtree-only --vim"
-## With Shell
-alias aiders="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --vim"
+alias aider="source ~/git/aider/venv/bin/activate; aider --model claude-3-5-sonnet-20241022 --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --map-tokens=1000 --map-multiplier-no-files=1"
 ## GUI
-alias aider-gui="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --no-gitignore --gui"
+alias aider-gui="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --gui"
 ## Map
 alias aider-map="source ~/git/aider/venv/bin/activate; aider --show-repo-map"
 
