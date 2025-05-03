@@ -23,6 +23,7 @@ alias ls='lsd'
 alias vim='nvim'
 alias lvim='nvim -u NONE --noplugin -n'
 alias lv='lvim'
+alias diff='delta'
 
 # ==============================================================================
 # Single letter aliases.
