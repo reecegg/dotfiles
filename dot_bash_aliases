@@ -86,7 +86,7 @@ alias hs="history -r"
 alias hst="history -r"
 alias fix="reset && stty sane && tput rs1"
 alias lh="grep -P \"^Host ([^*]+)$\" $HOME/.ssh/config | sed 's/Host //'"
-alias lg='while true; do lazygit; done'
+alias lg='lazygit'
 alias lgc='GIT_DIR=$HOME/.cfg GIT_WORK_TREE=$HOME lazygit'
 alias epoch="date +%s"
 alias phpdoc="phpDocumentor.phar"
