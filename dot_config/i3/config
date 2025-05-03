@@ -277,6 +277,9 @@ bindsym $mod+Shift+s exec "maim -s -u | xclip -selection clipboard -t image/png 
 # bindsym $mod+Shift+x exec maim -g $(slop -f \"%wx%h+%x+%y\") -d 2 | xclip -selection clipboard -t image/png -i && notify-send 'Screenshot' 'Screenshot captured and copied to clipboard!'"
 bindsym $mod+x exec "maim -u | xclip -selection clipboard -t image/png -i"
 
+# QR Code Scanner
+bindsym $mod+Shift+x exec "maim -s -u /tmp/screenshot.png && zbarimg /tmp/screenshot.png | grep 'QR-Code:' | sed 's/QR-Code://' | xclip -selection clipboard && notify-send 'QR Code' 'Scanned QR Code copied to clipboard!'"
+
 # OCR Screenshot (Normshot)
 bindsym $mod+Ctrl+Shift+s exec "normcap"
 
