@@ -349,6 +349,9 @@ alias vghalt="vagrant halt"
 alias dc="docker compose"
 alias dcu="docker compose up -d && docker compose logs -f"
 alias dcd="docker compose down"
+alias dcf="docker compose logs -f"
+alias dcp="docker compose pull"
+alias dcpb="docker compose exec php bash"
 
 # ------------------------------------------------------------------------------
 # Yazi Aliases
