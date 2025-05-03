@@ -17,7 +17,7 @@ floating_modifier $mod
 
 # Applications:
 # Explorer:
-bindsym $mod+e exec --no-startup-id "nautilus"
+bindsym $mod+e exec --no-startup-id "dolphin"
 # Password Manager:
 bindsym $mod+p exec --no-startup-id "1password"
 # bindsym $mod+p exec --no-startup-id "rofi -modi 1pass:rofi-1pass -show 1pass"
