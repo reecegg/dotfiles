@@ -91,3 +91,16 @@ augroup END
 -- Disable modeline: https://security.stackexchange.com/a/157739
 vim.opt.modeline = false
 
+-- Treat unspecified file types as bash (for shell scripts that don't have a file extension)
+vim.api.nvim_create_augroup("treat_unspecified_as_bash", { clear = true })
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = "treat_unspecified_as_bash",
+  pattern = "*",
+  callback = function()
+    -- Check if the file has no extension and no filetype
+    if vim.fn.expand("%:e") == "" and vim.bo.filetype == "" then
+      vim.bo.filetype = "bash"
+    end
+  end,
+})
+
