@@ -401,28 +401,45 @@ alias slat='sail artisan tinker'
 # Chezmoi
 
 ## Default / Public
+alias cza='cz apply'
 alias czad='cz add'
+alias czd='cz diff'
 czcd() {
   cd "$(cz source-path)"
 }
 czlg() {
-  cd "$(cz source-path)" && lazygit
+  if pushd "$(cz source-path)" > /dev/null; then 
+    lazygit 
+    popd > /dev/null
+  fi
 }
 ## Work
+alias czwa='czw apply'
 alias czwad='czw add'
+alias czwd='czw diff'
 czwcd() {
   cd "$(cdw source-path)"
 }
 czwlg() {
-  cd "$(czw source-path)" && lazygit
+czlg() {
+  if pushd "$(czw source-path)" > /dev/null; then 
+    lazygit 
+    popd > /dev/null
+  fi
+}
 }
 ## Private
+alias czpa='czp apply'
 alias czpad='czp add'
+alias czpd='czp diff'
 czpcd () {
   cd "$(czp source-path)"
 }
 czplg() {
-  cd "$(csp source-path)" && lazygit
+  if pushd "$(czp source-path)" > /dev/null; then 
+    lazygit 
+    popd > /dev/null
+  fi
 }
 
 # ==============================================================================
