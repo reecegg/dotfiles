@@ -152,6 +152,7 @@ echo -n "$formatted_date" | xclip -selection clipboard
 '
 
 # Python
+alias venv-here="python3 -m venv venv; source venv/bin/activate"
 alias py="python"
 alias pyy="python2"
 alias pyyy="python3"
