@@ -26,6 +26,9 @@ bindsym $mod+p exec --no-startup-id "1password"
 bindsym $mod+n exec --no-startup-id "firefox"
 # Terminal
 bindsym $mod+Return exec i3-sensible-terminal
+# Editor (vim in wezterm)
+bindsym $mod+Shift+Return exec --no-startup-id "wezterm start -- nvim"
+
 # Start a terminal in a floating window.
 # TODO: https://www.reddit.com/r/i3wm/comments/40jqad/comment/cywlkq3/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 
