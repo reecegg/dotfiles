@@ -207,6 +207,7 @@ alias ..4='cd ../../../..'
 alias ..5='cd ../../../../..'
 
 alias cdg='cd ~/git/'
+alias cdgx='cd ~/gitx/'
 alias cdf='cd ~/file/'
 alias cds='cd ~/scratch/'
 alias cdsql='cd ~/sql-dump/'
