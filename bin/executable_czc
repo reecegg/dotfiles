@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Define the base directory where chezmoi directories are stored
+BASE_DIR="$HOME/.local/share"
+
+# Scan for all directories starting with 'chezmoi'
+CHEZMOI_DIRS=($(find "$BASE_DIR" -maxdepth 1 -type d -name "chezmoi*"))
+
+# Check if the user provided a file
+if [ -z "$1" ]; then
+  echo "Usage: czc <file>"
+  exit 1
+fi
+
+FILE="$1"
+TRACKED_BY=()
+
+# Iterate over each chezmoi directory to check if the file is tracked
+for dir in "${CHEZMOI_DIRS[@]}"; do
+  OUTPUT=$(chezmoi --source "$dir" managed "$FILE" 2>/dev/null)
+  if [ -n "$OUTPUT" ]; then
+    TRACKED_BY+=("$dir")
+  fi
+done
+
+# If the file is already tracked by one or more repos
+if [ ${#TRACKED_BY[@]} -gt 0 ]; then
+  if [ ${#TRACKED_BY[@]} -eq 1 ]; then
+    echo "File '$FILE' is already tracked by: ${TRACKED_BY[0]}"
+    echo "Adding file to that repo..."
+    chezmoi --source "${TRACKED_BY[0]}" add "$FILE"
+  else
+    echo "Warning: File '$FILE' is tracked by multiple repos:"
+    for repo in "${TRACKED_BY[@]}"; do
+      echo "  - $repo"
+    done
+    # Prompt user to select which repo to add the file to
+    echo "Which repo would you like to add the file to?"
+    select repo in "${TRACKED_BY[@]}"; do
+      if [[ " ${TRACKED_BY[@]} " =~ " ${repo} " ]]; then
+        echo "Adding file to selected repo: $repo"
+        chezmoi --source "$repo" add "$FILE"
+        break
+      else
+        echo "Invalid selection. Please try again."
+      fi
+    done
+  fi
+else
+  # File is not tracked by any repo, prompt user to select one
+  echo "File '$FILE' is not tracked by any chezmoi repo."
+  echo "Please choose a repo to add the file to:"
+  select repo in "${CHEZMOI_DIRS[@]}"; do
+    if [[ " ${CHEZMOI_DIRS[@]} " =~ " ${repo} " ]]; then
+      echo "Adding file to selected repo: $repo"
+      chezmoi --source "$repo" add "$FILE"
+      break
+    else
+      echo "Invalid selection. Please try again."
+    fi
+  done
+fi
+
+exit 0
