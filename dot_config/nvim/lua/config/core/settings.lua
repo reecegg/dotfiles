@@ -86,3 +86,8 @@ augroup auto_read
         \ if mode() == 'n' && getcmdwintype() == '' | checktime | endif
 augroup END
 ]])
+
+
+-- Disable modeline: https://security.stackexchange.com/a/157739
+vim.opt.modeline = false
+
