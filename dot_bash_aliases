@@ -315,6 +315,10 @@ alias sch30="watch -n 30 php artisan schedule:run"
 # Tmux Aliases (:t)
 alias ta="t attach"
 alias tks="t kill-session -t "
+#
+# ------------------------------------------------------------------------------
+# Tmuxp Aliases (:tp)
+alias tp="tmuxp load"
 
 # ------------------------------------------------------------------------------
 # OpenTofu / Terraform Aliases
