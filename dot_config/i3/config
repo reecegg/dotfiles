@@ -54,6 +54,8 @@ bindsym $mod+o exec --no-startup-id ~/.config/i3/focus_workspace.sh
 
 # Clipboard History and selection
 bindsym $mod+i exec "CM_LAUNCHER=rofi clipmenu"
+# Snippet selection
+bindsym $mod+Shift+i exec ~/bin/snippet_selector.sh
 
 # Kill focused window.
 bindsym $mod+Shift+q kill
