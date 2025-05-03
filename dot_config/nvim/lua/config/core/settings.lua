@@ -104,3 +104,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
+-- Spell checking
+vim.opt.spelllang = "en_us" -- Set the default spell language to English (US)
+vim.opt.spell = true
+
