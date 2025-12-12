@@ -473,6 +473,8 @@ alias cza='cz apply'
 alias czad='cz add'
 alias czra='cz re-add'
 alias czd='cz diff'
+alias czup='cz update'
+alias czps='cz git push'
 czcd() {
   cd "$(cz source-path)"
 }
@@ -487,6 +489,8 @@ alias czwa='czw apply'
 alias czwad='czw add'
 alias czwra='czw re-add'
 alias czwd='czw diff'
+alias czwup='czw update'
+alias czwps='czw git push'
 czwcd() {
   cd "$(cdw source-path)"
 }
@@ -501,6 +505,8 @@ alias czpa='czp apply'
 alias czpad='czp add'
 alias czpra='czp re-add'
 alias czpd='czp diff'
+alias czpup='czp update'
+alias czpps='czp git push'
 
 ## All repos (work is conditional on checkout existing)
 czaa() {
@@ -510,6 +516,14 @@ czaa() {
 czara() {
   cz re-add && czp re-add
   [ -d "$HOME/.local/share/chezmoi-work" ] && czw re-add
+}
+czaup() {
+  cz update && czp update
+  [ -d "$HOME/.local/share/chezmoi-work" ] && czw update
+}
+czaps() {
+  cz git push && czp git push
+  [ -d "$HOME/.local/share/chezmoi-work" ] && czw git push
 }
 czalg() {
   czlg
@@ -533,7 +547,7 @@ alias pkg-list='pacman -Qqe'                                      # List explici
 alias pkg-list-native='pacman -Qqen'                              # List explicitly installed native (repo) packages
 alias pkg-list-aur='pacman -Qqem'                                 # List explicitly installed AUR/foreign packages
 alias pkg-save='mkdir -p ~/.config/pacman && pacman -Qqe > ~/.config/pacman/pkglist.txt && echo "Saved to ~/.config/pacman/pkglist.txt"'
-alias pkg-install='paru -S --needed - < ~/.config/pacman/pkglist.txt'
+alias pkg-install='paru -S --needed --noconfirm --skipreview - < ~/.config/pacman/pkglist.txt'
 pkg-remove() {
   local pkg="$1"
   local pkglist="$HOME/.config/pacman/pkglist.txt"
