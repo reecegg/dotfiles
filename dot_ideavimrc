@@ -12,10 +12,10 @@ set textobj-entire
 set highlightedyank
 let g:highlightedyank_highlight_duration = "-1"
 
-set quickscope
-set sneak
-set acejump
-set easymotion
+"set quickscope
+"set sneak
+"set acejump
+"set easymotion
 
 " Set clipboard to system clipboard
 set clipboard+=unnamed
@@ -43,7 +43,6 @@ nmap gf :action GoToFile<CR>
 
 " Better system copy and paste using <leader>p and <leader>y in all modes
 " Normal Mode
-mapleader = ","
 nmap <leader>p "+p
 nmap <leader>P "+P
 nmap <leader>Y "+y$

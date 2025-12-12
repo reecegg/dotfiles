@@ -2,5 +2,24 @@
 export TERMINAL=xst
 export BROWSER=firefox
 
-# Added by rustup
+# rustup init
 . "$HOME/.cargo/env"
+
+# pyenv init
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+
+# ==============================================================================
+# Custom Behavior
+# ==============================================================================
+xdg-open() {
+  local url="$1"
+  # if it’s a GitHub compare URL without “...”, inject “staging...”
+  if [[ "$url" =~ ^(https?://github\.com/[^/]+/[^/]+/compare/)([^?]+)(\?.*)?$ ]]; then
+    url="${BASH_REMATCH[1]}staging...${BASH_REMATCH[2]}${BASH_REMATCH[3]}"
+  fi
+  # call the real xdg-open
+  command xdg-open "$url"
+}
+

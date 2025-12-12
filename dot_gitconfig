@@ -1,7 +1,8 @@
 [user]
     name = Reece Gilbert
-	email = reece@luminate.one
+	email = reece.gilbert@exaba.com
     username = reecegg
+	signingkey = /home/reece/.ssh/id_ecdsa
 
 [core]
     excludesfile = ~/.gitignore
@@ -11,6 +12,9 @@
     pager = delta
 	autocrlf = input
 	eol = lf
+
+[include]
+    path = ~/.config/delta/themes.gitconfig
 
 [interactive]
     diffFilter = delta --color-only
@@ -283,3 +287,16 @@
     #theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
     #subrepo = !sh -c 'git filter-branch --prune-empty --subdirectory-filter $1 master' -
     #human = name-rev --name-only --refs=refs/heads/*
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
+[gpg "ssh"]
+	allowedSignersFile = /home/reece/.config/git/allowed_signers
+[init]
+	defaultBranch = main

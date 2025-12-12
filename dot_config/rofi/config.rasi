@@ -148,3 +148,4 @@ configuration {
 }
 
 @theme "~/.config/rofi/themes/theme.rasi"
+

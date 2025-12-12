@@ -1,4 +1,6 @@
-.aider.chat.history.md
-.aider.input.history
-.aider.tags.cache.v3/
+# intellij project configuration
+.idea/
+
+# neovim project configuration
+.phpactor.json
 
