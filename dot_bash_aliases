@@ -23,6 +23,8 @@ alias ls='lsd'
 alias vim='nvim'
 alias lvim='nvim -u NONE --noplugin -n'
 alias lv='lvim'
+alias viml='nvim -u NONE --noplugin -n'
+alias vl='viml'
 alias diff='delta'
 
 # ==============================================================================
@@ -53,6 +55,7 @@ alias q='popd'
 alias r='src' # reload
 alias s='sudo'
 alias t='tmux'
+alias tt='TMUX= tmux'
 alias u='sudo -i'
 alias v='vim'
 #alias w='TODO'
@@ -77,8 +80,14 @@ alias chgrp='chgrp --preserve-root'
 alias cd..='cd ..'
 
 # ==============================================================================
+# Custom Script Aliases
+# ==============================================================================
+alias tlr="tl --resume"
+
+# ==============================================================================
 # Misc Aliases
 # ==============================================================================
+alias ai="claude --dangerously-skip-permissions"
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
 alias uuid="cat /proc/sys/kernel/random/uuid | tr -d '\n' | tee >(xclip); echo ''"
@@ -151,6 +160,51 @@ echo "$formatted_date"
 echo -n "$formatted_date" | xclip -selection clipboard
 '
 
+alias week='
+get_suffix() {
+  d=$1
+  if [[ $d -eq 11 || $d -eq 12 || $d -eq 13 ]]; then
+    echo "th"
+  else
+    case $((d % 10)) in
+      1) echo "st" ;;
+      2) echo "nd" ;;
+      3) echo "rd" ;;
+      *) echo "th" ;;
+    esac
+  fi
+}
+
+output=$(
+  for i in {0..6}; do
+    day=$(date -d "monday +$i day" +%-d)
+    suffix=$(get_suffix "$day")
+    formatted=$(date -d "monday +$i day" +"%A $day$suffix %B %Y")
+
+    if [ "$i" -lt 6 ]; then
+      # Date + blank line after it
+      printf "%s\n\n" "$formatted"
+    else
+      # Last date: no trailing newline
+      printf "%s" "$formatted"
+    fi
+  done
+)
+
+# Print to terminal with a newline at the end
+printf "%s\n" "$output"
+
+# Copy to clipboard without adding an extra newline
+printf "%s" "$output" | xclip -selection clipboard
+'
+
+
+timestamp() {
+    date_part=$(date +%Y_%m_%d)
+    time_part=$(date +%s | tail -c 7)
+    echo "${date_part}_${time_part}"
+}
+
 # Python
 alias venv-here="python3 -m venv venv; source venv/bin/activate"
 alias py="python"
@@ -184,7 +238,6 @@ alias testtruecolor='awk '"'"'BEGIN{
 
 alias testlig='echo "-> <- ==> === != !== && || ::"'
 
-
 # ==============================================================================
 # Script Aliases
 # ==============================================================================
@@ -196,6 +249,7 @@ alias dsw="~/.screenlayout/work.sh"
 # ==============================================================================
 # Program Aliases
 # ==============================================================================
+alias codex='codex --sandbox danger-full-access'
 
 # ------------------------------------------------------------------------------
 # cd Aliases.
@@ -319,6 +373,7 @@ alias tks="t kill-session -t "
 # ------------------------------------------------------------------------------
 # Tmuxp Aliases (:tp)
 alias tp="tmuxp load"
+alias tptp="tmuxp load tmuxp"
 
 # ------------------------------------------------------------------------------
 # OpenTofu / Terraform Aliases
@@ -342,7 +397,7 @@ alias vghalt="vagrant halt"
 
 # ------------------------------------------------------------------------------
 # Docker Aliases
-#alias d="docker"
+alias dpsl="docker ps | less -S"
 
 # ------------------------------------------------------------------------------
 # Docker Compose Aliases
@@ -351,7 +406,7 @@ alias dcu="docker compose up -d && docker compose logs -f"
 alias dcd="docker compose down"
 alias dcf="docker compose logs -f"
 alias dcp="docker compose pull"
-alias dcpb="docker compose exec php bash"
+alias dcsh="docker compose exec php bash"
 
 # ------------------------------------------------------------------------------
 # Yazi Aliases
@@ -390,19 +445,33 @@ alias aider-map="source ~/git/aider/venv/bin/activate; aider --show-repo-map"
 # Laravel Sail
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 alias slu='sail up -d'
+alias slua='sail up'
 alias slub='sail up --build'
-alias slt='sail test'
 alias sld='sail down'
 alias sla='sail artisan'
 alias slb='sail bash'
+alias slsh='sail bash'
 alias slat='sail artisan tinker'
 
+alias slt='sail test'
+alias slt='sail test -p'
+
+alias slci='sail composer install'
+alias slcl='sail composer run lint'
+alias slcp='sail composer run phpstan'
+alias slcf='sail composer run phpstan'
+
+alias slni='sail npm install'
+alias slnl='sail npm run lint'
+alias slnl='sail npm run check'
+alias slnd='sail npm run check'
 # ------------------------------------------------------------------------------
 # Chezmoi
 
 ## Default / Public
 alias cza='cz apply'
 alias czad='cz add'
+alias czra='cz re-add'
 alias czd='cz diff'
 czcd() {
   cd "$(cz source-path)"
@@ -416,6 +485,7 @@ czlg() {
 ## Work
 alias czwa='czw apply'
 alias czwad='czw add'
+alias czwra='czw re-add'
 alias czwd='czw diff'
 czwcd() {
   cd "$(cdw source-path)"
@@ -431,7 +501,13 @@ czlg() {
 ## Private
 alias czpa='czp apply'
 alias czpad='czp add'
+alias czpra='czp re-add'
 alias czpd='czp diff'
+
+## All repos
+alias czaa='cz apply && czp apply && czw apply'
+alias czara='cz re-add && czp re-add && czw re-add'
+alias czalg='czlg; czplg; czwlg'
 czpcd () {
   cd "$(czp source-path)"
 }
@@ -441,6 +517,42 @@ czplg() {
     popd > /dev/null
   fi
 }
+
+# ==============================================================================
+# Package Management (pacman/paru)
+# ==============================================================================
+alias pkg-list='pacman -Qqe'                                      # List explicitly installed packages
+alias pkg-list-native='pacman -Qqen'                              # List explicitly installed native (repo) packages
+alias pkg-list-aur='pacman -Qqem'                                 # List explicitly installed AUR/foreign packages
+alias pkg-save='mkdir -p ~/.config/pacman && pacman -Qqe > ~/.config/pacman/pkglist.txt && echo "Saved to ~/.config/pacman/pkglist.txt"'
+alias pkg-install='paru -S --needed - < ~/.config/pacman/pkglist.txt'
+pkg-remove() {
+  local pkg="$1"
+  local pkglist="$HOME/.config/pacman/pkglist.txt"
+  if [ -z "$pkg" ]; then
+    echo "Usage: pkg-remove <package>"
+    return 1
+  fi
+  paru -Rns "$pkg" && \
+    if [ -f "$pkglist" ]; then
+      sed -i "/^${pkg}$/d" "$pkglist" && echo "Removed '$pkg' from $pkglist"
+    fi
+}
+
+# ==============================================================================
+# Troubleshoot
+# ==============================================================================
+alias fix-audio='systemctl restart --user pipewire pipewire-pulse wireplumber; sudo systemctl restart bluetooth; sudo pkill -f pasystray'
+alias troubleshoot-audio='journalctl --user -u pipewire -u pipewire-pulse -u wireplumber --no-pager -n 50 --since "5 minutes ago"; echo; sudo journalctl -u bluetooth --no-pager -n 50 --since "5 minutes ago"'
+alias fix-bt='sudo systemctl stop bluetooth && sudo modprobe -r btusb && sudo modprobe btusb && sudo systemctl start bluetooth'
+alias troubleshoot-bt='sudo journalctl -u bluetooth --no-pager -n 100 --since "10 minutes ago"; dmesg | grep -iE "btusb|bluetooth|hci" | tail -n 50'
+alias fix-network='sudo systemctl restart NetworkManager'
+alias troubleshoot-network='sudo journalctl -u NetworkManager'
+alias fix-network-hardware='nmcli dev disconnect wlp*; nmcli dev disconnect enp*; nmcli dev connect wlp*; nmcli dev connect enp*;'
+
+alias flush-route-cache='sudo ip neigh flush all; sudo ip route flish cache'
+alias ping-local="ping -c5 192.168.0.1"
+alias ping-remote="ping -c5 8.8.8.8"
 
 # ==============================================================================
 # Shadowed Command Aliases
