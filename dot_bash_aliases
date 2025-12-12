@@ -491,12 +491,10 @@ czwcd() {
   cd "$(cdw source-path)"
 }
 czwlg() {
-czlg() {
-  if pushd "$(czw source-path)" > /dev/null; then 
-    lazygit 
+  if pushd "$(czw source-path)" > /dev/null; then
+    lazygit
     popd > /dev/null
   fi
-}
 }
 ## Private
 alias czpa='czp apply'
@@ -504,10 +502,20 @@ alias czpad='czp add'
 alias czpra='czp re-add'
 alias czpd='czp diff'
 
-## All repos
-alias czaa='cz apply && czp apply && czw apply'
-alias czara='cz re-add && czp re-add && czw re-add'
-alias czalg='czlg; czplg; czwlg'
+## All repos (work is conditional on checkout existing)
+czaa() {
+  cz apply && czp apply
+  [ -d "$HOME/.local/share/chezmoi-work" ] && czw apply
+}
+czara() {
+  cz re-add && czp re-add
+  [ -d "$HOME/.local/share/chezmoi-work" ] && czw re-add
+}
+czalg() {
+  czlg
+  czplg
+  [ -d "$HOME/.local/share/chezmoi-work" ] && czwlg
+}
 czpcd () {
   cd "$(czp source-path)"
 }
