@@ -1,9 +1,128 @@
-# My Dotesfiles
+# My Dotfiles
 
-## Installation
+## Table of Contents
 
-- [Install - chezmoi](https://www.chezmoi.io/install/)
-- `chezmoi init git@github.com:reecegg/dotfiles.git`
+- [Dependencies](#dependencies)
+- [Managing Dotfiles with Chezmoi](#managing-dotfiles-with-chezmoi)
+  - [Repositories](#repositories)
+  - [Initial Setup](#initial-setup)
+  - [Applying Dotfiles](#applying-dotfiles)
+  - [Adding/Updating Tracked Files](#addingupdating-tracked-files)
+  - [Committing and Pushing Changes](#committing-and-pushing-changes)
+  - [Quick Reference](#quick-reference)
+- [Dotfiles](#dotfiles)
+- [Requirements Expectations Considerations Side-effects](#requirements-expectations-considerations-side-effects)
+- [Sources](#sources)
+- [Resources](#resources)
+
+## Dependencies
+
+- [chezmoi](https://www.chezmoi.io/install/) - dotfiles manager
+- [git](https://git-scm.com/) - version control
+- (optional) [lazygit](https://github.com/jesseduffield/lazygit) - terminal UI for git (used by `czlg`, `czplg`, `czwlg`)
+- bash - shell (scripts and aliases)
+- SSH access to git repositories (for private/work/etc repos)
+
+## Managing Dotfiles with Chezmoi
+
+This setup uses [chezmoi](https://www.chezmoi.io/) with multiple repositories to manage dotfiles across different contexts: public, private, and work-specific configurations.
+
+### Repositories
+
+Dotfiles are split across separate chezmoi source directories:
+
+| Alias | Source Directory                  | Purpose                              |
+|-------|-----------------------------------|--------------------------------------|
+| `cz`  | `~/.local/share/chezmoi`          | Public dotfiles (GitHub)             |
+| `czp` | `~/.local/share/chezmoi-private`  | Private/sensitive dotfiles           |
+| `czw` | `~/.local/share/chezmoi-work`     | Work-specific dotfiles               |
+
+### Initial Setup
+
+Install chezmoi and initialize each repository:
+
+```bash
+# Install chezmoi
+# See: https://www.chezmoi.io/install/
+
+# Initialize public dotfiles
+chezmoi init git@github.com:reecegg/dotfiles.git
+
+# Initialize private dotfiles (use your private repo)
+chezmoi init --source ~/.local/share/chezmoi-private git@github.com:reecegg/dotfiles-private.git
+
+# Initialize work dotfiles
+chezmoi init --source ~/.local/share/chezmoi-work git@github.com:reecegg/dotfiles-work.git
+```
+
+### Applying Dotfiles
+
+Apply changes from source to your home directory:
+
+```bash
+cza      # Apply public dotfiles (chezmoi apply)
+czpa     # Apply private dotfiles
+czwa     # Apply work dotfiles
+
+czd      # Preview changes before applying (diff)
+czpd     # Preview private changes
+czwd     # Preview work changes
+
+# Note: In regards to the direction of the diff; removal in the diff means the live file has new content not present in chezmoi source flie. Add back to chezmoi if desired.
+```
+
+### Adding/Updating Tracked Files
+
+When you modify a file locally and want to copy changes back to the source repo, use the `czc` helper script or the add aliases:
+
+```bash
+# Using czc (auto-detects which repo tracks the file)
+czc ~/.bashrc
+
+# Or use the add aliases directly
+czad ~/.bashrc    # Add to public repo
+czpad ~/.bashrc   # Add to private repo
+czwad ~/.bashrc   # Add to work repo
+
+# Check which repo tracks a file
+czc-check ~/.bashrc
+
+# Re-add all modified tracked files back to source
+czra      # Re-add all modified files to public repo
+czpra     # Re-add all modified files to private repo
+czwra     # Re-add all modified files to work repo
+czara     # Re-add all modified files to ALL repos
+```
+
+### Committing and Pushing Changes
+
+Use `lazygit` to commit and push changes in each source directory:
+
+```bash
+czlg     # Open lazygit in public chezmoi source
+czplg    # Open lazygit in private chezmoi source
+czwlg    # Open lazygit in work chezmoi source
+
+# Or navigate to source directories manually
+czcd     # cd to public source
+czpcd    # cd to private source
+czwcd    # cd to work source
+```
+
+### Quick Reference
+
+| Action                    | Public  | Private | Work    |
+|---------------------------|---------|---------|---------|
+| Apply dotfiles            | `cza`   | `czpa`  | `czwa`  |
+| Show diff                 | `czd`   | `czpd`  | `czwd`  |
+| Add file to source        | `czad`  | `czpad` | `czwad` |
+| Re-add all modified files | `czra`  | `czpra` | `czwra` |
+| Open lazygit              | `czlg`  | `czplg` | `czwlg` |
+| cd to source directory    | `czcd`  | `czpcd` | `czwcd` |
+
+Re-add all repos at once: `czara`
+
+---
 
 ## Dotfiles
 
@@ -22,6 +141,8 @@
 - .Xresources: Configuration for x client applications.
 
 ## Requirements Expectations Considerations Side-effects
+
+Use `cz managed` / `czp managed` / `czw managed` to see all files managed by each repo.
 
 - TODO: update
 - .bash_aliases: None

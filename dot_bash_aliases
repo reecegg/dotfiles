@@ -504,10 +504,10 @@ alias czpad='czp add'
 alias czpra='czp re-add'
 alias czpd='czp diff'
 
-## All repos
-alias czaa='cz apply && czp apply && czw apply'
-alias czara='cz re-add && czp re-add && czw re-add'
-alias czalg='czlg; czplg; czwlg'
+## All repos (work is conditional on checkout existing)
+alias czaa='cz apply && czp apply && [ -d ~/.local/share/chezmoi-work ] && czw apply'
+alias czara='cz re-add && czp re-add && [ -d ~/.local/share/chezmoi-work ] && czw re-add'
+alias czalg='czlg; czplg; [ -d ~/.local/share/chezmoi-work ] && czwlg'
 czpcd () {
   cd "$(czp source-path)"
 }
