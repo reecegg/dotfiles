@@ -1,4 +1,35 @@
 #!/bin/bash
+#
+# czc - Chezmoi multi-repo file adder
+#
+# Adds a file to a chezmoi repository. Automatically detects which repo(s)
+# already track the file and handles accordingly:
+#   - If tracked by one repo: adds to that repo
+#   - If tracked by multiple repos: prompts user to select
+#   - If not tracked: prompts user to select a repo
+#
+# Scans ~/.local/share/chezmoi* for chezmoi repositories.
+#
+# Usage: czc <file>
+#
+
+# Show help
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    echo "czc - Chezmoi multi-repo file adder"
+    echo ""
+    echo "Usage: czc <file>"
+    echo ""
+    echo "Adds a file to a chezmoi repository. Scans ~/.local/share/chezmoi*"
+    echo "for repositories and handles the following cases:"
+    echo ""
+    echo "  - File tracked by one repo:      adds to that repo"
+    echo "  - File tracked by multiple repos: prompts to select"
+    echo "  - File not tracked:              prompts to select a repo"
+    echo ""
+    echo "Options:"
+    echo "  -h, --help    Show this help message"
+    exit 0
+fi
 
 # Define the base directory where chezmoi directories are stored
 BASE_DIR="$HOME/.local/share"

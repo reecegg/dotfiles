@@ -1,4 +1,34 @@
 #!/bin/bash
+#
+# czc-check - Check which chezmoi repo tracks a file
+#
+# Scans all chezmoi repositories in ~/.local/share/chezmoi* and reports
+# which repo(s) track the specified file.
+#
+# Exit codes:
+#   0 - File is tracked by one or more repos
+#   1 - File is not tracked or no file specified
+#
+# Usage: czc-check <file>
+#
+
+# Show help
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    echo "czc-check - Check which chezmoi repo tracks a file"
+    echo ""
+    echo "Usage: czc-check <file>"
+    echo ""
+    echo "Scans all chezmoi repositories in ~/.local/share/chezmoi* and"
+    echo "reports which repo(s) track the specified file."
+    echo ""
+    echo "Exit codes:"
+    echo "  0 - File is tracked by one or more repos"
+    echo "  1 - File is not tracked or no file specified"
+    echo ""
+    echo "Options:"
+    echo "  -h, --help    Show this help message"
+    exit 0
+fi
 
 # Define the base directory where chezmoi directories are stored
 BASE_DIR="$HOME/.local/share"
