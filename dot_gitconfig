@@ -1,8 +1,11 @@
-[user]
-    name = Reece Gilbert
-	email = reece.gilbert@exaba.com
-    username = reecegg
-	signingkey = /home/reece/.ssh/id_ecdsa
+# Local config (not tracked) - should contain:
+#   [user]
+#       name = Your Name
+#       email = your@email.com
+#       username = yourusername
+#       signingkey = /path/to/key
+[include]
+    path = ~/.gitconfig.local
 
 [core]
     excludesfile = ~/.gitignore
