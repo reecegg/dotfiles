@@ -1,7 +1,7 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference.
 
 focus_follows_mouse yes
-popup_during_fullscreen leave_fullscreen
+popup_during_fullscreen smart
 # floating_minimum_size 320 x 180
 floating_maximum_size 1920 x 1080
 
@@ -10,7 +10,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font is used in the bar {}
 # block below.
-font pango:DejaVu Sans Mono 11
+font pango:DejaVu Sans Mono 8
 
 # Use Mouse+$mod to drag floating windows to their wanted position.
 floating_modifier $mod
@@ -20,12 +20,14 @@ floating_modifier $mod
 bindsym $mod+e exec --no-startup-id "dolphin"
 # Password Manager:
 bindsym $mod+p exec --no-startup-id "1password"
-# bindsym $mod+p exec --no-startup-id "rofi -modi 1pass:rofi-1pass -show 1pass"
 # Ctrl+Shift+Space also opens 1password Quick Access
 # Browser
 bindsym $mod+n exec --no-startup-id "firefox"
+bindsym $mod+Shift+n exec --no-startup-id "google-chrome-stable"
+bindsym $mod+Ctrl+Shift+n exec --no-startup-id "google-chrome-stable --remote-debugging-port=9222 --user-data-dir=/home/reece/.chrome-dev-profile"
 # Terminal
-bindsym $mod+Return exec i3-sensible-terminal
+#bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec wezterm > /tmp/wezterm.log 2>&1
 # Editor (vim in wezterm)
 bindsym $mod+Shift+Return exec --no-startup-id "wezterm start -- nvim"
 
@@ -41,10 +43,18 @@ bindsym $mod+w exec --no-startup-id "rofi -show window"
 bindsym $mod+Shift+w exec --no-startup-id "rofi -show windowcd"
 bindsym $mod+Shift+e exec --no-startup-id "rofi -show p -modi p:rofi-power-menu"
 bindsym $mod+Shift+o exec --no-startup-id "~/.scripts/choose_screenlayout.sh"
-bindsym $mod+period exec --no-startup-id "rofi -modi emoji -show emoji -emoji-format '{emoji} {name}'"
+bindsym $mod+comma exec --no-startup-id "rofi -modi emoji -show emoji -emoji-format '{emoji} {name}'"
 
 # Rename workspace
 bindsym $mod+r exec --no-startup-id ~/.config/i3/rename_workspace.sh
+bindsym $mod+apostrophe exec --no-startup-id ~/.scripts/i3-set-ws-suffix.sh ''
+bindsym $mod+semicolon exec --no-startup-id ~/.scripts/i3-set-ws-suffix.sh '!!!'
+bindsym $mod+period exec --no-startup-id ~/.scripts/i3-set-ws-suffix.sh '...'
+bindsym $mod+slash exec --no-startup-id ~/.scripts/i3-set-ws-suffix.sh '???'
+
+bindsym $mod+Shift+semicolon exec --no-startup-id ~/.scripts/i3-toggle-ws-suffix.sh '!!!'
+bindsym $mod+Shift+period exec --no-startup-id ~/.scripts/i3-toggle-ws-suffix.sh '...'
+bindsym $mod+Shift+slash exec --no-startup-id ~/.scripts/i3-toggle-ws-suffix.sh '???'
 
 # Focus workspace
 bindsym $mod+o exec --no-startup-id ~/.config/i3/focus_workspace.sh
@@ -281,7 +291,7 @@ bindsym $mod+x exec "maim -u | xclip -selection clipboard -t image/png -i"
 bindsym $mod+Shift+x exec "maim -s -u /tmp/screenshot.png && zbarimg /tmp/screenshot.png | grep 'QR-Code:' | sed 's/QR-Code://' | xclip -selection clipboard && notify-send 'QR Code' 'Scanned QR Code copied to clipboard!'"
 
 # OCR Screenshot (Normshot)
-bindsym $mod+Ctrl+Shift+s exec "normcap"
+bindsym $mod+Ctrl+Shift+s exec "normcap | xclip -selection clipboard -t text/plain"
 
 # Mode to move floating windows
 bindsym $mod+m mode "move" focus floating
@@ -356,7 +366,7 @@ bindsym $mod+Ctrl+less move workspace to output left
 
 # Colors
 set $text-color                  #000000
-set $background-color            #e6e6e6 
+set $background-color            #f2f2f2 
 set $border-color                #e6e6e6
 set $child-border-color          #cccccc
 
