@@ -1,0 +1,325 @@
+{
+    "editor.inlineSuggest.enabled": true,
+    "cSpell.userWords": [
+        "Automote"
+    ],
+    "editor.wordWrap": "off",
+    "github.copilot.enable": {
+        "*": true,
+        "yaml": true,
+        "plaintext": true,
+        "markdown": true
+    },
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.autoImportUserSymbols": true,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.inlayHints.pytestParameters": true,
+    "python.analysis.inlayHints.variableTypes": true,
+    "python.analysis.typeCheckingMode": "off",
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore=E501,W503",
+    ],
+    "python.linting.blackArgs": [
+        "--line-length",
+        "120",
+    ],
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 200,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnType": true
+    },
+    "ChatGPT: Custom prompt 1": {
+        "default": ""
+    },
+    "chatgpt.promptPrefix.addComments": "Add comments for the following code. Don't add comments where the code is self explanatory.",
+    "chatgpt.gpt3.temperature": 0.1,
+    "debug.onTaskErrors": "debugAnyway",
+    "chatgpt.promptPrefix.customPrompt1": "Add strict types to the following code",
+    "chatgpt.promptPrefix.customPrompt1-enabled": true,
+    "editor.stopLineAfterBuildError": true,
+    "outline.showVariables": false,
+    // "terminal.integrated.profiles.linux": {
+    //     "bash": null,
+    //     "tmux": {
+    //         "path": "bash",
+    //         "args": [
+    //             "-c",
+    //             "tmux new -ADs ${PWD##*/}"
+    //         ],
+    //         "icon": "terminal-tmux",
+    //     },
+    // },
+    // "terminal.integrated.defaultProfile.linux": "tmux",
+    "genieai.personalizedName": "ChatGPT",
+    "genieai.promptPrefix.customPrompt1": "Add detailed docblock for the following code",
+    "genieai.promptPrefix.customPrompt1-enabled": true,
+    "[markdown]": {
+        "editor.wordWrap": "on"
+    },
+    "editor.renderWhitespace": "none",
+    "[csharp]": {
+        "editor.defaultFormatter": "ms-dotnettools.csharp"
+    },
+    "explorer.confirmDragAndDrop": false,
+    "git.openRepositoryInParentFolders": "never",
+    "gitlens.plusFeatures.enabled": false,
+    "gitlens.codeLens.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.statusBar.enabled": false,
+    "gitlens.hovers.enabled": false,
+    "markdown.extension.toc.unorderedList.marker": "*",
+    "search.exclude": {
+        ".aider*": true,
+    },
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<C-p>"
+            ],
+            "commands": [
+                "workbench.action.quickOpen",
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "p"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "p"
+            ],
+            "description": "Paste after (Sys)"
+        },
+        {
+            "before": [
+                "<leader>",
+                "P"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "P"
+            ],
+            "description": "Paste before (Sys)"
+        },
+        {
+            "before": [
+                "<leader>",
+                "Y"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "y",
+                "$"
+            ],
+            "description": "Yank Line (Sys)"
+        },
+        {
+            "before": [
+                "<leader>",
+                "y"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "y"
+            ],
+            "description": "Yank (Sys)"
+        },
+        {
+            "before": [
+                "<leader>",
+                "q"
+            ],
+            "after": [
+                ":q<CR>"
+            ],
+            "description": "Quit"
+        },
+        {
+            "before": [
+                "<leader>",
+                "qq"
+            ],
+            "after": [
+                ":q<CR>"
+            ],
+            "description": "Quit"
+        },
+        {
+            "before": [
+                "<leader>",
+                "qa"
+            ],
+            "after": [
+                ":qa<CR>"
+            ],
+            "description": "Quit all"
+        },
+        {
+            "before": [
+                "<leader>",
+                "x"
+            ],
+            "after": [
+                ":x<CR>"
+            ],
+            "description": "Save and quit"
+        },
+        {
+            "before": [
+                "<leader>",
+                "ww"
+            ],
+            "after": [
+                ":w<CR>"
+            ],
+            "description": "Save"
+        },
+        {
+            "before": [
+                "<leader>",
+                "wq"
+            ],
+            "after": [
+                ":wq<CR>"
+            ],
+            "description": "Save and quit"
+        },
+        {
+            "before": [
+                "<leader>",
+                "wa"
+            ],
+            "after": [
+                ":wa<CR>"
+            ],
+            "description": "Save all"
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                "p"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "p"
+            ],
+            "description": "Paste after (Sys)"
+        },
+        {
+            "before": [
+                "<leader>",
+                "P"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "P"
+            ],
+            "description": "Paste before (Sys)"
+        },
+        {
+            "before": [
+                "<leader>",
+                "Y"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "y"
+            ],
+            "description": "Yank (Sys)"
+        },
+        {
+            "before": [
+                "<leader>",
+                "y"
+            ],
+            "after": [
+                "\"",
+                "+",
+                "y"
+            ],
+            "description": "Yank (Sys)"
+        }
+    ],
+    "vim.insertModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "j",
+                "k"
+            ],
+            "after": [
+                "<Esc>"
+            ],
+            "description": "Escape insert mode"
+        },
+        {
+            "before": [
+                "k",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ],
+            "description": "Escape insert mode"
+        },
+        {
+            "before": [
+                "<leader>",
+                "p"
+            ],
+            "after": [
+                "\"",
+                "p"
+            ]
+        }
+    ],
+    "vim.leader": "<space>",
+    "vim.timeout": 300,
+    "extensions.experimental.affinity": {
+        "vscodevim.vim": 1
+    },
+    "editor.fontSize": 10,
+    "editor.fontFamily": "'Hack', 'Droid Sans Mono', 'monospace', monospace",
+    "editor.lineHeight": 1.3,
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/myfile"
+            ],
+            "url": "schemaURL"
+        },
+        {
+            "fileMatch": [
+                "/myfile"
+            ],
+            "url": "schemaURL"
+        }
+    ],
+    "window.openFoldersInNewWindow": "on",
+    "window.zoomLevel": -1,
+    "chat.editor.fontSize": 16,
+    "window.confirmSaveUntitledWorkspace": false,
+    "python.analysis.aiCodeActions": {},
+    "github.copilot.chat.codesearch.enabled": true,
+    "github.copilot.chat.agent.thinkingTool": true,
+    "github.copilot.chat.agent.enabled": true,
+    "chat.agent.enabled": true,
+    "editor.codeActionsOnSave": {},
+    "explorer.confirmDelete": false,
+    "github.copilot.nextEditSuggestions.enabled": true,
+}
