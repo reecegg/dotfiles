@@ -3,9 +3,15 @@ local config = wezterm.config_builder()
 
 -- Color Setup
 config.color_scheme = 'Default Dark (base16)'
+-- Override colors
+config.colors = {
+  -- Override the selection background to conflict less.
+  selection_fg = 'none',  -- keeps original text color
+  selection_bg = '#2b3a4a', -- dim blue-gray instead of bright blue
+}
 
 -- Font Setup
-config.font = wezterm.font_with_fallback({ "Hack Nerd Font", "DejaVu Sans Mono", "JetBrains Mono" })
+config.font = wezterm.font_with_fallback({ "Hack", "DejaVu Sans Mono", "JetBrains Mono" })
 config.font_size = 10.0
 config.window_background_opacity = 1.0
 
@@ -16,56 +22,18 @@ config.hide_tab_bar_if_only_one_tab = true
 
 config.freetype_load_target = "Normal" -- "Light" | "Normal" | "Mono"
 
--- Window Setup
+-- Window setup
 config.window_padding = {
   left = 0,
   right = 0,
   top = 0,
-  bottom = 0
-} -- Set the border on the edge of the window
+  bottom = 0,
+}
 
--- The center_content function as provided
-local function center_content(window, pane)
-  -- Reset padding to 0 so we can get the max content size
-  local overrides = window:get_config_overrides() or {}
-  local zero_padding = {
-    left = 0,
-    right = 0,
-    top = 0,
-    bottom = 0
-  }
-  overrides.window_padding = zero_padding
-  window:set_config_overrides(overrides)
-
-  -- Get the dimensions of the window and the content
-  local window_width_px = window:get_dimensions().pixel_width
-  local window_height_px = window:get_dimensions().pixel_height
-  local content_width_px = pane:get_dimensions().pixel_width
-  local content_height_px = pane:get_dimensions().pixel_height
-
-  -- Get the window vs content size difference
-  local horizontal_diff = window_width_px - content_width_px
-  local vertical_diff = window_height_px - content_height_px
-
-  -- Calculate the padding
-  local horizontal_padding = horizontal_diff / 2
-  local vertical_padding = vertical_diff / 2
-
-  -- Set the padding
-  local recentered_padding = {
-    left = horizontal_padding .. 'px',
-    right = horizontal_padding .. 'px',
-    top = vertical_padding .. 'px',
-    bottom = vertical_padding .. 'px'
-  }
-
-  overrides.window_padding = recentered_padding
-  window:set_config_overrides(overrides)
-end
-
-wezterm.on("window-resized", function(window, pane)
-  center_content(window, pane)
-end)
+config.window_content_alignment = {
+  horizontal = 'Center',
+  vertical = 'Center',
+}
 
 -- Redefine the font size keybindings to emit the window-resized event.
 -- Limitation: The font size change appears to be happening after the window-resized event is emitted.
@@ -105,6 +73,14 @@ config.keys = {
     mods = "SUPER",
     action = wezterm.action.DisableDefaultAssignment,
   },
+  {
+    key = "Enter",
+    mods = "SHIFT",
+    action = wezterm.action.SendString("\n"),
+  },
 }
+
+-- fix for startup isuse
+config.prefer_egl = false
 
 return config
