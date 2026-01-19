@@ -1,0 +1,61 @@
+# i3blocks configuration file
+#
+# Dependencies:
+# - acpi (for battery status): sudo pacman -S acpi
+# - NetworkManager (for nmcli): sudo pacman -S networkmanager
+# - i3blocks: sudo pacman -S i3blocks
+# - VPN status script: ~/.config/i3blocks/scripts/check-vpn
+# - Claude usage script: ~/.config/i3blocks/scripts/claude-usage (requires jq, curl)
+
+[claude]
+command=~/.config/i3blocks/scripts/claude-usage
+interval=60
+markup=pango
+
+[vpn_status]
+command=~/.config/i3blocks/scripts/check-vpn
+interval=5
+markup=pango
+
+[wireless]
+command=nmcli -t -f ACTIVE,SSID dev wifi | grep '^yes' | awk -F ':' '{print $2}'
+label=WIFI: 
+interval=5
+format_up=WIFI: %output
+format_down=WIFI: down
+
+[ethernet]
+command=cat /sys/class/net/$(ls /sys/class/net | grep -E '^(en|eth)')/carrier
+label=ETH: 
+interval=5
+format_up=ETH: up
+format_down=ETH: down
+
+[battery]
+command=acpi -b | awk '{print $4}' | sed 's/,//'
+label=BAT: 
+interval=30
+
+[cpu_usage]
+command=top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{printf("CPU: %5s%", 100 - $1)}'
+interval=1
+
+[disk]
+command=df -h / | awk 'NR==2 {print $4}'
+label=HD: 
+interval=30
+
+[memory]
+command=free -g | awk 'NR==2 {print $7"GiB"}'
+label=RAM: 
+interval=30
+
+[tztime utc]
+command=date -u "+%Y-%m-%d %H:%M:%S"
+label=UTC: 
+interval=1
+
+[tztime local]
+command=date "+%Y-%m-%d %H:%M:%S"
+label=LOCAL: 
+interval=1

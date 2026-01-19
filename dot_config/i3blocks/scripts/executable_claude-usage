@@ -1,0 +1,113 @@
+#!/bin/bash
+# Claude Code usage monitor for i3blocks
+# Shows 5-hour and 7-day rate limit utilization
+#
+# Add to ~/.config/i3blocks/config:
+#   [claude]
+#   command=~/.scripts/claude-usage.sh
+#   interval=60
+#   markup=pango
+
+set -euo pipefail
+
+CACHE_FILE="/tmp/claude-usage-api.json"
+CREDS_FILE="$HOME/.claude/.credentials.json"
+CACHE_MAX_AGE=60
+
+# Output nothing if credentials don't exist (Claude not set up)
+if [[ ! -f "$CREDS_FILE" ]]; then
+    exit 0
+fi
+
+# Check for required tools
+if ! command -v jq &>/dev/null || ! command -v curl &>/dev/null; then
+    echo "ERR"
+    exit 0
+fi
+
+# Get token, exit silently if not available
+token=$(jq -r '.claudeAiOauth.accessToken // empty' "$CREDS_FILE" 2>/dev/null)
+if [[ -z "$token" ]]; then
+    exit 0
+fi
+
+# Refresh cache if missing, empty, or older than CACHE_MAX_AGE
+refresh_cache=false
+if [[ ! -f "$CACHE_FILE" ]]; then
+    refresh_cache=true
+elif [[ ! -s "$CACHE_FILE" ]]; then
+    refresh_cache=true
+else
+    cache_age=$(($(date +%s) - $(stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0)))
+    if [[ $cache_age -gt $CACHE_MAX_AGE ]]; then
+        refresh_cache=true
+    fi
+fi
+
+if [[ "$refresh_cache" == "true" ]]; then
+    response=$(curl -s -m 5 -X GET "https://api.anthropic.com/api/oauth/usage" \
+        -H "Authorization: Bearer $token" \
+        -H "anthropic-beta: oauth-2025-04-20" 2>/dev/null || echo "")
+
+    if [[ -n "$response" ]] && echo "$response" | jq -e '.five_hour' &>/dev/null; then
+        echo "$response" > "$CACHE_FILE"
+    elif [[ ! -f "$CACHE_FILE" ]]; then
+        # No cache and failed to fetch - exit silently
+        exit 0
+    fi
+    # Otherwise keep stale cache
+fi
+
+# Parse cache (with defaults for missing values)
+if [[ ! -f "$CACHE_FILE" ]] || [[ ! -s "$CACHE_FILE" ]]; then
+    exit 0
+fi
+
+five_util=$(jq -r '.five_hour.utilization // empty' "$CACHE_FILE" 2>/dev/null)
+week_util=$(jq -r '.seven_day.utilization // empty' "$CACHE_FILE" 2>/dev/null)
+
+# Exit if no data
+if [[ -z "$five_util" ]] && [[ -z "$week_util" ]]; then
+    exit 0
+fi
+
+# Round percentages
+five_pct=$(printf "%.0f" "${five_util:-0}" 2>/dev/null || echo "0")
+week_pct=$(printf "%.0f" "${week_util:-0}" 2>/dev/null || echo "0")
+
+# Color thresholds (pango markup for i3blocks)
+get_color() {
+    local pct=${1:-0}
+    if [[ $pct -ge 80 ]]; then
+        echo "#FF5555"  # red
+    elif [[ $pct -ge 60 ]]; then
+        echo "#FFFF55"  # yellow
+    else
+        echo "#AAAAAA"  # gray
+    fi
+}
+
+# 10-segment bar
+make_bar() {
+    local pct=${1:-0}
+    local color=${2:-#AAAAAA}
+    local filled=$((pct / 10))
+    [[ $filled -eq 0 ]] && [[ $pct -gt 0 ]] && filled=1
+    [[ $filled -gt 10 ]] && filled=10
+    local empty=$((10 - filled))
+
+    local bar=""
+    for ((i=0; i<filled; i++)); do bar="${bar}▰"; done
+    for ((i=0; i<empty; i++)); do bar="${bar}▱"; done
+
+    echo "<span color='$color'>${bar}</span> <span color='$color'>${pct}%</span>"
+}
+
+five_color=$(get_color "$five_pct")
+week_color=$(get_color "$week_pct")
+
+five_bar=$(make_bar "$five_pct" "$five_color")
+week_bar=$(make_bar "$week_pct" "$week_color")
+
+# Output with pango markup
+echo "5h:${five_bar} 7d:${week_bar}"

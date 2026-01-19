@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Check if any WireGuard interface is up (no root required)
+if ip link show type wireguard 2>/dev/null | grep -q 'UP'; then
+    echo "<span color='#50FA7B'>VPN: on</span>"
+else
+    echo "<span color='#AAAAAA'>VPN: off</span>"
+fi
