@@ -141,9 +141,9 @@ burn_color() {
     local expected=${2:-0}
     local diff=$((actual - expected))
 
-    if [[ $diff -gt 5 ]]; then
+    if [[ $diff -gt 10 ]]; then
         echo "#FF5555"  # over pace (red)
-    elif [[ $diff -lt -5 ]]; then
+    elif [[ $diff -lt -10 ]]; then
         echo "#8BE9FD"  # under pace (blue)
     else
         echo "#50FA7B"  # on pace (green)
