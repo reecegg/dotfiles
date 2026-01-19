@@ -382,8 +382,8 @@ client.focused_inactive $inactive-border-color $inactive-background-color $inact
 
 # Bar
 bar {
-        status_command i3status
-        # status_command i3blocks
+        #status_command i3status
+        status_command i3blocks
         tray_output primary
 
         colors {
