@@ -65,6 +65,8 @@ fi
 
 five_util=$(jq -r '.five_hour.utilization // empty' "$CACHE_FILE" 2>/dev/null)
 week_util=$(jq -r '.seven_day.utilization // empty' "$CACHE_FILE" 2>/dev/null)
+five_reset=$(jq -r '.five_hour.resets_at // empty' "$CACHE_FILE" 2>/dev/null)
+week_reset=$(jq -r '.seven_day.resets_at // empty' "$CACHE_FILE" 2>/dev/null)
 
 # Exit if no data
 if [[ -z "$five_util" ]] && [[ -z "$week_util" ]]; then
@@ -74,6 +76,36 @@ fi
 # Round percentages
 five_pct=$(printf "%.0f" "${five_util:-0}" 2>/dev/null || echo "0")
 week_pct=$(printf "%.0f" "${week_util:-0}" 2>/dev/null || echo "0")
+
+# Calculate expected burn rate (% elapsed in window)
+# 5h window = 18000 seconds, 7d window = 604800 seconds
+calc_expected_pct() {
+    local reset_ts="$1"
+    local window_secs="$2"
+    [[ -z "$reset_ts" ]] && echo "0" && return
+
+    local reset_epoch=$(date -d "$reset_ts" +%s 2>/dev/null || echo "0")
+    local now_epoch=$(date +%s)
+    local elapsed=$((window_secs - (reset_epoch - now_epoch)))
+    [[ $elapsed -lt 0 ]] && elapsed=0
+    [[ $elapsed -gt $window_secs ]] && elapsed=$window_secs
+
+    echo $((elapsed * 100 / window_secs))
+}
+
+five_expected=$(calc_expected_pct "$five_reset" 18000)
+week_expected=$(calc_expected_pct "$week_reset" 604800)
+
+# Format reset time for display
+format_reset() {
+    local reset_ts="$1"
+    local fmt="$2"
+    [[ -z "$reset_ts" ]] && echo "" && return
+    date -d "$reset_ts" +"$fmt" 2>/dev/null || echo ""
+}
+
+five_reset_fmt=$(format_reset "$five_reset" "%H:%M")
+week_reset_fmt=$(format_reset "$week_reset" "%a %H:%M")
 
 # Color thresholds (pango markup for i3blocks)
 get_color() {
@@ -100,7 +132,22 @@ make_bar() {
     for ((i=0; i<filled; i++)); do bar="${bar}▰"; done
     for ((i=0; i<empty; i++)); do bar="${bar}▱"; done
 
-    echo "<span color='$color'>${bar}</span> <span color='$color'>${pct}%</span>"
+    echo "<span color='$color'>${bar}</span>"
+}
+
+# Burn rate color: red over pace, blue under pace, gray on pace
+burn_color() {
+    local actual=${1:-0}
+    local expected=${2:-0}
+    local diff=$((actual - expected))
+
+    if [[ $diff -gt 5 ]]; then
+        echo "#FF5555"  # over pace (red)
+    elif [[ $diff -lt -5 ]]; then
+        echo "#8BE9FD"  # under pace (blue)
+    else
+        echo "#50FA7B"  # on pace (green)
+    fi
 }
 
 five_color=$(get_color "$five_pct")
@@ -109,5 +156,8 @@ week_color=$(get_color "$week_pct")
 five_bar=$(make_bar "$five_pct" "$five_color")
 week_bar=$(make_bar "$week_pct" "$week_color")
 
-# Output with pango markup
-echo "5h:${five_bar} 7d:${week_bar}"
+five_burn_color=$(burn_color "$five_pct" "$five_expected")
+week_burn_color=$(burn_color "$week_pct" "$week_expected")
+
+# Output with pango markup: bar pct/expected (reset_time)
+echo "5h: ${five_bar} <span color='$five_burn_color'>${five_pct}/${five_expected}</span> <span color='#AAAAAA'>(${five_reset_fmt})</span> 7d: ${week_bar} <span color='$week_burn_color'>${week_pct}/${week_expected}</span> <span color='#AAAAAA'>(${week_reset_fmt})</span>"
