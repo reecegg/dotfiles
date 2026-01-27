@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# Per-core CPU usage with colored vertical bars
+# 9 states: space (0%), ▁-▇ (1-99%), █ (100%)
+
+chars=(" " "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█")
+colors=("" "#22CC22" "#44CC22" "#88CC22" "#CCAA22" "#CC8822" "#CC6622" "#CC4422" "#CC2222")
+
+get_cpu_stats() {
+    grep '^cpu[0-9]' /proc/stat
+}
+
+# Sample CPU stats twice with brief delay
+stats1=$(get_cpu_stats)
+sleep 0.1
+stats2=$(get_cpu_stats)
+
+# Calculate per-core usage and build output
+output=""
+while read -r line1; do
+    core=$(echo "$line1" | awk '{print $1}')
+    line2=$(echo "$stats2" | grep "^$core ")
+
+    read -r u1 n1 s1 i1 w1 q1 sq1 st1 <<< "$(echo "$line1" | awk '{print $2,$3,$4,$5,$6,$7,$8,$9}')"
+    read -r u2 n2 s2 i2 w2 q2 sq2 st2 <<< "$(echo "$line2" | awk '{print $2,$3,$4,$5,$6,$7,$8,$9}')"
+
+    idle1=$((i1 + w1))
+    idle2=$((i2 + w2))
+    total1=$((u1 + n1 + s1 + i1 + w1 + q1 + sq1 + st1))
+    total2=$((u2 + n2 + s2 + i2 + w2 + q2 + sq2 + st2))
+
+    idle_delta=$((idle2 - idle1))
+    total_delta=$((total2 - total1))
+
+    if [ "$total_delta" -gt 0 ]; then
+        usage=$(( (total_delta - idle_delta) * 100 / total_delta ))
+    else
+        usage=0
+    fi
+
+    # Map usage to index (0-8)
+    # 0% = space, 1-14% = ▁, 15-28% = ▂, 29-42% = ▃, 43-56% = ▄, 57-70% = ▅, 71-84% = ▆, 85-99% = ▇, 100% = █
+    if [ "$usage" -eq 0 ]; then
+        idx=0
+    elif [ "$usage" -eq 100 ]; then
+        idx=8
+    elif [ "$usage" -le 14 ]; then
+        idx=1
+    elif [ "$usage" -le 28 ]; then
+        idx=2
+    elif [ "$usage" -le 42 ]; then
+        idx=3
+    elif [ "$usage" -le 56 ]; then
+        idx=4
+    elif [ "$usage" -le 70 ]; then
+        idx=5
+    elif [ "$usage" -le 84 ]; then
+        idx=6
+    else
+        idx=7
+    fi
+
+    char="${chars[$idx]}"
+    color="${colors[$idx]}"
+
+    if [ -n "$color" ]; then
+        output+="<span color='$color'>$char</span>"
+    else
+        output+="$char"
+    fi
+done <<< "$stats1"
+
+echo "$output"

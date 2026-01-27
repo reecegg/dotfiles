@@ -37,8 +37,13 @@ label=BAT:
 interval=30
 
 [cpu_usage]
-command=top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{printf("CPU: %5s%", 100 - $1)}'
+command=~/.config/i3blocks/scripts/cpu-usage
 interval=1
+
+[cpu_cores]
+command=~/.config/i3blocks/scripts/cpu-cores
+interval=1
+markup=pango
 
 [disk]
 command=df -h / | awk 'NR==2 {print $4}'
