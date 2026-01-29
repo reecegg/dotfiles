@@ -19,10 +19,15 @@ markup=pango
 
 [wireless]
 command=nmcli -t -f ACTIVE,SSID dev wifi | grep '^yes' | awk -F ':' '{print $2}'
-label=WIFI: 
+label=WIFI:
 interval=5
 format_up=WIFI: %output
 format_down=WIFI: down
+
+[doh]
+command=~/.config/i3blocks/scripts/doh-status
+interval=30
+markup=pango
 
 [ethernet]
 command=cat /sys/class/net/$(ls /sys/class/net | grep -E '^(en|eth)')/carrier
@@ -32,9 +37,9 @@ format_up=ETH: up
 format_down=ETH: down
 
 [battery]
-command=acpi -b | awk '{print $4}' | sed 's/,//'
-label=BAT: 
-interval=30
+command=~/.config/i3blocks/scripts/battery
+interval=10
+markup=pango
 
 [cpu_usage]
 command=~/.config/i3blocks/scripts/cpu-usage

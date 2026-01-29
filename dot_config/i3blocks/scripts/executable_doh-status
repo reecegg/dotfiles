@@ -1,0 +1,36 @@
+#!/bin/bash
+# DNS-over-HTTPS status for i3blocks
+# Checks Cloudflare WARP, systemd-resolved DoT, and common DoH indicators
+
+# Check Cloudflare WARP first (most common)
+if command -v warp-cli &>/dev/null; then
+    warp_status=$(warp-cli status 2>/dev/null)
+    if echo "$warp_status" | grep -q "Connected"; then
+        echo "<span color='#AAAAAA'>DoH</span>"
+        exit 0
+    fi
+fi
+
+# Check systemd-resolved DNSOverTLS
+if command -v resolvectl &>/dev/null; then
+    dot_status=$(resolvectl status 2>/dev/null | grep -E "DNSOverTLS|DNS-over-TLS")
+    if echo "$dot_status" | grep -qE "\+DNSOverTLS|yes"; then
+        echo "<span color='#AAAAAA'>DoT</span>"
+        exit 0
+    fi
+fi
+
+# Check if dnscrypt-proxy is running
+if pgrep -x dnscrypt-proxy &>/dev/null; then
+    echo "<span color='#AAAAAA'>DoH</span>"
+    exit 0
+fi
+
+# Check if stubby (DoT client) is running
+if pgrep -x stubby &>/dev/null; then
+    echo "<span color='#AAAAAA'>DoT</span>"
+    exit 0
+fi
+
+# None detected - not secure
+echo "<span color='#FF5555'>DoH</span>"

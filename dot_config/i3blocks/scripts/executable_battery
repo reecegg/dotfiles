@@ -1,0 +1,47 @@
+#!/bin/bash
+# Battery status for i3blocks with charging indicator and color-coded percentage
+
+# Get battery info
+battery_info=$(acpi -b 2>/dev/null | head -1)
+
+if [[ -z "$battery_info" ]]; then
+    echo "<span color='#AAAAAA'>BAT: —</span>"
+    exit 0
+fi
+
+# Parse status and percentage
+status=$(echo "$battery_info" | awk -F': ' '{print $2}' | awk -F', ' '{print $1}')
+percent=$(echo "$battery_info" | grep -oP '\d+(?=%)')
+
+# Default if parse fails
+[[ -z "$percent" ]] && percent=0
+
+# Determine percent color based on level
+if [[ $percent -lt 20 ]]; then
+    pct_color="#FF5555"   # red
+elif [[ $percent -lt 40 ]]; then
+    pct_color="#FF9955"   # orange
+elif [[ $percent -lt 60 ]]; then
+    pct_color="#FFFF55"   # yellow
+else
+    pct_color="#FFFFFF"   # white
+fi
+
+# Determine charging indicator
+# ϟ Greek koppa (U+03DF) - looks like lightning, renders as text
+case "$status" in
+    Charging)
+        # Actively charging - green
+        indicator="<span color='#50FA7B'>ϟ</span>"
+        ;;
+    "Not charging"|Full)
+        # Plugged in but not charging (holding charge) - white
+        indicator="<span color='#FFFFFF'>ϟ</span>"
+        ;;
+    *)
+        # Discharging or unknown - gray dot
+        indicator="<span color='#AAAAAA'>·</span>"
+        ;;
+esac
+
+echo "BAT: <span color='$pct_color'>${percent}%</span> ${indicator}"

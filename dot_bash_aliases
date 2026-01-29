@@ -57,7 +57,8 @@ alias s='sudo'
 alias t='tmux'
 alias tt='TMUX= tmux'
 alias u='sudo -i'
-alias v='vim'
+alias v='vim .'
+alias vv='vim'
 #alias w='TODO'
 alias x='exit'
 alias y='yz'
@@ -88,6 +89,8 @@ alias tlr="tl --resume"
 # Misc Aliases
 # ==============================================================================
 alias ai="claude --dangerously-skip-permissions"
+alias aid="claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/"
+alias aiq="claude"
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
 alias uuid="cat /proc/sys/kernel/random/uuid | tr -d '\n' | tee >(xclip); echo ''"
