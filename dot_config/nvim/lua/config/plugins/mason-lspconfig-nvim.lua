@@ -79,31 +79,25 @@ return {
       max_height = 30,
     })
 
-    -- Setup Mason LSP configuration
-    require('mason-lspconfig').setup()
-    require('mason-lspconfig').setup_handlers({
-      -- Default handler for all servers
-      function(server_name)
-        require("lspconfig")[server_name].setup({
-          -- on_attach = on_attach, -- Use on_attach for default LSP servers
-          capabilities = capabilities,
-        })
-      end,
+    -- Default capabilities for all LSP servers
+    vim.lsp.config('*', {
+      capabilities = capabilities,
+    })
 
-      -- Custom handler for Lua LSP (lua_ls)
-      ["lua_ls"] = function()
-        require('lspconfig').lua_ls.setup({
-          -- on_attach = on_attach, -- Use on_attach for Lua LSP
-          capabilities = capabilities,
-          settings = {
-            Lua = {
-              format = {
-                enable = true,
-              },
-            },
+    -- Custom config for lua_ls
+    vim.lsp.config('lua_ls', {
+      settings = {
+        Lua = {
+          format = {
+            enable = true,
           },
-        })
-      end,
+        },
+      },
+    })
+
+    -- Setup Mason LSP configuration with automatic_enable
+    require('mason-lspconfig').setup({
+      automatic_enable = true,
     })
   end,
 }

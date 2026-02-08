@@ -97,6 +97,7 @@ return {
 
     -- Extra Keybinds for treesitter
     vim.api.nvim_set_keymap('n', '<leader>tti', ':InspectTree<CR>', { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('n', '<leader>ttu', ':TSUpdate<CR>', { noremap = true, silent = true })
 
   end,
 }

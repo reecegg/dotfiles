@@ -1,8 +1,3 @@
--- TODO:
--- nvim-dap and nvim-dap
--- Trouble.nvim
--- efmls and efmls-configs-nvim, or none-ls, or nvim-lint and conform
-
 -- Globally load the nlog module
 if _G.nlog then
     print("Warning: 'nlog' is already defined in the global scope. Overwriting it.")

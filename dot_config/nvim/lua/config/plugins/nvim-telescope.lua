@@ -35,7 +35,10 @@ return {
     vim.keymap.set('n', '<leader>f<leader>', builtin.resume, { desc = "Resume Finder" })
     vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Find Files" })
     vim.keymap.set('n', '<leader>fp', builtin.pickers, { desc = "Find Pickers" })
-    vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = "Live Grep" })
+    vim.keymap.set('n', '<leader>fg', function()
+      builtin.grep_string({ search = '', only_sort_text = true })
+    end, { desc = "Fuzzy Grep" })
+    vim.keymap.set('n', '<leader>fG', builtin.live_grep, { desc = "Live Grep (exact)" })
     vim.keymap.set('n', '<leader>ft', builtin.git_files, { desc = "Git Files" })
 
     -- project
