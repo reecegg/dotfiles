@@ -111,3 +111,7 @@ eval "$(rbenv init -)"
 if [ -f ~/.secrets/api_keys.sh ]; then
     source ~/.secrets/api_keys.sh
 fi
+
+# Temp Workarounds
+# https://github.com/anthropics/claude-code/issues/14799
+export TMPDIR="$HOME/.claude/tmp"

@@ -90,7 +90,7 @@ alias tlr="tl --resume"
 # Misc Aliases
 # ==============================================================================
 alias ai="claude --dangerously-skip-permissions"
-alias aid="claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/"
+alias aid="claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/"
 alias aiq="claude"
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
