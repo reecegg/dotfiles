@@ -55,7 +55,7 @@ alias q='popd'
 alias r='src' # reload
 alias s='sudo'
 alias t='tmux'
-alias tt='TMUX= tmux'
+alias tf='TMUX= tmux'
 alias u='sudo -i'
 alias v='vim'
 alias ve='nvim --cmd "lua vim.g.read_from_stdin=1" +startinsert'
@@ -85,12 +85,29 @@ alias cd..='cd ..'
 # Custom Script Aliases
 # ==============================================================================
 alias tlr="tl --resume"
+gg() { local dir; dir=$("$HOME/bin/gg" "$@") && cd "$dir"; }
+alias ggr="gg --resume"
+function tt() {
+  local result; result=$("$HOME/bin/tt" "$@") || return
+  local action="${result%%:*}" name="${result#*:}"
+  if [[ "$action" == "attach" ]]; then
+    if [[ -n "${TMUX:-}" ]]; then
+      tmux switch-client -t "$name"
+    else
+      tmux attach -t "$name"
+    fi
+  else
+    tmuxp load "$name"
+  fi
+}
+alias ttr="tt --resume"
 
 # ==============================================================================
 # Misc Aliases
 # ==============================================================================
-alias ai="claude --dangerously-skip-permissions"
-alias aid="claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/"
+alias ai="claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/"
+alias aid="ai"
+alias aic="claude --dangerously-skip-permissions"
 alias aiq="claude"
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
@@ -458,33 +475,6 @@ alias yy='yazi --cwd-file=$HOME/.yazidir; YAZILASTDIR=$(cat $HOME/.yazidir)'
 alias ycd='YAZILASTDIR=$(cat $HOME/.yazidir); cd "$YAZILASTDIR"'
 
 # ------------------------------------------------------------------------------
-# ShellGPT Aliases
-alias sg="sgpt"
-alias sgs="sgpt --shell"
-alias sgc="sgpt --code"
-alias sgch="sgpt --code"
-alias sgr="sgpt --repl"
-alias sgl="sgpt --list-chats"
-
-# ------------------------------------------------------------------------------
-# Aider
-
-# Eval
-# alias o3mini="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model o3-mini"
-# alias o3mini-low="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model o3-mini --reasoning-effort=low"
-# alias o3mini-high="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model o3-mini --reasoning-effort=high"
-
-alias openai="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model gpt-4o"
-alias openai-mini="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --model gpt-4o-mini"
-
-## Default
-alias aider="source ~/git/aider/venv/bin/activate; aider --model claude-3-5-sonnet-20241022 --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --map-tokens=1000 --map-multiplier-no-files=1"
-## GUI
-alias aider-gui="source ~/git/aider/venv/bin/activate; aider --no-attribute-author --no-attribute-committer --multiline --no-gitignore --no-suggest-shell-commands --vim --watch --no-auto-commit --gui"
-## Map
-alias aider-map="source ~/git/aider/venv/bin/activate; aider --show-repo-map"
-
-# ------------------------------------------------------------------------------
 # Laravel Sail
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 alias slu='sail up -d'
@@ -508,6 +498,10 @@ alias slni='sail npm install'
 alias slnl='sail npm run lint'
 alias slnl='sail npm run check'
 alias slnd='sail npm run check'
+# ------------------------------------------------------------------------------
+# Rust
+alias rust-lint='cargo fmt & cargo clippy & wait'
+
 # ------------------------------------------------------------------------------
 # Chezmoi
 

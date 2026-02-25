@@ -7,18 +7,26 @@ return {
   branch = '0.1.x',
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'nvim-telescope/telescope-ui-select.nvim'
+    'nvim-telescope/telescope-ui-select.nvim',
+    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
   },
   config = function()
     -- Setup Telescope
     require("telescope").setup {
       extensions = {
-        ["ui-select"] = {}
+        ["ui-select"] = {},
+        fzf = {
+          fuzzy = true,
+          override_generic_sorter = true,
+          override_file_sorter = true,
+          case_mode = "smart_case",
+        },
       }
     }
 
     -- Load the extensions
     require("telescope").load_extension("ui-select")
+    require("telescope").load_extension("fzf")
 
     -- Add Keymaps
     local builtin = require("telescope.builtin")

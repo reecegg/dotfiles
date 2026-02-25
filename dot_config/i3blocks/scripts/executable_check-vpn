@@ -1,8 +1,39 @@
 #!/bin/bash
+# Check for active VPNs: WireGuard interfaces, openfortivpn, openvpn processes.
+# Green if 1 active, yellow if 2+, grey if none.
 
-# Check if any WireGuard interface is up (no root required)
-if ip link show type wireguard 2>/dev/null | grep -q 'UP'; then
-    echo "<span color='#50FA7B'>VPN: on</span>"
+active=()
+
+# WireGuard: check for any UP wireguard interfaces
+while IFS= read -r line; do
+  [[ -z "$line" ]] && continue
+  iface=$(echo "$line" | grep -oP '^\d+: \K[^:@]+')
+  [[ -n "$iface" ]] && active+=("$iface")
+done < <(ip link show type wireguard 2>/dev/null | grep 'UP')
+
+# OpenFortiVPN: extract destination host from running processes
+while IFS= read -r line; do
+  [[ -z "$line" ]] && continue
+  host=$(echo "$line" | grep -oP 'openfortivpn \K\S+' | cut -d: -f1)
+  # Use short hostname
+  short="${host%%.*}"
+  [[ -n "$short" ]] && active+=("$short")
+done < <(pgrep -a openfortivpn 2>/dev/null)
+
+# OpenVPN: extract config name from running processes
+while IFS= read -r line; do
+  [[ -z "$line" ]] && continue
+  conf=$(echo "$line" | grep -oP '\-\-config \K\S+')
+  name=$(basename "$conf" .ovpn 2>/dev/null)
+  [[ -n "$name" ]] && active+=("$name")
+done < <(pgrep -a openvpn 2>/dev/null)
+
+count=${#active[@]}
+if [[ $count -eq 0 ]]; then
+  echo "<span color='#AAAAAA'>VPN: off</span>"
+elif [[ $count -eq 1 ]]; then
+  echo "<span color='#50FA7B'>VPN: ${active[0]}</span>"
 else
-    echo "<span color='#AAAAAA'>VPN: off</span>"
+  names=$(IFS=,; echo "${active[*]}")
+  echo "<span color='#F1FA8C'>VPN: ${names}</span>"
 fi

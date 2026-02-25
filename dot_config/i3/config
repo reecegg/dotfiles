@@ -366,23 +366,26 @@ mode "$mode_gaps_outer" {
 bindsym $mod+Ctrl+greater move workspace to output right
 bindsym $mod+Ctrl+less move workspace to output left
 
-# Colors — off-black / off-white / orange
-set $text-color                  #e0e0e0
-set $background-color            #1a1a1a
-set $border-color                #1a1a1a
-set $child-border-color          #CC7832
+# Colors — bright green accent with grey shades
+set $text-color                  #1a1a1a
+set $background-color            #e0e0e0
+set $border-color                #e0e0e0
+set $child-border-color          #e0e0e0
 
-set $inactive-text-color         #808080
-set $inactive-background-color   #1a1a1a
-set $inactive-border-color       #1a1a1a
-set $inactive-child-border-color #262626
+set $inactive-text-color         #e0e0e0
+set $inactive-background-color   #555555
+set $inactive-border-color       #555555
+set $inactive-child-border-color #333333
 
-set $focused-inactive-child      #666666
+set $focused-inactive-text       #e0e0e0
+set $focused-inactive-bg         #777777
+set $focused-inactive-border     #777777
+set $focused-inactive-child      #555555
 
-#                       border                 backgrground               text                 indicator                    child_border
-client.focused          $border-color          $background-color          $text-color          $child-border-color          $child-border-color
-client.unfocused        $inactive-border-color $inactive-background-color $inactive-text-color $inactive-child-border-color $inactive-child-border-color
-client.focused_inactive $inactive-border-color $inactive-background-color $inactive-text-color $focused-inactive-child      $focused-inactive-child
+#                       border                      background                  text                  indicator                    child_border
+client.focused          $border-color               $background-color           $text-color           $child-border-color          $child-border-color
+client.unfocused        $inactive-border-color       $inactive-background-color  $inactive-text-color  $inactive-child-border-color $inactive-child-border-color
+client.focused_inactive $focused-inactive-border     $focused-inactive-bg        $focused-inactive-text $focused-inactive-child     $focused-inactive-child
 
 # Bar
 bar {
@@ -394,10 +397,10 @@ bar {
                 background #1a1a1a
 
                 #                  border        background    text
-                focused_workspace  #1a1a1a       #1a1a1a       #CC7832
+                focused_workspace  #1a1a1a       #1a1a1a       #9BFF00
                 active_workspace   #1a1a1a       #1a1a1a       #d9d9d9
                 inactive_workspace #1a1a1a       #1a1a1a       #666666
-                urgent_workspace   #CC7832       #CC7832       #1a1a1a
+                urgent_workspace   #50FA7B       #50FA7B       #1a1a1a
         }
 }
 
