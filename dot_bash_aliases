@@ -585,6 +585,7 @@ alias pkg-list-native='pacman -Qqen'                              # List explici
 alias pkg-list-aur='pacman -Qqem'                                 # List explicitly installed AUR/foreign packages
 alias pkg-save='mkdir -p ~/.config/pacman && pacman -Qqe > ~/.config/pacman/pkglist.txt && echo "Saved to ~/.config/pacman/pkglist.txt"'
 alias pkg-install='paru -S --needed --noconfirm --skipreview - < ~/.config/pacman/pkglist.txt'
+alias paru-rebuild='cd /tmp && rm -rf paru && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si && cd /tmp && rm -rf paru'
 pkg-remove() {
   local pkg="$1"
   local pkglist="$HOME/.config/pacman/pkglist.txt"

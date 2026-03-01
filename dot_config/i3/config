@@ -418,6 +418,5 @@ exec autocutsel -fork
 exec --no-startup-id clipmenud
 exec --no-startup-id dunst
 exec --no-startup-id nm-applet
-exec --no-startup-id pasystray
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
