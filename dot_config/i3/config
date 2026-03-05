@@ -47,14 +47,7 @@ bindsym $mod+comma exec --no-startup-id "rofi -modi emoji -show emoji -emoji-for
 
 # Rename workspace
 bindsym $mod+r exec --no-startup-id ~/.config/i3/rename_workspace.sh
-bindsym $mod+apostrophe exec --no-startup-id ~/.config/i3/i3-set-ws-suffix.sh ''
-bindsym $mod+semicolon exec --no-startup-id ~/.config/i3/i3-set-ws-suffix.sh '!!!'
-bindsym $mod+period exec --no-startup-id ~/.config/i3/i3-set-ws-suffix.sh '...'
-bindsym $mod+slash exec --no-startup-id ~/.config/i3/i3-set-ws-suffix.sh '???'
-
-bindsym $mod+Shift+semicolon exec --no-startup-id ~/.config/i3/i3-toggle-ws-suffix.sh '!!!'
-bindsym $mod+Shift+period exec --no-startup-id ~/.config/i3/i3-toggle-ws-suffix.sh '...'
-bindsym $mod+Shift+slash exec --no-startup-id ~/.config/i3/i3-toggle-ws-suffix.sh '???'
+bindsym $mod+period exec --no-startup-id ~/.config/i3/special_char_picker.sh
 
 # Focus workspace
 bindsym $mod+o exec --no-startup-id ~/.config/i3/focus_workspace.sh
