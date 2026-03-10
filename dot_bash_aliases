@@ -106,6 +106,7 @@ alias ttr="tt --resume"
 # Misc Aliases
 # ==============================================================================
 alias ai="claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/"
+alias air="claude remote-control --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/"
 alias aid="ai"
 alias aic="claude --dangerously-skip-permissions"
 alias aiq="claude"

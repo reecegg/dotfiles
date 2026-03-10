@@ -85,6 +85,9 @@ PS1="\[\e[31m\](\[\e[m\]\[\e[32m\]\u\[\e[m\]\[\e[31m\]@\[\e[m\]\[\e[33m\]\h\[\e[
 # Make commands and readline mode print on a new line.
 PS1="$PS1\n"
 
+# SSH agent (keychain)
+eval $(keychain --eval --quiet --noask ~/.ssh/id_*[^.pub])
+
 # Run '.bash_aliases' if it exists.
 if [ -f ~/.bash_aliases ]; then
 	. ~/.bash_aliases
