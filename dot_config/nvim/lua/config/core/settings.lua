@@ -107,4 +107,5 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 -- Spell checking
 vim.opt.spelllang = "en_us" -- Set the default spell language to English (US)
 vim.opt.spell = true
+vim.opt.spelloptions = "camel" -- Treat camelCase as separate words
 

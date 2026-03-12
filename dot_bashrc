@@ -3,6 +3,11 @@
 # Java AWT fix for GUI applications (IntelliJ) in some window managers (i3).
 export _JAVA_AWT_WM_STATIC_GRAVITY=1
 
+# Source aliases/functions that should be available in non-interactive shells too.
+if [ -f ~/.bash_aliases_non_interactive ]; then
+	. ~/.bash_aliases_non_interactive
+fi
+
 # If not running interactively, don't do anything.
 case $- in
 	*i*) ;;
@@ -34,10 +39,8 @@ HISTSIZE=1000000
 # Set max history size.
 HISTFILESIZE=1000000
 
-# Alias used for interacting with the dotfiles
-alias cz='chezmoi --source ~/.local/share/chezmoi'
-alias czw='chezmoi --source ~/.local/share/chezmoi-work'
-alias czp='chezmoi --source ~/.local/share/chezmoi-private'
+# Base chezmoi commands (cz, czw, czp) are now functions defined in
+# ~/.bash_aliases_non_interactive so they're available in all shells.
 
 # Update the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.

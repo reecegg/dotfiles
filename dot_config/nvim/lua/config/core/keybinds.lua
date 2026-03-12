@@ -195,5 +195,39 @@ vim.api.nvim_set_keymap('n', '<leader>dy', ":lua YankWithMarkdownQuotes('n')<CR>
 vim.api.nvim_set_keymap('v', '<leader>dy', ":<C-U>lua YankWithMarkdownQuotes('v')<CR>",
     { noremap = true, silent = true, desc = "Yank selection with markdown quotes" })
 
+-- Spell (<leader>z)
+vim.keymap.set('n', '<leader>zs', function() require('telescope.builtin').spell_suggest() end,
+    { noremap = true, silent = true, desc = "Spell suggest (Telescope)" })
+vim.keymap.set('n', '<leader>zS', function()
+    local word = vim.fn.expand('<cword>')
+    local suggestions = vim.fn.spellsuggest(word)
+    if #suggestions == 0 then return end
+    vim.ui.select(suggestions, { prompt = 'Replace all "' .. word .. '" with:' }, function(choice)
+        if choice then
+            vim.cmd('%s/\\V' .. vim.fn.escape(word, '/\\') .. '/' .. vim.fn.escape(choice, '/\\') .. '/g')
+        end
+    end)
+end, { noremap = true, silent = true, desc = "Spell fix all in file" })
+vim.keymap.set('n', '<leader>za', function()
+    local word = vim.fn.expand('<cword>')
+    -- Add to vim spell dictionary
+    vim.cmd('normal! zg')
+    -- Also add to ltex-ls dictionary if running
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0, name = 'ltex' })) do
+        local settings = client.settings or {}
+        local dict = settings.ltex and settings.ltex.dictionary and settings.ltex.dictionary['en-US'] or {}
+        table.insert(dict, word)
+        client.settings = vim.tbl_deep_extend('force', settings, {
+            ltex = { dictionary = { ['en-US'] = dict } },
+        })
+        client:notify('workspace/didChangeConfiguration', { settings = client.settings })
+    end
+end, { noremap = true, desc = "Spell add word" })
+vim.keymap.set('n', '<leader>zr', 'zw', { noremap = true, desc = "Spell remove word" })
+vim.keymap.set('n', '<leader>zu', 'zug', { noremap = true, desc = "Spell undo add" })
+vim.keymap.set('n', '<leader>zn', ']s', { noremap = true, desc = "Next misspelled word" })
+vim.keymap.set('n', '<leader>zp', '[s', { noremap = true, desc = "Prev misspelled word" })
+vim.keymap.set('n', '<leader>zt', ':set invspell<CR>', { noremap = true, silent = true, desc = "Toggle spell" })
+
 --- LSP
 --

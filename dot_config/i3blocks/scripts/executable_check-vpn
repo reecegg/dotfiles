@@ -1,6 +1,6 @@
 #!/bin/bash
 # Check for active VPNs: WireGuard interfaces, openfortivpn, openvpn processes.
-# Green if 1 active, yellow if 2+, grey if none.
+# Yellow if active, grey if none.
 
 active=()
 
@@ -32,7 +32,7 @@ count=${#active[@]}
 if [[ $count -eq 0 ]]; then
   echo "<span color='#AAAAAA'>VPN: off</span>"
 elif [[ $count -eq 1 ]]; then
-  echo "<span color='#50FA7B'>VPN: ${active[0]}</span>"
+  echo "<span color='#F1FA8C'>VPN: ${active[0]}</span>"
 else
   names=$(IFS=,; echo "${active[*]}")
   echo "<span color='#F1FA8C'>VPN: ${names}</span>"
