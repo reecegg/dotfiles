@@ -11,7 +11,12 @@ config.colors = {
 }
 
 -- Font Setup
-config.font = wezterm.font_with_fallback({ "Hack", "DejaVu Sans Mono", "JetBrains Mono" })
+config.font = wezterm.font_with_fallback({
+  "Hack Nerd Font",
+  "JetBrains Mono Nerd Font",
+  "DejaVu Sans Mono Nerd Font",
+  "Symbols Nerd Font",
+})
 config.font_size = 10.0
 config.window_background_opacity = 1.0
 
@@ -79,6 +84,12 @@ config.keys = {
     action = wezterm.action.SendString("\n"),
   },
 }
+
+-- Pass the active pane's title straight through as the X11 window title
+-- so i3 stacked/tabbed mode shows the tmux session name
+wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
+  return pane.title
+end)
 
 -- fix for startup isuse
 config.prefer_egl = false

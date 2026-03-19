@@ -87,29 +87,16 @@ alias cd..='cd ..'
 alias tlr="tl --resume"
 gg() { local dir; dir=$("$HOME/bin/gg" "$@") && cd "$dir"; }
 alias ggr="gg --resume"
-function tt() {
-  local result; result=$("$HOME/bin/tt" "$@") || return
-  local action="${result%%:*}" name="${result#*:}"
-  if [[ "$action" == "attach" ]]; then
-    if [[ -n "${TMUX:-}" ]]; then
-      tmux switch-client -t "$name"
-    else
-      tmux attach -t "$name"
-    fi
-  else
-    tmuxp load "$name"
-  fi
-}
-alias ttr="tt --resume"
-
 # ==============================================================================
 # Misc Aliases
 # ==============================================================================
-alias ai="claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/"
-alias air="claude remote-control --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/"
-alias aid="ai"
-alias aic="claude --dangerously-skip-permissions"
-alias aiq="claude"
+unalias ai air aid aic aiq 2>/dev/null
+function ai { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/ "$@"; }
+function air { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude remote-control --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/ "$@"; }
+function aid { ai "$@"; }
+function aic { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude --dangerously-skip-permissions "$@"; }
+function aiq { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude "$@"; }
+alias oc="opencode"
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
 alias uuid="cat /proc/sys/kernel/random/uuid | tr -d '\n' | tee >(xclip); echo ''"
@@ -332,6 +319,7 @@ alias cdt='cd ~/tmp/'
 alias cdc='cd ~/.config/'
 alias cdd='cd ~/Downloads/'
 alias cdbak='cd ~/bak/'
+alias cdtrash='cd ~/.local/share/Trash/files/'
 
 # Alias to allow cding to a files parent 
 cdp() {
@@ -433,8 +421,53 @@ alias tks="t kill-session -t "
 #
 # ------------------------------------------------------------------------------
 # Tmuxp Aliases (:tp)
-alias tp="tmuxp load"
-alias tptp="tmuxp load tmuxp"
+function tp() {
+  local config="$1"; shift 2>/dev/null || true
+  export SESSION_NAME="${config%%--*}"
+  tmuxp load "$config" "$@"
+}
+# ------------------------------------------------------------------------------
+# tt - Tmux Tree: manage worktrees and tmux sessions (:tt)
+# tt  = (t)mux (t)ree         - fzf session picker, attach or create
+# ttr = (t)mux (t)ree (r)etry - tt with last search query
+# tta = (t)mux (t)ree (a)dd   - create git worktree + session
+# ttd = (t)mux (t)ree (d)elete - remove git worktree + session
+# Scripts: ~/bin/tt, ~/bin/tta, ~/bin/ttd
+function tt() {
+  local result; result=$("$HOME/bin/tt" "$@") || return
+  local action="${result%%:*}" name="${result#*:}"
+  if [[ "$action" == "attach" ]]; then
+    if [[ -n "${TMUX:-}" ]]; then
+      tmux switch-client -t "$name"
+    else
+      tmux attach -t "$name"
+    fi
+  else
+    export SESSION_NAME="$name"
+    local config="${name%%--*}"
+    tmuxp load "$config"
+  fi
+}
+alias ttr="tt --resume"
+function tta() {
+  local result; result=$("$HOME/bin/tta" "$@") || return
+  local action="${result%%:*}" name="${result#*:}"
+  if [[ "$action" == "load" ]]; then
+    export SESSION_NAME="$name"
+    local config="${name%%--*}"
+    if tmux has-session -t "$name" 2>/dev/null; then
+      if [[ -n "${TMUX:-}" ]]; then
+        tmux switch-client -t "$name"
+      else
+        tmux attach -t "$name"
+      fi
+    else
+      tmuxp load "$config"
+    fi
+  fi
+}
+ttd() { "$HOME/bin/ttd" "$@"; }
+alias tptp="tp tmuxp"
 
 # ------------------------------------------------------------------------------
 # OpenTofu / Terraform Aliases
