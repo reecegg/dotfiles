@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+# wtr - Worktree Remove
+# Safely removes a git worktree, trashing uncommitted changes and cleaning up.
+
+set -euo pipefail
+
+for cmd in git fzf; do
+  command -v "$cmd" &>/dev/null || {
+    echo "Error: '$cmd' not found in PATH." >&2
+    exit 1
+  }
+done
+
+REPOS_DIR="$HOME/git"
+
+# --- Select worktree ---
+if [[ -n "${1:-}" ]]; then
+  WORKTREE_NAME="$1"
+else
+  # Pick from worktree directories
+  worktrees=()
+  for d in "$REPOS_DIR"/*--*/; do
+    [[ -d "$d" ]] || continue
+    worktrees+=("$(basename "$d")")
+  done
+
+  if [[ ${#worktrees[@]} -eq 0 ]]; then
+    echo "No worktree directories found in $REPOS_DIR" >&2
+    exit 1
+  fi
+
+  WORKTREE_NAME=$(printf '%s\n' "${worktrees[@]}" | sort \
+    | fzf --prompt="Remove worktree> " --height=40% --reverse \
+           --preview="cd '$REPOS_DIR/{}' 2>/dev/null && git -c color.status=always status --short || echo 'Not a git directory'") || exit
+fi
+
+WORKTREE_DIR="$REPOS_DIR/$WORKTREE_NAME"
+
+if [[ ! -d "$WORKTREE_DIR" ]]; then
+  echo "Error: Directory not found: $WORKTREE_DIR" >&2
+  exit 1
+fi
+
+# Derive parent repo
+PARENT_NAME="${WORKTREE_NAME%%--*}"
+PARENT_DIR="$REPOS_DIR/$PARENT_NAME"
+
+if [[ ! -d "$PARENT_DIR/.git" ]]; then
+  echo "Error: Parent repo not found: $PARENT_DIR" >&2
+  exit 1
+fi
+
+# --- Check for uncommitted changes ---
+modified_files=$(git -C "$WORKTREE_DIR" diff --name-only 2>/dev/null || true)
+
+if [[ -n "$modified_files" ]]; then
+  echo "Uncommitted changes detected in $WORKTREE_NAME:" >&2
+  echo "$modified_files" | sed 's/^/  /' >&2
+  echo "" >&2
+
+  # Create temp dir and copy modified files preserving structure
+  trash_dir=$(mktemp -d "/tmp/${WORKTREE_NAME}.XXXXXX")
+  while IFS= read -r file; do
+    dest_dir="$trash_dir/$(dirname "$file")"
+    mkdir -p "$dest_dir"
+    cp "$WORKTREE_DIR/$file" "$dest_dir/"
+  done <<< "$modified_files"
+
+  # Trash the folder (recoverable)
+  if command -v gio &>/dev/null; then
+    gio trash "$trash_dir"
+    echo "Modified files trashed via gio (recoverable from Trash)" >&2
+  else
+    local fallback_dir="$HOME/.local/share/Trash/files"
+    mkdir -p "$fallback_dir"
+    mv "$trash_dir" "$fallback_dir/"
+    echo "Modified files moved to: $fallback_dir/$(basename "$trash_dir")" >&2
+  fi
+fi
+
+# --- Kill tmux session if active ---
+if tmux has-session -t "$WORKTREE_NAME" 2>/dev/null; then
+  tmux kill-session -t "$WORKTREE_NAME"
+  echo "Killed tmux session: $WORKTREE_NAME" >&2
+fi
+
+# --- Remove worktree ---
+git -C "$PARENT_DIR" worktree remove --force "$WORKTREE_DIR"
+echo "Removed worktree: $WORKTREE_DIR" >&2
+
+# --- Clean up ---
+git -C "$PARENT_DIR" worktree prune
+echo "Pruned stale worktree references" >&2

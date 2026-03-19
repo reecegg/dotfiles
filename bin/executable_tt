@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+for cmd in tmuxp fzf; do
+  command -v "$cmd" &>/dev/null || {
+    echo "Error: '$cmd' not found in PATH." >&2
+    exit 1
+  }
+done
+
+TMUXP_DIR="${TMUXP_DIR:-$HOME/.tmuxp}"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
+LAST_QUERY_FILE="$CACHE_DIR/tt-fzf"
+
+RESUME=false
+QUERY=""
+
+for arg in "$@"; do
+  case "$arg" in
+    --resume) RESUME=true ;;
+    *) QUERY="${QUERY:-$arg}" ;;
+  esac
+done
+
+mkdir -p "$CACHE_DIR"
+
+if [[ $RESUME == true && -f $LAST_QUERY_FILE ]]; then
+  QUERY=$(<"$LAST_QUERY_FILE")
+fi
+
+# Get active tmux sessions for marking
+active_sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null || true)
+
+# Build the list: config name + symlink aliases + active marker
+# Symlinks are shown in parentheses after the target they point to
+declare -A symlink_targets  # target -> list of alias names
+declare -a real_files       # non-symlink config names
+
+while IFS= read -r filepath; do
+  [[ -z "$filepath" ]] && continue
+  name=$(basename "$filepath" | sed 's|\.ya\?ml$||')
+  if [[ -L "$filepath" ]]; then
+    target=$(basename "$(readlink "$filepath")" | sed 's|\.ya\?ml$||')
+    symlink_targets["$target"]+="${symlink_targets[$target]:+, }$name"
+  else
+    real_files+=("$name")
+  fi
+done < <(find "$TMUXP_DIR" -maxdepth 1 \( -name '*.yaml' -o -name '*.yml' \) 2>/dev/null)
+
+# Collect worktree directories (dirs matching *--* in ~/git/)
+declare -a worktree_dirs=()
+for d in "$HOME"/git/*--*/; do
+  [[ -d "$d" ]] || continue
+  worktree_dirs+=("$(basename "$d")")
+done
+
+list=$(
+  # Regular configs
+  printf '%s\n' "${real_files[@]}" | sort | while read -r name; do
+    entry="$name"
+    if [[ -n "${symlink_targets[$name]:-}" ]]; then
+      entry="$name  (${symlink_targets[$name]})"
+    fi
+    if echo "$active_sessions" | grep -qx "$name"; then
+      echo "$entry  [active]"
+    else
+      echo "$entry"
+    fi
+  done
+
+  # Worktree entries
+  for wt in "${worktree_dirs[@]}"; do
+    entry="$wt  [worktree]"
+    if echo "$active_sessions" | grep -qx "$wt"; then
+      entry="$wt  [worktree] [active]"
+    fi
+    echo "$entry"
+  done
+)
+
+selection=$(echo "$list" \
+  | TMUXP_DIR="$TMUXP_DIR" FZF_DEFAULT_OPTS="--query=$QUERY" fzf \
+      --prompt="Session> " \
+      --height=100% \
+      --reverse \
+      --preview='
+        name=$(echo {} | sed "s/  \[active\]//g; s/  \[worktree\]//g; s/  ([^)]*)//")
+        if [[ "$name" == *--* ]]; then
+          parent="${name%%--*}"
+          config="$TMUXP_DIR/$parent.yaml"
+          [ ! -f "$config" ] && config="$TMUXP_DIR/$parent.yml"
+          if [ -f "$config" ]; then
+            echo "── Worktree of: $parent ──"
+            echo "── Branch: ${name#*--} ──"
+            echo ""
+            cat "$config"
+          else
+            echo "Worktree: $name (no parent config found)"
+          fi
+        else
+          config="$TMUXP_DIR/$name.yaml"
+          [ ! -f "$config" ] && config="$TMUXP_DIR/$name.yml"
+          if [ -f "$config" ]; then
+            cat "$config"
+          else
+            echo "Config not found"
+          fi
+        fi
+      ' \
+      --print-query) || exit
+
+query=$(sed -n '1p' <<< "$selection")
+selected=$(sed -n '2p' <<< "$selection")
+
+[[ -z "$selected" ]] && exit 1
+
+echo "$query" > "$LAST_QUERY_FILE"
+
+# Strip markers
+session_name="$selected"
+session_name="${session_name%%  \[active\]*}"
+session_name="${session_name%%  \[worktree\]*}"
+session_name="${session_name%%  (*}"
+
+# Check if session already exists
+if tmux has-session -t "$session_name" 2>/dev/null; then
+  echo "attach:$session_name"
+else
+  echo "load:$session_name"
+fi

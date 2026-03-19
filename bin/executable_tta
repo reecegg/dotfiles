@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+# wta - Worktree Add
+# Creates a git worktree and optionally copies non-git content from the parent repo.
+# Output: "load:<repo>--<branch>" for the bash wrapper to launch the session.
+
+set -euo pipefail
+
+for cmd in git fzf; do
+  command -v "$cmd" &>/dev/null || {
+    echo "Error: '$cmd' not found in PATH." >&2
+    exit 1
+  }
+done
+
+REPOS_DIR="$HOME/git"
+TMUXP_DIR="${TMUXP_DIR:-$HOME/.tmuxp}"
+
+# --- Select repo ---
+if [[ -n "${1:-}" ]]; then
+  REPO="$1"
+else
+  # Pick from repos that have tmuxp configs
+  repos=()
+  for config in "$TMUXP_DIR"/*.yaml "$TMUXP_DIR"/*.yml; do
+    [[ -f "$config" ]] || continue
+    [[ -L "$config" ]] && continue
+    name=$(basename "$config" | sed 's|\.ya\?ml$||')
+    # Only include if ~/git/<name> exists and is a git repo (not a worktree dir)
+    if [[ -d "$REPOS_DIR/$name/.git" ]] && [[ "$name" != *--* ]]; then
+      repos+=("$name")
+    fi
+  done
+
+  if [[ ${#repos[@]} -eq 0 ]]; then
+    echo "Error: No git repos with tmuxp configs found." >&2
+    exit 1
+  fi
+
+  REPO=$(printf '%s\n' "${repos[@]}" | sort | fzf --prompt="Repo> " --height=40% --reverse) || exit
+fi
+
+REPO_DIR="$REPOS_DIR/$REPO"
+
+if [[ ! -d "$REPO_DIR/.git" ]]; then
+  echo "Error: '$REPO_DIR' is not a git repository." >&2
+  exit 1
+fi
+
+# --- Select branch ---
+if [[ -n "${2:-}" ]]; then
+  BRANCH="$2"
+else
+  # Pick from local branches
+  BRANCH=$(git -C "$REPO_DIR" branch --format='%(refname:short)' \
+    | fzf --prompt="Branch> " --height=40% --reverse \
+           --preview="git -C '$REPO_DIR' log --oneline -20 {}") || exit
+fi
+
+# --- Sanitize branch name for directory ---
+SAFE_BRANCH=$(echo "$BRANCH" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
+WORKTREE_NAME="${REPO}--${SAFE_BRANCH}"
+WORKTREE_DIR="$REPOS_DIR/$WORKTREE_NAME"
+
+if [[ -d "$WORKTREE_DIR" ]]; then
+  echo "Error: Worktree directory already exists: $WORKTREE_DIR" >&2
+  exit 1
+fi
+
+# --- Create worktree ---
+# Check if branch exists locally
+if git -C "$REPO_DIR" show-ref --verify --quiet "refs/heads/$BRANCH" 2>/dev/null; then
+  git -C "$REPO_DIR" worktree add "$WORKTREE_DIR" "$BRANCH"
+else
+  # Check if it exists as a remote branch
+  if git -C "$REPO_DIR" show-ref --verify --quiet "refs/remotes/origin/$BRANCH" 2>/dev/null; then
+    git -C "$REPO_DIR" worktree add "$WORKTREE_DIR" "$BRANCH"
+  else
+    echo "Branch '$BRANCH' not found locally or on origin. Create new branch? [y/N]" >&2
+    read -r confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+      git -C "$REPO_DIR" worktree add -b "$BRANCH" "$WORKTREE_DIR"
+    else
+      exit 1
+    fi
+  fi
+fi
+
+echo "Created worktree: $WORKTREE_DIR" >&2
+
+# --- Scan parent for non-git content to copy ---
+copy_candidates=()
+for pattern in .env .env.* vendor node_modules .vscode .idea storage; do
+  while IFS= read -r -d '' item; do
+    # Only top-level matches
+    rel="${item#$REPO_DIR/}"
+    [[ "$rel" == */* ]] && continue
+    copy_candidates+=("$rel")
+  done < <(find "$REPO_DIR" -maxdepth 1 -name "$pattern" -print0 2>/dev/null)
+done
+
+if [[ ${#copy_candidates[@]} -gt 0 ]]; then
+  # Deduplicate
+  mapfile -t copy_candidates < <(printf '%s\n' "${copy_candidates[@]}" | sort -u)
+
+  echo "" >&2
+  echo "Found non-git content in parent repo:" >&2
+
+  selected=$(printf '%s\n' "${copy_candidates[@]}" \
+    | fzf --multi --prompt="Copy to worktree> " --height=40% --reverse \
+           --header="TAB to select, ENTER to confirm, ESC to skip") || true
+
+  if [[ -n "$selected" ]]; then
+    while IFS= read -r item; do
+      src="$REPO_DIR/$item"
+      dst="$WORKTREE_DIR/$item"
+      if [[ -d "$src" ]]; then
+        cp -a "$src" "$dst"
+      else
+        cp -a "$src" "$dst"
+      fi
+      echo "Copied: $item" >&2
+    done <<< "$selected"
+  fi
+fi
+
+echo "load:$WORKTREE_NAME"
