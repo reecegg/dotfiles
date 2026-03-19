@@ -1,0 +1,999 @@
+#!/usr/bin/env python3
+"""Offset docker-compose port variables whose identifiers contain 'PORT'.
+
+The script scans port mappings in the compose file for environment variable
+interpolations such as ``${APP_PORT}`` or ``${FORWARD_DB_PORT:-5432}``. Only
+variables whose names include the standalone word ``PORT`` are adjusted. Host
+port ranges such as ``4510-4559`` move by multiples of their span (inclusive
+width), while static literals without variables (e.g. ``"8080:80"``) are left
+untouched."""
+from __future__ import annotations
+
+import argparse
+import contextlib
+import io
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import textwrap
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, Iterable, Optional, Tuple
+import unittest
+from unittest import mock
+
+PORT_NAME_PATTERN = re.compile(r"(^|_)PORT($|_)")
+ENV_VAR_PATTERN = re.compile(r"\$\{([A-Za-z0-9_]+)(?::?([-?])([^}]*))?\}")
+PORT_RANGE_PATTERN = re.compile(r"^(\d+)-(\d+)$")
+
+
+@dataclass(frozen=True)
+class PortVariable:
+    """Represents a Compose environment variable reference."""
+
+    name: str
+    default: Optional[str]
+    operator: Optional[str]
+
+
+@dataclass(frozen=True)
+class PortResolution:
+    """Numeric representation of a resolved port or port range."""
+
+    values: Tuple[int, ...]
+    raw: str
+
+    def shifted_values(self, offset: int) -> Tuple[int, ...]:
+        if len(self.values) == 1:
+            return (self.values[0] + offset,)
+        start, end = self.values
+        span = (end - start) + 1
+        new_start = start + offset * span
+        new_end = new_start + span - 1
+        return (new_start, new_end)
+
+    def iter_ports(self, offset: int) -> Iterable[int]:
+        shifted = self.shifted_values(offset)
+        if len(shifted) == 1:
+            yield shifted[0]
+        else:
+            start, end = shifted
+            yield from range(start, end + 1)
+
+    def display(self) -> str:
+        if len(self.values) == 1:
+            return str(self.values[0])
+        start, end = self.values
+        return f"{start}-{end}"
+
+    def with_offset(self, offset: int) -> str:
+        shifted = self.shifted_values(offset)
+        if len(shifted) == 1:
+            return str(shifted[0])
+        start, end = shifted
+        return f"{start}-{end}"
+
+
+@dataclass(frozen=True)
+class AssignmentResult:
+    variable: PortVariable
+    resolution: PortResolution
+    adjusted: str
+    source: Optional[str]
+
+
+def _parse_port_value(raw_value: str) -> Optional[Tuple[int, ...]]:
+    candidate = raw_value.strip()
+    if candidate.isdigit():
+        return (int(candidate),)
+    range_match = PORT_RANGE_PATTERN.match(candidate)
+    if range_match:
+        start = int(range_match.group(1))
+        end = int(range_match.group(2))
+        if end < start:
+            return None
+        return (start, end)
+    return None
+
+
+def collect_assignments(
+    port_variables: Dict[str, PortVariable],
+    env: Dict[str, str],
+    env_file_values: Dict[str, str],
+    offset: int,
+) -> Tuple[list[AssignmentResult], bool]:
+    results: list[AssignmentResult] = []
+    unresolved = False
+
+    for variable in port_variables.values():
+        resolution, source = resolve_base_value(variable, env, env_file_values)
+        if resolution is None:
+            print(
+                f"Warning: unable to resolve a numeric value for {variable.name}.",
+                file=sys.stderr,
+            )
+            unresolved = True
+            continue
+
+        adjusted = resolution.with_offset(offset)
+        results.append(
+            AssignmentResult(
+                variable=variable,
+                resolution=resolution,
+                adjusted=adjusted,
+                source=source,
+            )
+        )
+
+    return results, unresolved
+
+
+def _get_used_ports() -> set[int]:
+    """Check which ports are currently in use on the system."""
+    used_ports: set[int] = set()
+    
+    try:
+        # Try using 'ss' command first (more modern)
+        result = subprocess.run(
+            ["ss", "-tuln"], 
+            capture_output=True, 
+            text=True, 
+            check=True
+        )
+        
+        for line in result.stdout.splitlines():
+            # Parse ss output format: tcp LISTEN 0 4096 127.0.0.1:7333 0.0.0.0:*
+            if "LISTEN" in line:
+                parts = line.split()
+                if len(parts) >= 5:
+                    # Extract port from address:port format (4th column)
+                    addr_port = parts[4]
+                    if ":" in addr_port:
+                        port_str = addr_port.split(":")[-1]
+                        if port_str.isdigit():
+                            used_ports.add(int(port_str))
+                            
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        try:
+            # Fallback to netstat if ss is not available
+            result = subprocess.run(
+                ["netstat", "-tuln"], 
+                capture_output=True, 
+                text=True, 
+                check=True
+            )
+            
+            for line in result.stdout.splitlines():
+                # Parse netstat output format: tcp 0 0 0.0.0.0:80 0.0.0.0:* LISTEN
+                if "LISTEN" in line:
+                    parts = line.split()
+                    if len(parts) >= 4:
+                        # Extract port from address:port format  
+                        addr_port = parts[3]
+                        if ":" in addr_port:
+                            port_str = addr_port.split(":")[-1]
+                            if port_str.isdigit():
+                                used_ports.add(int(port_str))
+                                
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            print(
+                "Warning: Unable to check system port usage. Neither 'ss' nor 'netstat' available.",
+                file=sys.stderr,
+            )
+            
+    return used_ports
+
+
+def _get_free_offset(
+    port_variables: Dict[str, PortVariable],
+    env: Dict[str, str],
+    env_file_values: Dict[str, str],
+    max_offsets: int,
+) -> Optional[int]:
+    """Find the first offset where all required ports are available. Returns offset or None if none found."""
+    used_ports = _get_used_ports()
+    
+    if not port_variables:
+        return 0  # No ports to check, offset 0 is fine
+    
+    for offset in range(0, max_offsets + 1):
+        assignment_results, unresolved = collect_assignments(
+            port_variables=port_variables,
+            env=env,
+            env_file_values=env_file_values,
+            offset=offset,
+        )
+        
+        if unresolved:
+            print(
+                f"Warning: Some port variables could not be resolved for offset {offset}.",
+                file=sys.stderr,
+            )
+            continue
+            
+        if not assignment_results:
+            print(
+                f"Warning: No port variables could be resolved for offset {offset}.",
+                file=sys.stderr,
+            )
+            continue
+        
+        # Check if all ports for this offset are available
+        all_ports_free = True
+        required_ports: list[int] = []
+        
+        for result in assignment_results:
+            for port in result.resolution.iter_ports(offset):
+                required_ports.append(port)
+                if port in used_ports:
+                    all_ports_free = False
+                    break
+            if not all_ports_free:
+                break
+        
+        if all_ports_free:
+            return offset
+    
+    # No free offset found
+    return None
+
+
+def _find_free_offset(
+    port_variables: Dict[str, PortVariable],
+    env: Dict[str, str],
+    env_file_values: Dict[str, str],
+    max_offsets: int,
+) -> int:
+    """Find the first offset where all required ports are available and report it."""
+    offset = _get_free_offset(port_variables, env, env_file_values, max_offsets)
+    
+    if offset is not None:
+        print(f"Found free offset: {offset}")
+        
+        # Show required ports for this offset
+        assignment_results, _ = collect_assignments(
+            port_variables=port_variables,
+            env=env,
+            env_file_values=env_file_values,
+            offset=offset,
+        )
+        
+        if assignment_results:
+            required_ports = []
+            for result in assignment_results:
+                for port in result.resolution.iter_ports(offset):
+                    required_ports.append(port)
+            
+            if required_ports:
+                port_list = ", ".join(str(p) for p in sorted(required_ports))
+                print(f"Required ports ({len(required_ports)}): {port_list}")
+        return 0
+    
+    # No free offset found
+    used_ports = _get_used_ports()
+    print(f"No free offset found in range 0-{max_offsets}")
+    used_count = len(used_ports)
+    if used_count > 0:
+        sample_used = ", ".join(str(p) for p in sorted(used_ports)[:10])
+        if used_count > 10:
+            sample_used += f" (and {used_count - 10} more)"
+        print(f"System has {used_count} ports in use, including: {sample_used}")
+    return 1
+
+
+def _check_port_overlap(
+    port_variables: Dict[str, PortVariable],
+    env: Dict[str, str],
+    env_file_values: Dict[str, str],
+    max_offsets: int,
+) -> int:
+    occupied: Dict[int, Tuple[int, str]] = {}
+
+    for offset in range(0, max_offsets + 1):
+        assignment_results, unresolved = collect_assignments(
+            port_variables=port_variables,
+            env=env,
+            env_file_values=env_file_values,
+            offset=offset,
+        )
+
+        if unresolved:
+            print(
+                "Warning: Some port variables could not be resolved; overlap check may be incomplete.",
+                file=sys.stderr,
+            )
+
+        if not assignment_results:
+            print(
+                "Unable to evaluate overlaps because no port variables could be resolved.",
+                file=sys.stderr,
+            )
+            return 1
+
+        used_this_offset: Dict[int, str] = {}
+        conflict: Optional[Tuple[int, Tuple[int, str], Tuple[int, str]]] = None
+
+        for result in assignment_results:
+            for port in result.resolution.iter_ports(offset):
+                if port in used_this_offset:
+                    conflict = (
+                        port,
+                        (offset, result.variable.name),
+                        (offset, used_this_offset[port]),
+                    )
+                    break
+                if port in occupied:
+                    conflict = (
+                        port,
+                        (offset, result.variable.name),
+                        occupied[port],
+                    )
+                    break
+                used_this_offset[port] = result.variable.name
+            if conflict:
+                break
+
+        if conflict:
+            port, current_info, previous_info = conflict
+            current_offset, current_var = current_info
+            prev_offset, prev_var = previous_info
+            if current_offset == prev_offset:
+                print(
+                    f"Offset {current_offset} already overlaps on host port {port} between "
+                    f"{current_var} and {prev_var}."
+                )
+                print("Maximum non-overlapping instances: 0")
+            else:
+                print(
+                    f"Offset {current_offset} collides on host port {port} (already used by offset {prev_offset} via {prev_var})."
+                )
+                print(f"Maximum non-overlapping instances: {current_offset}")
+            return 0
+
+        for port, var_name in used_this_offset.items():
+            occupied[port] = (offset, var_name)
+
+    print(
+        f"No overlaps detected through offset {max_offsets}. Total supported instances: {max_offsets + 1}."
+    )
+    return 0
+
+
+def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
+    examples = textwrap.dedent(
+        """
+        Examples:
+          up                     # auto-detect Sail or docker compose with zero offset
+          up 3                   # same detection but with a +3 host-port offset
+          up compose 2           # explicitly use docker compose with +2 offset
+          up sail --dry-run      # explicitly use Sail and preview without starting containers
+          up compose -- --detach # pass extra flags after '--'
+          up check-overlap       # assess how many offsets can run without clashes
+          up free                # find the next free offset where all ports are available
+          up free compose        # same as above but for docker compose engine
+          up auto                # automatically use the next free offset to start containers
+          up auto compose        # same as above but for docker compose engine
+
+        Notes:
+          - Only environment variables whose names contain the word 'PORT'
+            (for example ${APP_PORT:-8080}) are adjusted. Static numbers or
+            variables without PORT stay unchanged.
+          - Host port ranges such as 4510-4559 shift by the offset multiplied
+            by the inclusive span of the range (50 in this example).
+          - Keep those variables in services.*.ports mappings so host bindings
+            shift safely alongside the containers.
+
+        Extra (install Sail via Docker, per Laravel docs):
+          docker run --rm -u "$(id -u):$(id -g)" \
+            -v "$(pwd)":/var/www/html laravelsail/php84-composer:latest \
+            composer install --ignore-platform-reqs
+        """
+    ).strip()
+
+    parser = argparse.ArgumentParser(
+        description=(
+            "Offset every docker-compose port variable whose name contains the "
+            "standalone word 'PORT', then launch Sail or docker compose with "
+            "automatic engine detection."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=examples,
+    )
+    parser.add_argument(
+        "--compose-file",
+        default="docker-compose.yml",
+        help="Path to the docker-compose file (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show the resolved command without executing it.",
+    )
+    parser.add_argument(
+        "--up-args",
+        nargs=argparse.REMAINDER,
+        help=(
+            "Additional arguments to append after the 'up' command. Use '--' "
+            "before the first extra argument."
+        ),
+    )
+    parser.add_argument(
+        "--run-tests",
+        action="store_true",
+        help="Execute the built-in stdlib unit tests and exit.",
+    )
+    parser.add_argument(
+        "--max-offsets",
+        type=int,
+        default=100,
+        help="Maximum offset (inclusive) to scan when using 'check-overlap'.",
+    )
+    parser.add_argument(
+        "inputs",
+        nargs="*",
+        metavar="engine|offset",
+        help="Optional engine ('sail' or 'compose') followed by an integer offset.",
+    )
+
+    args = parser.parse_args(argv)
+
+    if args.run_tests:
+        setattr(args, "engine", "sail")
+        setattr(args, "offset", 0)
+        setattr(args, "command", None)
+        setattr(args, "engine_explicit", True)
+        return args
+
+    allowed_engines = {"sail", "compose"}
+    engine = "sail"
+    engine_explicit = False
+    offset = 0
+    command: Optional[str] = None
+    positionals = list(args.inputs)
+
+    if positionals and positionals[0].lower() == "check-overlap":
+        command = "check-overlap"
+        positionals.pop(0)
+    elif positionals and positionals[0].lower() == "free":
+        command = "free"
+        positionals.pop(0)
+    elif positionals and positionals[0].lower() == "auto":
+        command = "auto"
+        positionals.pop(0)
+
+    def maybe_parse_int(value: str) -> Optional[int]:
+        try:
+            return int(value)
+        except ValueError:
+            return None
+
+    if command in ["check-overlap", "free", "auto"]:
+        if positionals:
+            candidate = positionals.pop(0).lower()
+            if candidate not in allowed_engines:
+                parser.error("engine must be either 'sail' or 'compose'")
+            engine = candidate
+            engine_explicit = True
+        if positionals:
+            parser.error("too many positional arguments provided")
+        offset = 0
+    elif positionals:
+        first = positionals.pop(0)
+        first_as_int = maybe_parse_int(first)
+        if first_as_int is not None:
+            offset = first_as_int
+        else:
+            candidate = first.lower()
+            if candidate not in allowed_engines:
+                parser.error("engine must be either 'sail' or 'compose'")
+            engine = candidate
+            engine_explicit = True
+            if positionals:
+                second = positionals.pop(0)
+                second_as_int = maybe_parse_int(second)
+                if second_as_int is None:
+                    parser.error("offset must be an integer")
+                offset = second_as_int
+
+    if positionals:
+        parser.error("too many positional arguments provided")
+
+    setattr(args, "engine", engine)
+    setattr(args, "offset", offset)
+    setattr(args, "command", command)
+    setattr(args, "engine_explicit", engine_explicit)
+    delattr(args, "inputs")
+    return args
+
+
+def parse_env_file(path: Path) -> Dict[str, str]:
+    """Parse a .env-style file into a dictionary."""
+    values: Dict[str, str] = {}
+    if not path.exists():
+        return values
+
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "=" not in line:
+            continue
+        key, raw_value = line.split("=", 1)
+        key = key.strip()
+        value = raw_value.strip().strip("'\"")
+        if key:
+            values[key] = value
+    return values
+
+
+def extract_port_variables(contents: str) -> Dict[str, PortVariable]:
+    """Return variables containing 'PORT' that appear in the compose file."""
+    variables: Dict[str, PortVariable] = {}
+
+    for match in ENV_VAR_PATTERN.finditer(contents):
+        name = match.group(1)
+        if not PORT_NAME_PATTERN.search(name.upper()):
+            continue
+        operator = match.group(2)
+        default = match.group(3) if operator == "-" else None
+        if name not in variables:
+            variables[name] = PortVariable(name=name, default=default, operator=operator)
+        else:
+            existing = variables[name]
+            if existing.default != default and default is not None:
+                print(
+                    f"Warning: conflicting defaults for {name!r}: "
+                    f"{existing.default!r} vs {default!r}. Using the first value.",
+                    file=sys.stderr,
+                )
+    return variables
+
+
+def resolve_base_value(
+    variable: PortVariable,
+    env: Dict[str, str],
+    env_file_values: Dict[str, str],
+) -> Tuple[Optional[PortResolution], Optional[str]]:
+    """Determine the starting value for a variable following Compose precedence."""
+    source = None
+    raw_value: Optional[str] = None
+
+    if variable.name in env and env[variable.name]:
+        raw_value = env[variable.name]
+        source = "environment"
+    elif variable.name in env_file_values and env_file_values[variable.name]:
+        raw_value = env_file_values[variable.name]
+        source = ".env file"
+    elif variable.default not in {None, ""}:
+        raw_value = variable.default
+        source = "compose default"
+
+    if raw_value is None:
+        return None, None
+
+    parsed = _parse_port_value(raw_value)
+    if parsed is None:
+        print(
+            f"Warning: value for {variable.name} from {source or 'unknown'} "
+            f"is not a numeric port or range: {raw_value!r}.",
+            file=sys.stderr,
+        )
+        return None, source
+
+    return PortResolution(values=parsed, raw=raw_value), source
+
+
+def build_command(args: argparse.Namespace, compose_path: Path) -> Tuple[list[str], Dict[str, str]]:
+    """Prepare the command list and environment overrides."""
+    env_overrides: Dict[str, str] = {}
+
+    if args.engine == "compose":
+        command = ["docker", "compose", "-f", str(compose_path), "up"]
+    else:
+        command = ["./vendor/bin/sail", "up"]
+        env_overrides["COMPOSE_FILE"] = str(compose_path)
+
+    if args.up_args:
+        command.extend(args.up_args)
+
+    return command, env_overrides
+
+
+def detect_engine(compose_path: Path) -> str:
+    """Return 'sail' when a Sail binary exists alongside the compose file."""
+
+    sail_path = compose_path.parent / "vendor" / "bin" / "sail"
+    if sail_path.exists():
+        return "sail"
+    return "compose"
+
+
+def main(argv: Optional[Iterable[str]] = None) -> int:
+    args = parse_args(argv)
+    if args.run_tests:
+        return _run_tests()
+
+    compose_path = Path(args.compose_file).resolve()
+
+    if not compose_path.exists():
+        print(f"Compose file not found: {compose_path}", file=sys.stderr)
+        return 1
+
+    if not args.engine_explicit:
+        detected_engine = detect_engine(compose_path)
+        pretty_engine = "Sail" if detected_engine == "sail" else "docker compose"
+        print(f"Detected {pretty_engine} project; using {pretty_engine}.")
+        args.engine = detected_engine
+
+    contents = compose_path.read_text()
+    port_variables = extract_port_variables(contents)
+
+    if not port_variables:
+        print("No variables containing 'PORT' were found in the compose file.")
+
+    env = os.environ.copy()
+    env_file_values = parse_env_file(compose_path.parent / ".env")
+
+    if args.command == "check-overlap":
+        return _check_port_overlap(
+            port_variables=port_variables,
+            env=env,
+            env_file_values=env_file_values,
+            max_offsets=max(0, args.max_offsets),
+        )
+    
+    if args.command == "free":
+        return _find_free_offset(
+            port_variables=port_variables,
+            env=env,
+            env_file_values=env_file_values,
+            max_offsets=max(0, args.max_offsets),
+        )
+    
+    if args.command == "auto":
+        free_offset = _get_free_offset(
+            port_variables=port_variables,
+            env=env,
+            env_file_values=env_file_values,
+            max_offsets=max(0, args.max_offsets),
+        )
+        
+        if free_offset is None:
+            used_ports = _get_used_ports()
+            print(f"No free offset found in range 0-{args.max_offsets}")
+            used_count = len(used_ports)
+            if used_count > 0:
+                sample_used = ", ".join(str(p) for p in sorted(used_ports)[:10])
+                if used_count > 10:
+                    sample_used += f" (and {used_count - 10} more)"
+                print(f"System has {used_count} ports in use, including: {sample_used}")
+            return 1
+        
+        # Use the found offset to continue with normal startup
+        print(f"Using free offset: {free_offset}")
+        args.offset = free_offset
+
+    assignment_results, _ = collect_assignments(
+        port_variables=port_variables,
+        env=env,
+        env_file_values=env_file_values,
+        offset=args.offset,
+    )
+
+    if not assignment_results:
+        print("No port variables could be resolved; aborting.", file=sys.stderr)
+        return 1
+
+    assignments: Dict[str, str] = {}
+    for result in assignment_results:
+        source_label = result.source or "unknown"
+        print(
+            f"Setting {result.variable.name} (source: {source_label}) -> {result.adjusted} "
+            f"(offset {args.offset} from {result.resolution.display()})."
+        )
+        assignments[result.variable.name] = result.adjusted
+
+    command, env_overrides = build_command(args, compose_path)
+    display_env = {**env_overrides, **assignments}
+    command_str = " ".join(
+        [*(f"{name}={value}" for name, value in display_env.items()), *command]
+    )
+    print(f"Executing: {command_str}")
+
+    if args.dry_run:
+        return 0
+
+    run_env = env.copy()
+    run_env.update(env_overrides)
+    run_env.update(assignments)
+
+    try:
+        subprocess.run(command, check=True, env=run_env)
+    except subprocess.CalledProcessError as exc:
+        return exc.returncode
+
+    return 0
+
+
+class ComposePortOffsetTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tempdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tempdir.cleanup)
+        self.compose_path = Path(self._tempdir.name) / "docker-compose.yml"
+
+    def write_compose(self, contents: str) -> Path:
+        text = textwrap.dedent(contents).strip() + "\n"
+        self.compose_path.write_text(text)
+        return self.compose_path
+
+    def write_env(self, contents: str) -> Path:
+        env_path = Path(self._tempdir.name) / ".env"
+        text = textwrap.dedent(contents).strip() + "\n"
+        env_path.write_text(text)
+        return env_path
+
+    def test_extract_port_variables_ignores_non_port_names(self) -> None:
+        contents = """
+        services:
+          app:
+            ports:
+              - "${APP_PORT:-80}:80"
+              - "${FORWARD_DB_PORT:-5432}:5432"
+              - "${PORTAL}:90"
+              - "${APPORT:-9000}:9000"
+        """
+        variables = extract_port_variables(textwrap.dedent(contents))
+        self.assertIn("APP_PORT", variables)
+        self.assertIn("FORWARD_DB_PORT", variables)
+        self.assertNotIn("PORTAL", variables)
+        self.assertNotIn("APPORT", variables)
+
+    def test_resolve_base_value_honors_precedence(self) -> None:
+        variable = PortVariable(name="APP_PORT", default="80", operator="-")
+        resolution, source = resolve_base_value(variable, {"APP_PORT": "3000"}, {})
+        assert resolution is not None
+        self.assertEqual((3000,), resolution.values)
+        self.assertEqual("environment", source)
+
+        resolution, source = resolve_base_value(variable, {}, {"APP_PORT": "7000"})
+        assert resolution is not None
+        self.assertEqual((7000,), resolution.values)
+        self.assertEqual(".env file", source)
+
+        resolution, source = resolve_base_value(variable, {}, {})
+        assert resolution is not None
+        self.assertEqual((80,), resolution.values)
+        self.assertEqual("compose default", source)
+
+    def test_main_dry_run_applies_offset(self) -> None:
+        compose_file = self.write_compose(
+            """
+            services:
+              app:
+                ports:
+                  - "${APP_PORT:-8080}:80"
+            """
+        )
+
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        with mock.patch.dict(os.environ, {}, clear=True), \
+                contextlib.redirect_stdout(stdout_buffer), \
+                contextlib.redirect_stderr(stderr_buffer):
+            exit_code = main(["5", "--compose-file", str(compose_file), "--dry-run"])
+
+        output = stdout_buffer.getvalue()
+        self.assertEqual(0, exit_code)
+        self.assertIn("Detected docker compose project; using docker compose.", output)
+        self.assertIn("Setting APP_PORT (source: compose default) -> 8085", output)
+        self.assertIn("APP_PORT=8085", output)
+        self.assertEqual("", stderr_buffer.getvalue().strip())
+
+    def test_main_auto_detects_sail_engine(self) -> None:
+        compose_file = self.write_compose(
+            """
+            services:
+              app:
+                ports:
+                  - "${APP_PORT:-8080}:80"
+            """
+        )
+
+        sail_path = compose_file.parent / "vendor" / "bin" / "sail"
+        sail_path.parent.mkdir(parents=True, exist_ok=True)
+        sail_path.write_text("#!/bin/sh\nexit 0\n")
+        sail_path.chmod(0o755)
+
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        with mock.patch.dict(os.environ, {}, clear=True), \
+                contextlib.redirect_stdout(stdout_buffer), \
+                contextlib.redirect_stderr(stderr_buffer):
+            exit_code = main(["--compose-file", str(compose_file), "--dry-run"])
+
+        output = stdout_buffer.getvalue()
+        self.assertEqual(0, exit_code)
+        self.assertIn("Detected Sail project; using Sail.", output)
+        self.assertIn("./vendor/bin/sail up", output)
+        self.assertIn("APP_PORT (source: compose default) -> 8080", output)
+        self.assertEqual("", stderr_buffer.getvalue().strip())
+
+    def test_main_warns_when_unresolved(self) -> None:
+        compose_file = self.write_compose(
+            """
+            services:
+              app:
+                ports:
+                  - "${UNBOUND_PORT}:80"
+            """
+        )
+
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        with mock.patch.dict(os.environ, {}, clear=True), \
+                contextlib.redirect_stdout(stdout_buffer), \
+                contextlib.redirect_stderr(stderr_buffer):
+            exit_code = main(["1", "--compose-file", str(compose_file), "--dry-run"])
+
+        self.assertEqual(1, exit_code)
+        stderr_output = stderr_buffer.getvalue()
+        self.assertIn("unable to resolve a numeric value", stderr_output)
+        self.assertIn("No port variables could be resolved", stderr_output)
+
+    def test_parse_args_supports_multiple_forms(self) -> None:
+        args = parse_args(["compose", "2"])
+        self.assertEqual("compose", args.engine)
+        self.assertEqual(2, args.offset)
+        self.assertIsNone(args.command)
+        self.assertTrue(args.engine_explicit)
+
+        args = parse_args(["10"])
+        self.assertEqual("sail", args.engine)
+        self.assertEqual(10, args.offset)
+        self.assertIsNone(args.command)
+        self.assertFalse(args.engine_explicit)
+
+        args = parse_args([])
+        self.assertEqual("sail", args.engine)
+        self.assertEqual(0, args.offset)
+        self.assertIsNone(args.command)
+        self.assertFalse(args.engine_explicit)
+
+        args = parse_args(["check-overlap"])
+        self.assertEqual("sail", args.engine)
+        self.assertEqual(0, args.offset)
+        self.assertEqual("check-overlap", args.command)
+        self.assertEqual(100, args.max_offsets)
+        self.assertFalse(args.engine_explicit)
+
+        args = parse_args(["check-overlap", "compose", "--max-offsets", "5"])
+        self.assertEqual("compose", args.engine)
+        self.assertEqual("check-overlap", args.command)
+        self.assertEqual(0, args.offset)
+        self.assertEqual(5, args.max_offsets)
+        self.assertTrue(args.engine_explicit)
+
+        with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                parse_args(["invalid"])
+
+        with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                parse_args(["compose", "not-an-int"])
+
+        with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                parse_args(["check-overlap", "123"])
+
+    def test_help_text_includes_examples_and_notes(self) -> None:
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(stdout_buffer), contextlib.redirect_stderr(stderr_buffer):
+                parse_args(["--help"])
+
+        help_text = stdout_buffer.getvalue()
+        self.assertIn("Only environment variables whose names contain the word 'PORT'", help_text)
+        self.assertIn("Host port ranges such as", help_text)
+        self.assertIn("install Sail via Docker", help_text)
+
+    def test_main_handles_port_ranges(self) -> None:
+        compose_file = self.write_compose(
+            """
+            services:
+              app:
+                ports:
+                  - "${LOCALSTACK_HOST_PORT_RANGE:-4510-4559}:4510-4559"
+            """
+        )
+
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        with mock.patch.dict(os.environ, {}, clear=True), \
+                contextlib.redirect_stdout(stdout_buffer), \
+                contextlib.redirect_stderr(stderr_buffer):
+            exit_code = main([
+                "compose",
+                "2",
+                "--compose-file",
+                str(compose_file),
+                "--dry-run",
+            ])
+
+        output = stdout_buffer.getvalue()
+        self.assertEqual(0, exit_code)
+        self.assertIn(
+            "Setting LOCALSTACK_HOST_PORT_RANGE (source: compose default) -> 4610-4659",
+            output,
+        )
+        self.assertIn("offset 2 from 4510-4559", output)
+        self.assertEqual("", stderr_buffer.getvalue().strip())
+
+    def test_check_overlap_reports_capacity(self) -> None:
+        compose_file = self.write_compose(
+            """
+            services:
+              app:
+                ports:
+                  - "${APP_PORT:-80}:80"
+                  - "${LOCALSTACK_HOST_PORT_RANGE:-4510-4511}:4510-4511"
+            """
+        )
+
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        with mock.patch.dict(os.environ, {}, clear=True), \
+                contextlib.redirect_stdout(stdout_buffer), \
+                contextlib.redirect_stderr(stderr_buffer):
+            exit_code = main([
+                "check-overlap",
+                "--compose-file",
+                str(compose_file),
+                "--max-offsets",
+                "3",
+            ])
+
+        self.assertEqual(0, exit_code)
+        output = stdout_buffer.getvalue()
+        self.assertIn("No overlaps detected through offset 3", output)
+        self.assertIn("Total supported instances: 4", output)
+        self.assertEqual("", stderr_buffer.getvalue().strip())
+
+    def test_check_overlap_detects_collision(self) -> None:
+        compose_file = self.write_compose(
+            """
+            services:
+              app:
+                ports:
+                  - "${APP_PORT:-80}:80"
+                  - "${DUPLICATE_PORT:-80}:81"
+            """
+        )
+
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        with mock.patch.dict(os.environ, {}, clear=True), \
+                contextlib.redirect_stdout(stdout_buffer), \
+                contextlib.redirect_stderr(stderr_buffer):
+            exit_code = main([
+                "check-overlap",
+                "--compose-file",
+                str(compose_file),
+            ])
+
+        self.assertEqual(0, exit_code)
+        output = stdout_buffer.getvalue()
+        self.assertIn("Offset 0 already overlaps on host port 80", output)
+        self.assertIn("Maximum non-overlapping instances: 0", output)
+
+
+def _run_tests() -> int:
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(ComposePortOffsetTests)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    return 0 if result.wasSuccessful() else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
