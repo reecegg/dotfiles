@@ -358,6 +358,8 @@ mode "$mode_gaps_outer" {
 # move focused workspace between monitors
 bindsym $mod+Ctrl+greater move workspace to output right
 bindsym $mod+Ctrl+less move workspace to output left
+bindsym $mod+Mod1+greater move workspace to output up
+bindsym $mod+Mod1+less move workspace to output down
 
 # Colors — bright green accent with grey shades
 set $text-color                  #1a1a1a
