@@ -90,12 +90,13 @@ alias ggr="gg --resume"
 # ==============================================================================
 # Misc Aliases
 # ==============================================================================
-unalias ai air aid aic aiq 2>/dev/null
-function ai { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/ "$@"; }
-function air { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude remote-control --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/ "$@"; }
+unalias ai aim air aid aic aiq 2>/dev/null
+function ai { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/ai && cd ~/ai; fi; claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/ "$@"; }
+function aim { mkdir -p ~/misc && cd ~/misc; claude --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/ "$@"; }
+function air { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/ai && cd ~/ai; fi; claude remote-control --dangerously-skip-permissions --plugin-dir ~/git/agent-toolkit/ --plugin-dir ~/git/system-agent/ "$@"; }
 function aid { ai "$@"; }
-function aic { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude --dangerously-skip-permissions "$@"; }
-function aiq { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/misc && cd ~/misc; fi; claude "$@"; }
+function aic { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/ai && cd ~/ai; fi; claude --dangerously-skip-permissions "$@"; }
+function aiq { if [[ "$PWD" == "$HOME" ]]; then mkdir -p ~/ai && cd ~/ai; fi; claude "$@"; }
 alias oc="opencode"
 alias also="function _also() { eval nohup "$@" & disown; }"
 alias src="source ~/.bashrc"
@@ -462,7 +463,12 @@ function tta() {
         tmux attach -t "$name"
       fi
     else
-      tmuxp load "$config"
+      if [[ -n "${TMUX:-}" ]]; then
+        tmuxp load -d "$config"
+        tmux switch-client -t "$name"
+      else
+        tmuxp load "$config"
+      fi
     fi
   fi
 }
