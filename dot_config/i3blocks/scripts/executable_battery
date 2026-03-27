@@ -1,17 +1,16 @@
 #!/bin/bash
 # Battery status for i3blocks with charging indicator and color-coded percentage
 
-# Get battery info
-battery_info=$(acpi -b 2>/dev/null | head -1)
+# Read directly from sysfs to avoid acpi misreporting HID++ device batteries
+BAT_PATH="/sys/class/power_supply/BAT0"
 
-if [[ -z "$battery_info" ]]; then
+if [[ ! -d "$BAT_PATH" ]]; then
     echo "<span color='#AAAAAA'>BAT: —</span>"
     exit 0
 fi
 
-# Parse status and percentage
-status=$(echo "$battery_info" | awk -F': ' '{print $2}' | awk -F', ' '{print $1}')
-percent=$(echo "$battery_info" | grep -oP '\d+(?=%)')
+status=$(cat "$BAT_PATH/status" 2>/dev/null)
+percent=$(cat "$BAT_PATH/capacity" 2>/dev/null)
 
 # Default if parse fails
 [[ -z "$percent" ]] && percent=0

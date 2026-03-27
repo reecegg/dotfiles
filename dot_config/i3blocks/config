@@ -7,6 +7,11 @@
 # - VPN status script: ~/.config/i3blocks/scripts/check-vpn
 # - Claude usage script: ~/.config/i3blocks/scripts/claude-usage (requires jq, curl)
 
+[voxtype]
+command=~/.config/i3blocks/scripts/voxtype
+interval=1
+markup=pango
+
 [claude]
 command=~/.config/i3blocks/scripts/claude-usage
 interval=60
