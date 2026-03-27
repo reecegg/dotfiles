@@ -39,7 +39,7 @@ for (( i=0; i<count; i++ )); do
 done
 
 chosen=$(echo -en "$entries" | rofi -dmenu -i -show-icons -p "Clipboard" -format i \
-    -theme-str 'element-icon { size: 32px; margin: 0 8px 0 0; } element-text { vertical-align: 0.5; }')
+    -theme-str 'element-icon { margin: 0 8px 0 0; } element-text { vertical-align: 0.5; }')
 
 if [[ -n "$chosen" ]]; then
     gpaste-client --use-index select "$chosen"
