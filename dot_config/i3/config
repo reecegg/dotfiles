@@ -17,7 +17,7 @@ floating_modifier $mod
 
 # Applications:
 # Explorer:
-bindsym $mod+e exec --no-startup-id "dolphin"
+bindsym $mod+e exec --no-startup-id "nautilus --new-window"
 # Password Manager:
 bindsym $mod+p exec --no-startup-id "1password"
 # Ctrl+Shift+Space also opens 1password Quick Access
@@ -38,7 +38,7 @@ bindsym $mod+Shift+Return exec --no-startup-id "wezterm start -- nvim"
 bindsym $mod+d exec --no-startup-id "rofi -show drun"
 bindsym $mod+Shift+d exec --no-startup-id "rofi -show combi"
 bindsym $mod+c exec --no-startup-id "rofi -show calc -modi calc -no-show-match -no-sort > xclip"
-bindsym $mod+Mod1+c exec --no-startup-id "rm -f ~/.local/share/rofi/rofi_calc_history && notify-send 'Calculator history cleared'"
+bindsym $mod+Mod1+c exec --no-startup-id "rm -f ~/.local/share/rofi/rofi_calc_history && notify-send 'Calculator' 'History cleared'"
 bindsym $mod+w exec --no-startup-id "rofi -show window"
 bindsym $mod+Shift+w exec --no-startup-id "rofi -show windowcd"
 bindsym $mod+Shift+e exec --no-startup-id "rofi -show p -modi p:rofi-power-menu"
@@ -55,9 +55,10 @@ bindsym $mod+o exec --no-startup-id ~/.config/i3/focus_workspace.sh
 # Exit i3 (logs you out of your X session)
 # bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-# Clipboard History and selection
-bindsym $mod+i exec "CM_LAUNCHER=rofi clipmenu"
-# Snippet selection
+# Clipboard
+bindsym $mod+i exec ~/.config/i3/rofi-gpaste.sh
+bindsym $mod+Mod1+i exec "gpaste-client empty && notify-send 'Clipboard' 'History cleared'"
+# Snippets
 bindsym $mod+Shift+i exec ~/.config/i3/snippet_selector.sh
 
 # Kill focused window.
@@ -91,7 +92,10 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+b split h
 
 # Split in vertical orientation.
-bindsym $mod+v split v
+bindsym $mod+Shift+v split v
+
+# Voxtype dictation (press to start/stop recording)
+bindsym $mod+v exec --no-startup-id voxtype record toggle
 
 # Enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -277,15 +281,11 @@ bindsym XF86TouchpadToggle exec ~/.config/i3/toggle-touch-pad.sh # Toggle touchp
 
 # TODO: full XF86 Bind implementation
 
-# Screenshot (Maim)
+# Screen Capture
 bindsym $mod+Shift+s exec "maim -s -u | xclip -selection clipboard -t image/png -i"
 # bindsym $mod+Shift+x exec maim -g $(slop -f \"%wx%h+%x+%y\") -d 2 | xclip -selection clipboard -t image/png -i && notify-send 'Screenshot' 'Screenshot captured and copied to clipboard!'"
 bindsym $mod+x exec "maim -u | xclip -selection clipboard -t image/png -i"
-
-# QR Code Scanner
 bindsym $mod+Shift+x exec "maim -s -u /tmp/screenshot.png && zbarimg /tmp/screenshot.png | grep 'QR-Code:' | sed 's/QR-Code://' | xclip -selection clipboard && notify-send 'QR Code' 'Scanned QR Code copied to clipboard!'"
-
-# OCR Screenshot (Normshot)
 bindsym $mod+Ctrl+Shift+s exec "normcap | xclip -selection clipboard -t text/plain"
 
 # Mode to move floating windows
@@ -406,11 +406,12 @@ bar {
 # Note: Not compatible with IntelliJ suite
 # for_window [class=".*"] [floating] move absolute position center
 
+
 # Autostart
 exec --no-startup-id dex --autostart
 exec autocutsel -fork
 #exec autocutsel -selection PRIMARY -fork
-exec --no-startup-id clipmenud
+exec --no-startup-id gpaste-client start
 exec --no-startup-id dunst
 exec --no-startup-id nm-applet
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
