@@ -350,7 +350,7 @@
     frame_color = "#9BFF00"
     timeout = 10
     # Icon for notifications with low urgency
-    default_icon = dialog-information
+    #default_icon = dialog-information
 
 [urgency_normal]
     background = "#181818"
@@ -359,7 +359,7 @@
     timeout = 10
     override_pause_level = 30
     # Icon for notifications with normal urgency
-    default_icon = dialog-information
+    #default_icon = dialog-information
 
 [urgency_critical]
     background = "#181818"
@@ -368,7 +368,7 @@
     timeout = 0
     override_pause_level = 60
     # Icon for notifications with critical urgency
-    default_icon = dialog-warning
+    #default_icon = dialog-warning
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
