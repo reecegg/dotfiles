@@ -10,12 +10,16 @@ return {
   config = function()
     -- If already at definition when jumping to definition, "jump back" (open references)
     function Jump_to_definition()
-      local current_line = vim.api.nvim_win_get_cursor(0)[1]
-      nlog.log('current_line: ' .. current_line)
-      vim.api.nvim_command('normal! gd')
-      if current_line == vim.api.nvim_win_get_cursor(0)[1] then
-        vim.api.nvim_command('normal! gr')
-      end
+      local current_pos = vim.api.nvim_win_get_cursor(0)
+      nlog.log('current_line: ' .. current_pos[1])
+      vim.lsp.buf.definition()
+      -- Use a small delay to check if the cursor moved after the LSP jump
+      vim.defer_fn(function()
+        local new_pos = vim.api.nvim_win_get_cursor(0)
+        if current_pos[1] == new_pos[1] and current_pos[2] == new_pos[2] then
+          vim.cmd('Telescope lsp_references')
+        end
+      end, 300)
     end
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
