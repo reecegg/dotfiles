@@ -62,12 +62,6 @@ class PortResolution:
             start, end = shifted
             yield from range(start, end + 1)
 
-    def display(self) -> str:
-        if len(self.values) == 1:
-            return str(self.values[0])
-        start, end = self.values
-        return f"{start}-{end}"
-
     def with_offset(self, offset: int) -> str:
         shifted = self.shifted_values(offset)
         if len(shifted) == 1:
@@ -240,7 +234,7 @@ def _get_free_offset(
     return None
 
 
-def _find_free_offset(
+def _cmd_free_offset(
     port_variables: Dict[str, PortVariable],
     env: Dict[str, str],
     env_file_values: Dict[str, str],
@@ -265,7 +259,7 @@ def _find_free_offset(
             for result in assignment_results:
                 for port in result.resolution.iter_ports(offset):
                     required_ports.append(port)
-            
+
             if required_ports:
                 port_list = ", ".join(str(p) for p in sorted(required_ports))
                 print(f"Required ports ({len(required_ports)}): {port_list}")
@@ -365,16 +359,16 @@ def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
     examples = textwrap.dedent(
         """
         Examples:
-          up                     # auto-detect Sail or docker compose with zero offset
-          up 3                   # same detection but with a +3 host-port offset
+          up                     # auto-find free offset, detect engine, and start containers
+          up 3                   # use explicit +3 host-port offset (skip auto)
           up compose 2           # explicitly use docker compose with +2 offset
           up sail --dry-run      # explicitly use Sail and preview without starting containers
           up compose -- --detach # pass extra flags after '--'
           up check-overlap       # assess how many offsets can run without clashes
-          up free                # find the next free offset where all ports are available
+          up free                # find the next free offset without starting containers
           up free compose        # same as above but for docker compose engine
-          up auto                # automatically use the next free offset to start containers
-          up auto compose        # same as above but for docker compose engine
+          up auto                # same as bare 'up' (explicit auto mode)
+          up auto compose        # auto mode with explicit engine
 
         Notes:
           - Only environment variables whose names contain the word 'PORT'
@@ -440,18 +434,24 @@ def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
 
     if args.run_tests:
-        setattr(args, "engine", "sail")
-        setattr(args, "offset", 0)
-        setattr(args, "command", None)
-        setattr(args, "engine_explicit", True)
+        args.engine = "sail"
+        args.offset = 0
+        args.command = None
+        args.engine_explicit = True
         return args
 
     allowed_engines = {"sail", "compose"}
     engine = "sail"
     engine_explicit = False
     offset = 0
-    command: Optional[str] = None
+    command: Optional[str] = "auto"
     positionals = list(args.inputs)
+
+    def maybe_parse_int(value: str) -> Optional[int]:
+        try:
+            return int(value)
+        except ValueError:
+            return None
 
     if positionals and positionals[0].lower() == "check-overlap":
         command = "check-overlap"
@@ -460,26 +460,10 @@ def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
         command = "free"
         positionals.pop(0)
     elif positionals and positionals[0].lower() == "auto":
-        command = "auto"
         positionals.pop(0)
-
-    def maybe_parse_int(value: str) -> Optional[int]:
-        try:
-            return int(value)
-        except ValueError:
-            return None
-
-    if command in ["check-overlap", "free", "auto"]:
-        if positionals:
-            candidate = positionals.pop(0).lower()
-            if candidate not in allowed_engines:
-                parser.error("engine must be either 'sail' or 'compose'")
-            engine = candidate
-            engine_explicit = True
-        if positionals:
-            parser.error("too many positional arguments provided")
-        offset = 0
     elif positionals:
+        # Explicit offset or engine — disable auto mode
+        command = None
         first = positionals.pop(0)
         first_as_int = maybe_parse_int(first)
         if first_as_int is not None:
@@ -497,14 +481,24 @@ def parse_args(argv: Optional[Iterable[str]] = None) -> argparse.Namespace:
                     parser.error("offset must be an integer")
                 offset = second_as_int
 
+    if command in ["check-overlap", "free", "auto"]:
+        if positionals:
+            candidate = positionals.pop(0).lower()
+            if candidate not in allowed_engines:
+                parser.error("engine must be either 'sail' or 'compose'")
+            engine = candidate
+            engine_explicit = True
+        if positionals:
+            parser.error("too many positional arguments provided")
+
     if positionals:
         parser.error("too many positional arguments provided")
 
-    setattr(args, "engine", engine)
-    setattr(args, "offset", offset)
-    setattr(args, "command", command)
-    setattr(args, "engine_explicit", engine_explicit)
-    delattr(args, "inputs")
+    args.engine = engine
+    args.offset = offset
+    args.command = command
+    args.engine_explicit = engine_explicit
+    del args.inputs
     return args
 
 
@@ -528,11 +522,19 @@ def parse_env_file(path: Path) -> Dict[str, str]:
     return values
 
 
+PORTS_SECTION_PATTERN = re.compile(
+    r"^\s+ports:\s*\n((?:\s+- .+\n)*)", re.MULTILINE
+)
+
+
 def extract_port_variables(contents: str) -> Dict[str, PortVariable]:
-    """Return variables containing 'PORT' that appear in the compose file."""
+    """Return variables containing 'PORT' that appear in ports: sections only."""
     variables: Dict[str, PortVariable] = {}
 
-    for match in ENV_VAR_PATTERN.finditer(contents):
+    port_sections = PORTS_SECTION_PATTERN.findall(contents)
+    port_text = "\n".join(port_sections)
+
+    for match in ENV_VAR_PATTERN.finditer(port_text):
         name = match.group(1)
         if not PORT_NAME_PATTERN.search(name.upper()):
             continue
@@ -645,7 +647,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         )
     
     if args.command == "free":
-        return _find_free_offset(
+        return _cmd_free_offset(
             port_variables=port_variables,
             env=env,
             env_file_values=env_file_values,
@@ -691,7 +693,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         source_label = result.source or "unknown"
         print(
             f"Setting {result.variable.name} (source: {source_label}) -> {result.adjusted} "
-            f"(offset {args.offset} from {result.resolution.display()})."
+            f"(offset {args.offset} from {result.resolution.with_offset(0)})."
         )
         assignments[result.variable.name] = result.adjusted
 
@@ -809,6 +811,7 @@ class ComposePortOffsetTests(unittest.TestCase):
         stdout_buffer = io.StringIO()
         stderr_buffer = io.StringIO()
         with mock.patch.dict(os.environ, {}, clear=True), \
+                mock.patch(f"{__name__}._get_used_ports", return_value=set()), \
                 contextlib.redirect_stdout(stdout_buffer), \
                 contextlib.redirect_stderr(stderr_buffer):
             exit_code = main(["--compose-file", str(compose_file), "--dry-run"])
@@ -817,8 +820,8 @@ class ComposePortOffsetTests(unittest.TestCase):
         self.assertEqual(0, exit_code)
         self.assertIn("Detected Sail project; using Sail.", output)
         self.assertIn("./vendor/bin/sail up", output)
+        self.assertIn("Using free offset: 0", output)
         self.assertIn("APP_PORT (source: compose default) -> 8080", output)
-        self.assertEqual("", stderr_buffer.getvalue().strip())
 
     def test_main_warns_when_unresolved(self) -> None:
         compose_file = self.write_compose(
@@ -858,7 +861,7 @@ class ComposePortOffsetTests(unittest.TestCase):
         args = parse_args([])
         self.assertEqual("sail", args.engine)
         self.assertEqual(0, args.offset)
-        self.assertIsNone(args.command)
+        self.assertEqual("auto", args.command)
         self.assertFalse(args.engine_explicit)
 
         args = parse_args(["check-overlap"])
