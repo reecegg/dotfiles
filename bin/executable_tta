@@ -107,15 +107,17 @@ if [[ ${#copy_candidates[@]} -gt 0 ]]; then
   echo "Found non-git content in parent repo:" >&2
 
   selected=$(printf '%s\n' "${copy_candidates[@]}" \
-    | fzf --multi --prompt="Copy to worktree> " --height=40% --reverse \
-           --header="TAB to select, ENTER to confirm, ESC to skip") || true
+    | fzf --multi --bind 'start:select-all' --prompt="Copy to worktree> " --height=40% --reverse \
+           --header="TAB to deselect, ENTER to confirm, ESC to skip") || true
 
   if [[ -n "$selected" ]]; then
     while IFS= read -r item; do
       src="$REPO_DIR/$item"
       dst="$WORKTREE_DIR/$item"
       if [[ -d "$src" ]]; then
-        cp -a "$src" "$dst"
+        # Merge into existing directory to avoid nesting (e.g. storage/storage/)
+        mkdir -p "$dst"
+        cp -a "$src/." "$dst/"
       else
         cp -a "$src" "$dst"
       fi
@@ -124,4 +126,21 @@ if [[ ${#copy_candidates[@]} -gt 0 ]]; then
   fi
 fi
 
-echo "load:$WORKTREE_NAME"
+# --- Launch tmux session ---
+export SESSION_NAME="$WORKTREE_NAME"
+config="${WORKTREE_NAME%%--*}"
+
+if tmux has-session -t "$WORKTREE_NAME" 2>/dev/null; then
+  if [[ -n "${TMUX:-}" ]]; then
+    tmux switch-client -t "$WORKTREE_NAME"
+  else
+    tmux attach -t "$WORKTREE_NAME"
+  fi
+else
+  if [[ -n "${TMUX:-}" ]]; then
+    tmuxp load -d "$config"
+    tmux switch-client -t "$WORKTREE_NAME"
+  else
+    tmuxp load "$config"
+  fi
+fi

@@ -450,28 +450,7 @@ function tt() {
   fi
 }
 alias ttr="tt --resume"
-function tta() {
-  local result; result=$("$HOME/bin/tta" "$@") || return
-  local action="${result%%:*}" name="${result#*:}"
-  if [[ "$action" == "load" ]]; then
-    export SESSION_NAME="$name"
-    local config="${name%%--*}"
-    if tmux has-session -t "$name" 2>/dev/null; then
-      if [[ -n "${TMUX:-}" ]]; then
-        tmux switch-client -t "$name"
-      else
-        tmux attach -t "$name"
-      fi
-    else
-      if [[ -n "${TMUX:-}" ]]; then
-        tmuxp load -d "$config"
-        tmux switch-client -t "$name"
-      else
-        tmuxp load "$config"
-      fi
-    fi
-  fi
-}
+function tta() { "$HOME/bin/tta" "$@"; }
 ttd() { "$HOME/bin/ttd" "$@"; }
 alias tptp="tp tmuxp"
 
