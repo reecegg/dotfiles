@@ -27,6 +27,7 @@
 
 [delta]
     navigate = true
+	features = colibri
 
 [merge]
     conflictstyle = diff3
