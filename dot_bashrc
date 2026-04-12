@@ -10,6 +10,8 @@ fi
 
 # SSH Agent (systemd user service)
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+export SSH_ASKPASS="/usr/lib/seahorse/ssh-askpass"
+export SSH_ASKPASS_REQUIRE="prefer"
 
 # If not running interactively, don't do anything.
 case $- in
