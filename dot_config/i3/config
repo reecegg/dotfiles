@@ -227,7 +227,7 @@ bindsym $mod+Ctrl+Shift+c restart
 # Exit i3 instantly 
 # bindsym $mod+Shift+alt+e exec i3-msg exit
 # Lock screen
-bindsym $mod+Shift+b exec "i3lock -c 000000"
+bindsym $mod+Shift+b exec "~/.config/i3/lock.sh"
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+Shift+r mode "resize"
@@ -408,6 +408,8 @@ bar {
 
 
 # Autostart
+exec --no-startup-id xset s 300 dpms 0 0 180
+exec --no-startup-id xss-lock -- ~/.config/i3/lock.sh
 exec --no-startup-id dex --autostart
 exec autocutsel -fork
 #exec autocutsel -selection PRIMARY -fork
