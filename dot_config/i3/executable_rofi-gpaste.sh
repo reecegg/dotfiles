@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Rofi picker for GPaste clipboard history (text + image thumbnails with pet names)
 
-count=$(gpaste-client history-size 2>/dev/null)
-if [[ -z "$count" || "$count" -eq 0 ]]; then
+# Get all items in one D-Bus call (format: "UUID: content")
+mapfile -t history_lines < <(gpaste-client --oneline history 2>/dev/null)
+
+if [[ ${#history_lines[@]} -eq 0 ]]; then
     echo "" | rofi -dmenu -p "Clipboard"
     exit 0
 fi
@@ -22,11 +24,15 @@ pet_name() {
 
 # Build rofi entries
 entries=""
-for (( i=0; i<count; i++ )); do
-    line=$(gpaste-client --use-index --oneline get "$i" 2>/dev/null)
-    raw=$(gpaste-client --use-index --raw get "$i" 2>/dev/null)
+uuids=()
+
+for full_line in "${history_lines[@]}"; do
+    uuid="${full_line%%: *}"
+    line="${full_line#*: }"
+    uuids+=("$uuid")
 
     if [[ "$line" == "[Image,"* ]]; then
+        raw=$(gpaste-client --raw get "$uuid" 2>/dev/null)
         name=$(pet_name "$raw")
         # Extract dimensions and timestamp from GPaste label: [Image, WxH (date)]
         dims=$(echo "$line" | sed 's/.*Image, \([0-9]*\) x \([0-9]*\).*/\1x\2/')
@@ -42,5 +48,5 @@ chosen=$(echo -en "$entries" | rofi -dmenu -i -show-icons -p "Clipboard" -format
     -theme-str 'element-icon { margin: 0 8px 0 0; } element-text { vertical-align: 0.5; }')
 
 if [[ -n "$chosen" ]]; then
-    gpaste-client --use-index select "$chosen"
+    gpaste-client select "${uuids[$chosen]}"
 fi
